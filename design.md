@@ -11,6 +11,7 @@
    - Each subsystem adds its values to global map <string, value>, possibly specifying their source
  - Register Commands
    - Each subsystem adds its commands to global map <string, command>
+   - Generate controls requirements json and save
 
 #### Bind Phase
  - Initialize hardware
@@ -36,3 +37,22 @@
    - Load script
 
 Ready
+
+## Class Layout
+
+#### Subsystem
+ - RegisterHardware(PortStore&, SettingsStore&)
+ - RegisterValues(ValueStore&)
+ - RegisterCommands(CommandStore&)
+ - InitializeHardware(const PortStore&, const SettingsStore&)
+ - Start()
+
+#### ConfigStore
+ - Node<Object>
+   - map<string, Node> *
+   - Object value
+   - JSON_Object json_node
+   - GetValue() - Object
+   - GetNode(key) - Node<Object>
+   - isLeaf() - bool
+ - Node root
