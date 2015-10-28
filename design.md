@@ -52,11 +52,31 @@ Ready
    - `map<string, Node> *`
    - `Meta_t value`
    - `JSON_Object json_node`
+   - `ConfigStore<Meta_t> *parent`
    - `GetValue() - Meta_t&`
    - `GetNode(key) - Node`
    - `Get<Container_t>() - Container_t {return Container_t(this);}`
    - `isLeaf() - bool`
  - `Node root`
  - `json_file output`
+
+### Ports
+
+#### `PortSpace`
+ - `min - int`
+ - `max - int`
+ - `used_mask - short` Each bit represents whether a port is in use
+ - `isClosed(int) - bool` Returns true if the argument is already a port in use
+ - `close(int)`
+ - `open(int)`
+
+#### `PortMeta`
+ - `shared_ptr<PortObject> obj`
+
+#### `Port`
+A type of Container_t
+ - `ConfigStore<PortMeta>::Node *node`
+ - `Get() - int`
+ - `Set(int)` Verifies that arg is in valid range and sets port, closing it in the object
 
 
