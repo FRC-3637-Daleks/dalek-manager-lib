@@ -40,19 +40,23 @@ Ready
 
 ## Class Layout
 
-#### Subsystem
- - RegisterHardware(PortStore&, SettingsStore&)
- - RegisterValues(ValueStore&)
- - RegisterCommands(CommandStore&)
- - InitializeHardware(const PortStore&, const SettingsStore&)
- - Start()
+#### `Subsystem`
+ - `RegisterHardware(PortStore&, SettingsStore&)`
+ - `RegisterValues(ValueStore&)`
+ - `RegisterCommands(CommandStore&)`
+ - `InitializeHardware(const PortStore&, const SettingsStore&)`
+ - `Start()`
 
-#### ConfigStore
- - Node<Object>
-   - map<string, Node> *
-   - Object value
-   - JSON_Object json_node
-   - GetValue() - Object
-   - GetNode(key) - Node<Object>
-   - isLeaf() - bool
- - Node root
+#### `ConfigStore<Meta_t>`
+ - `Node`
+   - `map<string, Node> *`
+   - `Meta_t value`
+   - `JSON_Object json_node`
+   - `GetValue() - Meta_t&`
+   - `GetNode(key) - Node`
+   - `Get<Container_t>() - Container_t {return Container_t(this);}`
+   - `isLeaf() - bool`
+ - `Node root`
+ - `json_file output`
+
+
