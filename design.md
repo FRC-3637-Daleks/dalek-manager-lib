@@ -63,9 +63,9 @@ Ready
 ### Ports
 
 #### `PortSpace`
- - `min - int`
- - `max - int`
- - `used_mask - short` Each bit represents whether a port is in use
+ - `min - byte`
+ - `max - byte`
+ - `used_mask - long long` Each bit represents whether a port is in use
  - `isClosed(int) - bool` Returns true if the argument is already a port in use
  - `close(int)`
  - `open(int)`
