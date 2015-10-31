@@ -60,6 +60,11 @@ Ready
  - `Node root`
  - `json_file output`
 
+#### `Container_base<Meta_t, T>`
+ - node - ConfigStore<Meta_t>::Node *`
+ - `Get() - T, virtual` 
+ - `Set(T), virtual`
+
 ### Ports
 
 #### `PortSpace`
@@ -71,21 +76,35 @@ Ready
  - `open(int)`
 
 #### `PortMeta`
- - `shared_ptr<PortObject> obj`
+ - `obj - shared_ptr<PortObject>`
 
 #### `Port`
-A valid Container_t
- - `ConfigStore<PortMeta>::Node *node`
- - `Get() - int`
- - `Set(int)` Verifies that arg is in valid range and sets port, closing it in the object
+ - `extends Container_base<PortMeta, int>`
+ - `Set(int), override` Verifies that arg is in valid range and sets port, closing it in the object
 
 ### Settings
 
 #### `SettingsMeta`
- - `void SetJson<T>(JSON_Object&, T)`
+ - `SetJson<T>(JSON_Object&, T)`
 
 #### `Setting<T>`
-A valid Container_t
- - `ConfiStore<SettingsMeta>::Node *node`
- - `Get() - T`
- - `Set(T)`
+ - `extends Container_base<SettingsMeta, T>`
+
+### Controls
+
+#### `ContinuousControlMeta`
+ - `argument_type - {double, bool, int, etc...}`
+
+#### `CommandMeta`
+ - `poll_func - functor	
+
+#### `ContinuousControl<T>`
+ - `extends Container_base<ContinuousControlMeta, ValueStore<T>::Value>`
+ - `Get() - ValueStore<T>::Value`
+ - `Set(ValueStore<T>::Value)`
+
+#### `CommandControl`
+ - `extends Container_base<CommandMeta, ValueStore<bool>::Value>`
+ - `Get() - ValueStore<bool>::Value`
+ - `Set(ValueStore<bool>::Value)`
+
