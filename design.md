@@ -74,9 +74,18 @@ Ready
  - `shared_ptr<PortObject> obj`
 
 #### `Port`
-A type of Container_t
+A valid Container_t
  - `ConfigStore<PortMeta>::Node *node`
  - `Get() - int`
  - `Set(int)` Verifies that arg is in valid range and sets port, closing it in the object
 
+### Settings
 
+#### `SettingsMeta`
+ - `void SetJson<T>(JSON_Object&, T)`
+
+#### `Setting<T>`
+A valid Container_t
+ - `ConfiStore<SettingsMeta>::Node *node`
+ - `Get() - T`
+ - `Set(T)`
