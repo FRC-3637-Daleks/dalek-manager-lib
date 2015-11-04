@@ -61,7 +61,7 @@ Ready
  - `json_file output`
 
 #### `Container_base<Meta_t, T>`
- - node - ConfigStore<Meta_t>::Node *`
+ - `node - ConfigStore<Meta_t>::Node *`
  - `Get() - T, virtual` 
  - `Set(T), virtual`
 
@@ -79,7 +79,7 @@ Ready
  - `obj - shared_ptr<PortObject>`
 
 #### `Port`
- - `extends Container_base<PortMeta, int>`
+ - extends `Container_base<PortMeta, int>`
  - `Set(int), override` Verifies that arg is in valid range and sets port, closing it in the object
 
 ### Settings
@@ -88,7 +88,7 @@ Ready
  - `SetJson<T>(JSON_Object&, T)`
 
 #### `Setting<T>`
- - `extends Container_base<SettingsMeta, T>`
+ - extends `Container_base<SettingsMeta, T>`
 
 ### Controls
 
@@ -96,15 +96,56 @@ Ready
  - `argument_type - {double, bool, int, etc...}`
 
 #### `CommandMeta`
- - `poll_func - functor	
+ - `poll_func - functor`
 
 #### `ContinuousControl<T>`
- - `extends Container_base<ContinuousControlMeta, ValueStore<T>::Value>`
+ - extends `Container_base<ContinuousControlMeta, ValueStore<T>::Value>`
  - `Get() - ValueStore<T>::Value`
  - `Set(ValueStore<T>::Value)`
 
 #### `CommandControl`
- - `extends Container_base<CommandMeta, ValueStore<bool>::Value>`
+ - extends `Container_base<CommandMeta, ValueStore<bool>::Value>`
  - `Get() - ValueStore<bool>::Value`
  - `Set(ValueStore<bool>::Value)`
+
+### Values
+inspired by DiagRoboRIO, these classes consist of a framework for building a real time updated store of values which can be accessed by name at any time, including initialization.
+
+#### `Gettable<T>, abstract`
+ - `Get() - T, pure virtual`
+
+#### `Settable<T>, abstract`
+ - `Set(T), pure virtual`
+
+#### `Updateable`
+ - `Update(), pure virtual`
+
+#### `Valuable<T>`
+ - extends `Gettable<T>`
+ - `value - T`
+ - `Get() - T, final` - returns value
+ - `set(T), protected`
+ - `GetAddr() - const T *` - returns address of value
+
+#### `Reference<T>`
+ - extends `Gettable<T>`
+ - Constructors - `(const T *)`, `(const Valuable<T>&)`
+ - `ref - const T *`
+ - `Get() - T, final` - returns the value at ref
+
+#### `Pollable<T>, abstract`
+ - extends `Valuable<T>, Updateable`
+ - `poll() - T, protected, pure virtual`
+ - `Update(), final {set(poll());}`
+
+#### `Settable<T>`
+ - extends `Valuable<T>`
+ - `Set(T)`
+
+#### `FunkyPoll<T>`
+ - extends `Pollable<T>`
+ - `funk - {function() - T}`
+ - `poll() - T {return funk();}`
+
+
 
