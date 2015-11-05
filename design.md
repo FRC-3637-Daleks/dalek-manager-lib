@@ -147,5 +147,28 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
  - `funk - {function() - T}`
  - `poll() - T {return funk();}`
 
+#### `UpdateStore`
+ - extends `Updateable`
+ - `objs - map<string, Updateable *>`
+ - `Update()` - Updates all update objects
+ - `default_store - UpdateStore *, static`
 
+#### `UpdateThread`
+ - extends `UpdateStore`
+ - `Update()` - Updates all update objects and checks the time they take, possibly logging ones which take too long
+ - `period - microseconds` 
+ - `thread` - Calls `Update` every period
+ - `default_thread - UpdateThread *, static`
 
+#### `ValueStore<T>`
+ - `values - map<string, Gettable<T> *>`
+ - `Value`
+   - `obj - pair<string, Gettable<T> *> *` - Points to the string, value pair in the parent ValueStore
+   - `GetKey() - string`
+   - `GetValue() - T`
+   - `Initialize(obj - Gettable<T> *)` - Sets the mapped value to obj. Throws exception if current value isn't null
+   - `Initialize(obj - Pollable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)` - Calls above function and adds the Updateable part of the object to the specified UpdateThread at the same key.
+   - `Release() - Gettable<T> *` - This will set the mapped value to null and return what was in there.
+ - `Get(key - string) - Value` - Returns and, if needed, creates a mapped object at `key`
+ - `Initialize(key - string, obj - Gettable<T> *)`
+ - `Initialize(key - string, obj - Pollable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)`
