@@ -161,6 +161,7 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
  - `default_thread - UpdateThread *, static`
 
 #### `ValueStore<T>`
+ - `default - ValueStore<T> *`
  - `values - map<string, Gettable<T> *>`
  - `Value`
    - `obj - pair<string, Gettable<T> *> *` - Points to the string, value pair in the parent ValueStore
