@@ -53,9 +53,8 @@ Ready
    - `Meta_t value`
    - `JSON_Object json_node`
    - `ConfigStore<Meta_t> *parent`
-   - `GetValue() - Meta_t&`
+   - `GetMetaData() - Meta_t&`
    - `GetNode(key) - Node`
-   - `Get<Container_t>() - Container_t {return Container_t(this);}`
    - `isLeaf() - bool`
  - `Node root`
  - `json_file output`
@@ -76,11 +75,16 @@ Ready
  - `open(int)`
 
 #### `PortMeta`
- - `obj - shared_ptr<PortObject>`
+ - `obj - shared_ptr<PortSpace>`
 
 #### `Port`
  - extends `Container_base<PortMeta, int>`
  - `Set(int), override` Verifies that arg is in valid range and sets port, closing it in the object
+
+#### `PortStore`
+ - extends `ConfigStore<PortMeta>`
+ - `GetPort(path - string) - Port`
+ - `GetPort(leaf - node) - Port`
 
 ### Settings
 
@@ -89,6 +93,11 @@ Ready
 
 #### `Setting<T>`
  - extends `Container_base<SettingsMeta, T>`
+
+#### SettingStore
+ - extends `ConfigStore<SettingsMeta>`
+ - `GetSetting<T>(path - string) - Setting<T>`
+ - `GetSetting<T>(leaf - Node) - Setting<T>`
 
 ### Controls
 
@@ -107,6 +116,16 @@ Ready
  - extends `Container_base<CommandMeta, ValueStore<bool>::Value>`
  - `Get() - ValueStore<bool>::Value`
  - `Set(ValueStore<bool>::Value)`
+
+#### `ContinuousControlStore`
+ - extends `ConfigStore<ContinuousControlMeta>`
+ - `GetControl<T>(path - string) - ContinuousControl<T>`
+ - `GetControl<T>(leaf - Node) - ContinuousControl<T>`
+
+#### `CommandControlStore`
+ - extends `ConfigStore<CommandControlMeta>`
+ - `GetControl(path - string) - CommandControl`
+ - `GetControl(leaf - Node) - CommandControl`
 
 ### Values
 inspired by DiagRoboRIO, these classes consist of a framework for building a real time updated store of values which can be accessed by name at any time, including initialization.
