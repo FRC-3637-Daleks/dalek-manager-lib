@@ -192,3 +192,13 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
  - `Get(key - string) - Value` - Returns and, if needed, creates a mapped object at `key`
  - `Initialize(key - string, obj - Gettable<T> *)`
  - `Initialize(key - string, obj - Pollable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)`
+
+### Logs
+
+#### `TextLogListener`
+ - `Log(line - log), virtual`
+ - `Log(timestamp, LogData, SystemData, message), virtual`
+
+#### `TextLog`
+ - `listeners - vector<TextLogListener *>`
+ - `Log(timestamp, LogData..., SystemData..., message)`
