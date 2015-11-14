@@ -133,9 +133,6 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
 #### `Gettable<T>, abstract`
  - `Get() - T, pure virtual`
 
-#### `Settable<T>, abstract`
- - `Set(T), pure virtual`
-
 #### `Updateable`
  - `Update(), pure virtual`
 
@@ -184,11 +181,14 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
  - `values - map<string, Gettable<T> *>`
  - `Value`
    - `obj - pair<string, Gettable<T> *> *` - Points to the string, value pair in the parent ValueStore
+   - `setter[=null] - Settable<T> *`
    - `GetKey() - string`
    - `GetValue() - T`
-   - `Initialize(obj - Gettable<T> *)` - Sets the mapped value to obj. Throws exception if current value isn't null
+   - `SetValue(val - T)` - If setter is null throws an exception/logs fatal error. Otherwise calls setter->Set(val)
+   - `Initialize(obj - Gettable<T> *)` - Sets the mapped value to obj. Throws exception/logs fatal error if current value isn't null
    - `Initialize(obj - Pollable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)` - Calls above function and adds the Updateable part of the object to the specified UpdateThread at the same key.
-   - `Release() - Gettable<T> *` - This will set the mapped value to null and return what was in there.
+   - `Initialize(obj - Settable<T> *)` - Calls the override with Gettable but also stores the setter.
+   - `Release() - Gettable<T> *` - This will set the mapped value and setter to null and return what was in there.
  - `Get(key - string) - Value` - Returns and, if needed, creates a mapped object at `key`
  - `Initialize(key - string, obj - Gettable<T> *)`
  - `Initialize(key - string, obj - Pollable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)`
@@ -202,3 +202,38 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
 #### `TextLog`
  - `listeners - vector<TextLogListener *>`
  - `Log(timestamp, LogData..., SystemData..., message)`
+
+### Network
+
+#### `MessageWatch`
+ - `OnMessage(topic - string, message - string), virtual`
+ - `SetFilter(topicPrefix - string)`
+
+#### `MessageBroadcast`
+ - `Publish(topic - string, message - string), virtual`
+ - `SetFilter(topicPrefix - string)`
+
+#### `MQTT`
+ - extends `mosqpp::mosquittopp` or whatever it is, and `MessageBroadcast`
+ - `watches - vector<MessageWatch *>`
+ - `AddWatch(watch - MessageWatch *)`
+ - `Publish(topic - string, message - string)`
+ - `Subscribe(topic - string)`
+ - `on_message(topic - string, message - string)` dispatch message to all watches
+
+#### `MessageCache`
+ - extends `MessageWatch` - The ValueStore is configured with References
+ - `cache_obj - ValueStore<string>` - each should be a reference to a value in the cache_map
+ - `cache_map - unordered_map<string, string>` - Actual cache of values
+ - `OnMessage(topic - string, message - string)` - set the value in the setters at the topic
+ - `GetCache() - const ValueStore<string>&`
+
+#### `MessageUpdater`
+ - extends `UpdateThread, MessageBroadcast`
+ - `publisher - MessageBroadcast *`
+ - `UpdateObject`
+   - extends `Updateable`
+   - `watch - const ValueStore<string>::Value`
+   - `publisher - MessageBroadcast *` - parent MessageUpdater
+   - `Update()` - Calls publisher's publish for the watch's key and value
+ - `Publish(topic - string, message - string)` - Calls publisher's publish.
