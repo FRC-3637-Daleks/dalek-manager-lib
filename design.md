@@ -138,15 +138,22 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
 
 #### `Valuable<T>`
  - extends `Gettable<T>`
- - `value - T`
+ - `value - std::atomic<T>` - must ensure thread safety
  - `Get() - T, final` - returns value
  - `set(T), protected`
  - `GetAddr() - const T *` - returns address of value
 
+#### `Valuable<string>`
+ - extends `Gettable<string>`
+ - `value - string`
+ - `r, w - mutex`
+ - `Get() - T, final` - waits for w. locks r.
+ - `set(T), protected` - waits for w and r. locks w.
+
 #### `Reference<T>`
  - extends `Gettable<T>`
- - Constructors - `(const T *)`, `(const Valuable<T>&)`
- - `ref - const T *`
+ - Constructors - `(const Valuable<T>&)`
+ - `ref - const Valuable<T> *`
  - `Get() - T, final` - returns the value at ref
 
 #### `Pollable<T>, abstract`
@@ -177,21 +184,22 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
  - `default_thread - UpdateThread *, static`
 
 #### `ValueStore<T>`
- - `default - ValueStore<T> *`
- - `values - map<string, Gettable<T> *>`
+ - `default - ValueStore<T> *, static`
+ - `values - map<string, Valuable<T> *>`
+ - `mutex r, w`
  - `Value`
-   - `obj - pair<string, Gettable<T> *> *` - Points to the string, value pair in the parent ValueStore
+   - `obj - pair<string, Valuable<T> *> *` - Points to the string, value pair in the parent ValueStore
    - `setter[=null] - Settable<T> *`
    - `GetKey() - string`
    - `GetValue() - T`
    - `SetValue(val - T)` - If setter is null throws an exception/logs fatal error. Otherwise calls setter->Set(val)
-   - `Initialize(obj - Gettable<T> *)` - Sets the mapped value to obj. Throws exception/logs fatal error if current value isn't null
+   - `Initialize(obj - Valuable<T> *)` - Sets the mapped value to obj. Throws exception/logs fatal error if current value isn't null
    - `Initialize(obj - Pollable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)` - Calls above function and adds the Updateable part of the object to the specified UpdateThread at the same key.
    - `Initialize(obj - Settable<T> *)` - Calls the override with Gettable but also stores the setter.
-   - `Release() - Gettable<T> *` - This will set the mapped value and setter to null and return what was in there.
+   - `Release() - Valuable<T> *` - This will set the mapped value and setter to null and return what was in there.
  - `Get(key - string) - Value` - Returns and, if needed, creates a mapped object at `key`
- - `Initialize(key - string, obj - Gettable<T> *)`
- - `Initialize(key - string, obj - Pollable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)`
+ - `Initialize(key - string, obj - Valuable<T> *)`
+ - `Initialize(key - string, obj - Valuable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)`
 
 ### Logs
 
@@ -223,9 +231,9 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
 
 #### `MessageCache`
  - extends `MessageWatch` - The ValueStore is configured with References
- - `cache_obj - ValueStore<string>` - each should be a reference to a value in the cache_map
- - `cache_map - unordered_map<string, string>` - Actual cache of values
- - `OnMessage(topic - string, message - string)` - set the value in the setters at the topic
+ - `cache_obj - ValueStore<string>` - each is a Settable
+ - `cache_map - unordered_map<string, ValueStore<string>::Value>` - Map of Values pointing to cache_obj data.
+ - `OnMessage(topic - string, message - string)` - set the value in the setters at the topic. 
  - `GetCache() - const ValueStore<string>&`
 
 #### `MessageUpdater`
