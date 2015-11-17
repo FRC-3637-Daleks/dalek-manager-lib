@@ -133,6 +133,9 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
 #### `Gettable<T>, abstract`
  - `Get() - T, pure virtual`
 
+#### `Settable<T>`
+ - `Set(T), pure virtual`
+
 #### `Updateable`
  - `Update(), pure virtual`
 
@@ -161,14 +164,25 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
  - `poll() - T, protected, pure virtual`
  - `Update(), final {set(poll());}`
 
-#### `Settable<T>`
- - extends `Valuable<T>`
- - `Set(T)`
+#### `SetValue<T>`
+ - extends `Valuable<T>, Settable<T>`
+ - `Set(T)` - calls Valuable's Set
 
 #### `FunkyPoll<T>`
  - extends `Pollable<T>`
  - `funk - {function() - T}`
  - `poll() - T {return funk();}`
+
+#### `Convertible<From, To>`
+ - extends `Gettable<To>`
+ - `source - Gettable<From> *`
+ - `Get() - To` - Converts source to To
+
+#### `Convertiset<From, To>`
+ - extends `Gettable<To>, Settable<To>`
+ - `source - Settable<From> *`
+ - `Get() - To`
+ - `Set(T)`
 
 #### `UpdateStore`
  - extends `Updateable`
