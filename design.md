@@ -178,9 +178,9 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
  - `source - Gettable<From> *`
  - `Get() - To` - Converts source to To
 
-#### `Convertiset<From, To>`
+#### `ConvertSet<From, To>`
  - extends `Gettable<To>, Settable<To>`
- - `source - Settable<From> *`
+ - `source - SetValue<From> *`
  - `Get() - To`
  - `Set(T)`
 
