@@ -170,7 +170,7 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
 
 #### `FunkyPoll<T>`
  - extends `Pollable<T>`
- - `funk - {function() - T}`
+ - `funk - {function() - T}` - upon construction if this were a member function type, it would have to be const qualified
  - `poll() - T {return funk();}`
 
 #### `Convertible<From, To>`
