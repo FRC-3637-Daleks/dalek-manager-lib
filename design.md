@@ -259,3 +259,23 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
    - `publisher - MessageBroadcast *` - parent MessageUpdater
    - `Update()` - Calls publisher's publish for the watch's key and value
  - `Publish(topic - string, message - string)` - Calls publisher's publish.
+
+### Robot Framework
+
+#### `Command`
+ - WPI Command
+
+#### `CommandBindBase`
+ - `make(args - ArgumentSet) - Command *, virtual {return make();}` - factory function for Commands based on a set of arguments
+ - `make() - Command *, virtual` - factory function for Commands with default args presumably
+
+#### `CommandBind<Command_t>`
+ - extends `CommandBindBase`
+ - `make(args - ArgumentSet) - Command *, {return MakeCommand<Command_t>(args);}` - Calls external function intended to be specialized by user
+ - `make() - Command *, {return new Command_t();}` - Expects Command to have a default constructor.
+
+#### `CommandFactory`
+ - `commands - map<string, CommandBindBase *>`
+ - `MakeCommand(comm - string, args - ArgumentSet) - Command *`
+ - `RegisterCommand(string, CommandBindBase *)`
+
