@@ -279,3 +279,10 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
  - `MakeCommand(comm - string, args - ArgumentSet) - Command *`
  - `RegisterCommand(string, CommandBindBase *)`
 
+#### `ArgumentSet`
+ - Indexes arguments by their types and order.
+ - `ints - vector<int>`
+ - `doubles - vector<double>`
+ - `bools - vector<bool>`
+ - `strings - vector<string>`
+ - `values - vector<string>` - keys
