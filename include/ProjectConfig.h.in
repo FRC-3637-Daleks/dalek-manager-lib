@@ -1,0 +1,3 @@
+/* Contains project information from cmake */
+#cmakedefine DMAN_VERSION_MAJOR
+#cmakedefine DMAN_VERSION_MINOR
