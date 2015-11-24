@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 project (dalek_manager_lib)
 
 # Version Number
-set (DMAN_VERSION_MAJOR 0)
-set (DMAN_VERSION_MINOR 1)
+set (DMAN_VERSION_MAJOR "0")
+set (DMAN_VERSION_MINOR "1")
 
 # Compiler Settings
 set (CMAKE_CXX_COMPILER_ID GNU)
