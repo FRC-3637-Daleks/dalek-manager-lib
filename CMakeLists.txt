@@ -1,6 +1,9 @@
 cmake_minimum_required (VERSION 2.8)
 project (dalek_manager_lib)
 
+# Custom Module Path
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
+
 # Version Number
 set (DMAN_VERSION_MAJOR "0")
 set (DMAN_VERSION_MINOR "1")
@@ -57,7 +60,7 @@ if (USE_MQTT)
 endif (USE_MQTT)
 
 if (USE_WPILIB)
-  add_subdirectory("${PROJECT_SOURCE_DIR}WPILib")
+  add_subdirectory("${PROJECT_SOURCE_DIR}/WPILib")
 endif (USE_WPILIB)
 
 if (USE_LUA)
