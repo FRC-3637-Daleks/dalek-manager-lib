@@ -16,14 +16,14 @@ set (CMAKE_CXX_VERSION 4.9)
 # Directory Structure
 set (PROJECT_SOURCE_DIR "src")
 set (PROJECT_BINARY_DIR "build")
-set (INCLUDE_DIR "include")
+set (OUTPUT_INCLUDE_DIR "${PROJECT_BINARY_DIR}/include")
 set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 # Configure header file to pass in cmake settings
-configure_file ("${INCLUDE_DIR}/ProjectConfig.h.in" "${PROJECT_BINARY_DIR}/ProjectConfig.h" )
+configure_file ("${PROJECT_SOURCE_DIR}/ProjectConfig.h.in" "${PROJECT_SOURCE_DIR}/ProjectConfig.h" )
 
 # Add include directories
-include_directories("${PROJECT_BINARY_DIR} ${INCLUDE_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}")
 
 
 # Options which default to ON. Don't require external libraries
@@ -36,14 +36,19 @@ option (USE_WPILIB "Link wpilib and use frc toolchain, as well as compile its de
 option (USE_LUA "Link lua and compile its autonomous mode dependnets under Auton/" OFF)
 
 # Values set in the subdirectories
-set (SOURCES "")
-set (LIBRARIES "")
-
+set (SOURCES)
+set (LIBRARIES)
+set (HEADERS)
+set (INCLUDES)
 
 # Defines function for adding CPP Files in a directory to the SOURCES variable
-function(get_sources arg1)
+function(get_sources SOURCE_ARG SOURCE_HEADER_ARG INCLUDE_ARG)
   file(GLOB function_sources "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
-  set(${arg1} ${function_sources}  PARENT_SCOPE)
+  set(${SOURCE_ARG} ${function_sources}  PARENT_SCOPE)
+  file(GLOB function_source_headers "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+  set(${SOURCE_HEADER_ARG} ${function_source_headers} PARENT_SCOPE)
+  file(GLOB_RECURSE function_includes "${CMAKE_CURRENT_SOURCE_DIR}/*.(h|hpp)")
+  set(${INCLUDE_ARG} ${function_includes} PARENT_SCOPE)
 endfunction(get_sources)
 
 # Subdirectories
@@ -67,11 +72,16 @@ if (USE_LUA)
   add_subdirectory("${PROJECT_SOURCE_DIR}/Auton")
 endif (USE_LUA)
 
-message("Sources: ${SOURCES}")
+# message("Sources: ${SOURCES}")
 
 # Library target
-add_library(dalek-manager STATIC ${SOURCES})
+string (REPLACE " " ";" SOURCES_LIST ${SOURCES})
+add_library(dalek-manager STATIC ${SOURCES_LIST})
 
 # Link Libraries
 target_link_libraries(dalek-manager "${LIBRARIES}")
+
+# Linter
+include(cmake/CppLint.cmake)
+add_style_check_target(dalek-manager "${SOURCES} ${HEADERS}")
 
