@@ -72,10 +72,8 @@ if (USE_LUA)
   add_subdirectory("${PROJECT_SOURCE_DIR}/Auton")
 endif (USE_LUA)
 
-# message("Sources: ${SOURCES}")
-
 # Library target
-string (REPLACE " " ";" SOURCES_LIST ${SOURCES})
+string (REPLACE " " ";" SOURCES_LIST "${SOURCES}")
 add_library(dalek-manager STATIC ${SOURCES_LIST})
 
 # Link Libraries

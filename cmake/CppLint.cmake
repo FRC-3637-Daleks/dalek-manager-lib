@@ -26,24 +26,17 @@ find_package(PythonInterp)
 set(STYLE_FILTER)
 
 # disable unwanted filters
- set(STYLE_FILTER ${STYLE_FILTER}-whitespace/semicolon,)
  set(STYLE_FILTER ${STYLE_FILTER}-whitespace/blank_line,)
- set(STYLE_FILTER ${STYLE_FILTER}-whitespace/operators,)
+ set(STYLE_FILTER ${STYLE_FILTER}-whitespace/tab,)
  set(STYLE_FILTER ${STYLE_FILTER}-whitespace/indent,)
- set(STYLE_FILTER ${STYLE_FILTER}-whitespace/comments,)
+ set(STYLE_FILTER ${STYLE_FILTER}-whitespace/braces,)
 
- set(STYLE_FILTER ${STYLE_FILTER}-build/include_order,)
  set(STYLE_FILTER ${STYLE_FILTER}-build/namespaces,)
- set(STYLE_FILTER ${STYLE_FILTER}-build/include_what_you_use,)
 
  set(STYLE_FILTER ${STYLE_FILTER}-readability/streams,)
-
- set(STYLE_FILTER ${STYLE_FILTER}-runtime/references,)
- set(STYLE_FILTER ${STYLE_FILTER}-runtime/int,)
- set(STYLE_FILTER ${STYLE_FILTER}-runtime/explicit,)
-
-# THESE SHOW LEGITAMITE WARNINGS WHICH SHOULD BE FIXED:
- set(STYLE_FILTER ${STYLE_FILTER}-runtime/printf,)
+ 
+ set(STYLE_FILTER ${STYLE_FILTER}-build/c++11,)
+ 
 
 # Add a target that runs cpplint.py
 #
@@ -72,7 +65,8 @@ function(add_style_check_target TARGET_NAME SOURCES_LIST0) # PROJECT)
 #    endif()
 #  endforeach()
 set(SOURCES_LIST ${SOURCES_LIST0}) # just use all files
-string (REPLACE " " ";" SOURCES_LIST ${SOURCES_LIST})
+
+string (REPLACE " " ";" SOURCES_LIST "${SOURCES_LIST}")
 
    message("LALALA SOURCES_LIST: ${TARGET_NAME}: ${SOURCES_LIST}")
   add_custom_target(lint_${TARGET_NAME}
@@ -80,7 +74,7 @@ string (REPLACE " " ";" SOURCES_LIST ${SOURCES_LIST})
             "${CMAKE_CURRENT_SOURCE_DIR}"
             "${PYTHON_EXECUTABLE}"
             "${CMAKE_SOURCE_DIR}/cmake/cpplint.py"
-#             "--filter=${STYLE_FILTER}"
+             "--filter=${STYLE_FILTER}"
             "--counting=detailed"
             "--extensions=cpp,hpp,h"
             "--linelength=80"
