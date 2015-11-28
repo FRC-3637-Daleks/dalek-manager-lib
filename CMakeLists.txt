@@ -76,6 +76,7 @@ endif (USE_LUA)
 string (REPLACE " " ";" SOURCES_LIST "${SOURCES}")
 add_library(dalek-manager STATIC ${SOURCES_LIST})
 
+message("Libraries being linked: ${LIBRARIES}")
 # Link Libraries
 target_link_libraries(dalek-manager "${LIBRARIES}")
 
