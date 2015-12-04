@@ -1,5 +1,7 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.0)
 project (dalek_manager_lib)
+
+# include(${CMAKE_TOOLCHAIN_FILE})
 
 # Custom Module Path
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
@@ -9,7 +11,7 @@ set (DMAN_VERSION_MAJOR "0")
 set (DMAN_VERSION_MINOR "1")
 
 # Compiler Settings
-set (CMAKE_CXX_COMPILER_ID GNU)
+# set (CMAKE_CXX_COMPILER_ID GNU)
 set (CMAKE_CXX_FLAGS "-std=c++1y")
 set (CMAKE_CXX_VERSION 4.9)
 
@@ -23,7 +25,7 @@ set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 configure_file ("${PROJECT_SOURCE_DIR}/ProjectConfig.h.in" "${PROJECT_SOURCE_DIR}/ProjectConfig.h" )
 
 # Add include directories
-include_directories("${PROJECT_SOURCE_DIR}")
+# include_directories("${PROJECT_SOURCE_DIR}")
 
 
 # Options which default to ON. Don't require external libraries
@@ -40,6 +42,7 @@ set (SOURCES)
 set (LIBRARIES)
 set (HEADERS)
 set (INCLUDES)
+set (INC_DIRS ${PROJECT_SOURCE_DIR})
 
 # Defines function for adding CPP Files in a directory to the SOURCES variable
 function(get_sources SOURCE_ARG SOURCE_HEADER_ARG INCLUDE_ARG)
@@ -52,6 +55,12 @@ function(get_sources SOURCE_ARG SOURCE_HEADER_ARG INCLUDE_ARG)
 endfunction(get_sources)
 
 # Subdirectories
+
+if (USE_WPILIB)
+  add_subdirectory("${PROJECT_SOURCE_DIR}/WPILib")
+  set (CMAKE_FIND_ROOT_PATH "${CMAKE_FIND_ROOT_PATH} /opt/")
+endif (USE_WPILIB)
+
 if (USE_LOG)
   add_subdirectory("${PROJECT_SOURCE_DIR}/Log")
 endif (USE_LOG)
@@ -64,21 +73,24 @@ if (USE_MQTT)
   add_subdirectory("${PROJECT_SOURCE_DIR}/MQTT")
 endif (USE_MQTT)
 
-if (USE_WPILIB)
-  add_subdirectory("${PROJECT_SOURCE_DIR}/WPILib")
-endif (USE_WPILIB)
-
 if (USE_LUA)
   add_subdirectory("${PROJECT_SOURCE_DIR}/Auton")
 endif (USE_LUA)
 
+message("${INC_DIRS}")
+include_directories ("${INC_DIRS}")
+
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach(dir ${dirs})
+  message(STATUS "dir='${dir}'")
+endforeach()
+
 # Library target
 string (REPLACE " " ";" SOURCES_LIST "${SOURCES}")
-add_library(dalek-manager STATIC ${SOURCES_LIST})
+add_library(dalek-manager SHARED ${SOURCES_LIST})
 
-message("Libraries being linked: ${LIBRARIES}")
 # Link Libraries
-target_link_libraries(dalek-manager "${LIBRARIES}")
+target_link_libraries(dalek-manager ${LIBRARIES})
 
 # Linter
 include(cmake/CppLint.cmake)

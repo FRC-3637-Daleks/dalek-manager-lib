@@ -38,6 +38,7 @@ const std::string LogData::MessageData::ToString() const
 
 	// Uses a stringstream to form the string representation
 	std::ostringstream ret(message_strings[message_type_]);
+
 	ret << ":" << verbosity_;
 
 	return ret.str();

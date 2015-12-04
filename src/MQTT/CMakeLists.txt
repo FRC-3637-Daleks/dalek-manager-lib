@@ -9,7 +9,7 @@ set (INCLUDES ${INCLUDES} ${local_includes} PARENT_SCOPE)
 
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/org.eclipse.mosquitto)
 set (local_libs ${LIBRARIES})
-list (APPEND local_libs libmosquitto libmosquittopp)
+list (APPEND local_libs libmosquitto mosquittopp)
 set (LIBRARIES ${local_libs} PARENT_SCOPE)
 
 # Using the above version since it will rebuild the library when cross-compiling
