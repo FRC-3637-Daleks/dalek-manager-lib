@@ -64,24 +64,41 @@ function(add_style_check_target TARGET_NAME SOURCES_LIST0) # PROJECT)
 #      endif()
 #    endif()
 #  endforeach()
-set(SOURCES_LIST ${SOURCES_LIST0}) # just use all files
+  set(SOURCES_LIST ${SOURCES_LIST0}) # just use all files
 
-string (REPLACE " " ";" SOURCES_LIST "${SOURCES_LIST}")
+  string (REPLACE " " ";" SOURCES_LIST "${SOURCES_LIST}")
 
-   message("LALALA SOURCES_LIST: ${TARGET_NAME}: ${SOURCES_LIST}")
-  add_custom_target(lint_${TARGET_NAME}
-    COMMAND "${CMAKE_COMMAND}" -E chdir
-            "${CMAKE_CURRENT_SOURCE_DIR}"
-            "${PYTHON_EXECUTABLE}"
-            "${CMAKE_SOURCE_DIR}/cmake/cpplint.py"
-             "--filter=${STYLE_FILTER}"
-            "--counting=detailed"
-            "--extensions=cpp,hpp,h"
-            "--linelength=80"
-#            "--project=${PROJECT}"
-            ${SOURCES_LIST}
-#   DEPENDS "${SOURCES_LIST}"
-    COMMENT "Linting ${TARGET_NAME}"
-    VERBATIM)
+  add_custom_target(lint_${TARGET_NAME} COMMENT "Linting ${TARGET_NAME}")
+  
+  foreach(item ${SOURCES_LIST})
+    if(item)
+      string(REGEX MATCH "[^/]+/[^./]+.(cpp|hpp|h)" item_target_name ${item})
+      string(REPLACE "/" "_" item_target_name "${item_target_name}")
+      
+      # Executes command into build cache
+      add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/lints/${item_target_name}.lint"
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/lints
+        COMMAND "${CMAKE_COMMAND}" -E chdir
+                "${CMAKE_CURRENT_SOURCE_DIR}"
+                "${PYTHON_EXECUTABLE}"
+                "${CMAKE_SOURCE_DIR}/cmake/cpplint.py"
+                "--filter=${STYLE_FILTER}"
+                "--counting=detailed"
+                "--extensions=cpp,hpp,h"
+                "--linelength=80"
+                ${item}
+                > ${PROJECT_BINARY_DIR}/lints/${item_target_name}.lint
+	   DEPENDS "${item}"
+	   COMMENT "Linting ${item}"
+	   VERBATIM)
+	   
+		add_custom_target(lint_${item_target_name}
+	                     DEPENDS ${PROJECT_BINARY_DIR}/lints/${item_target_name}.lint)
+	                     
+		add_dependencies(lint_${TARGET_NAME} lint_${item_target_name})
+	endif(item)
+  endforeach()
+    
+  add_dependencies (${TARGET_NAME} lint_${TARGET_NAME})
 
 endfunction()
