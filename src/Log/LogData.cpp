@@ -19,21 +19,26 @@
 
  */
 
+
+// Project Includes
+#include "LogData.h"
+
+// STD Includes
 #include <string>
 #include <sstream>
-#include "LogData.h"
 
 namespace dman
 {
 
-const std::string LogData::MessageData::ToString() const
+const std::string MessageData::ToString() const
 {
 	// Enum to string array only visible at function scope
 	static const char * message_strings[] = {
 		[STATUS] = "STATUS",
 		[INFO]   = "INFO",
 		[WARN]   = "WARN",
-		[ERROR]  = "ERROR"
+		[ERROR]  = "ERROR",
+		[FATAL]  = "FATAL"
 	};
 
 	// Uses a stringstream to form the string representation
@@ -44,18 +49,15 @@ const std::string LogData::MessageData::ToString() const
 	return ret.str();
 }
 
-const std::string LogData::SystemData::ToString() const
+const uint16_t MessageData::GetSeverity() const
+{
+	return get_message_type() << 8 | ~get_verbosity();
+}
+
+const std::string SystemData::ToString() const
 {
 	return system_+" \""+component_name_+"\":"+component_type_;
 }
 
-const std::string LogData::ToString() const
-{
-	std::ostringstream ret;
-	ret << timestamp_.count() << ": <" << message_data_.ToString() << ">";
-	ret << " [" << system_data_.ToString() << "]: " << message_;
-
-	return ret.str();
-}
 
 }  // namespace dman
