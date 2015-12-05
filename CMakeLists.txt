@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.0)
 project (dalek_manager_lib)
 
 # include(${CMAKE_TOOLCHAIN_FILE})
+set (DEFAULT_TOOLCHAIN ${CMAKE_TOOLCHAIN_FILE})
 
 # Custom Module Path
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
@@ -57,9 +58,19 @@ endfunction(get_sources)
 # Subdirectories
 
 if (USE_WPILIB)
+  message ("Using WPILIB")
+  # Modify toolchain and libraries
+  list (APPEND CMAKE_FIND_ROOT_PATH "/opt")
+  execute_process(COMMAND frc-cmake-toolchain OUTPUT_VARIABLE CMAKE_TOOLCHAIN_FILE)
   add_subdirectory("${PROJECT_SOURCE_DIR}/WPILib")
-  set (CMAKE_FIND_ROOT_PATH "${CMAKE_FIND_ROOT_PATH} /opt/")
+  
+else (USE_WPILIB)
+  set (CMAKE_TOOLCHAIN_FILE ${DEFAULT_TOOLCHAIN})
+  unset (CMAKE_FIND_ROOT_PATH)
 endif (USE_WPILIB)
+
+string (STRIP "${CMAKE_TOOLCHAIN_FILE}" CMAKE_TOOLCHAIN_FILE)
+include ("${CMAKE_TOOLCHAIN_FILE}")
 
 if (USE_LOG)
   add_subdirectory("${PROJECT_SOURCE_DIR}/Log")

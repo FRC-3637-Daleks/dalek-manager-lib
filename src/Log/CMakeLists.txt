@@ -5,6 +5,23 @@ set (SOURCES ${SOURCES} ${local_src} PARENT_SCOPE)
 set (HEADERS ${HEADERS} ${local_headers} PARENT_SCOPE)
 set (INCLUDES ${INCLUDES} ${local_includes} PARENT_SCOPE)
 
+unset (Boost_INCLUDE_DIR)
+unset (Boost_LIBRARY_DIR)
+unset (Boost_CXX_LIBRARY_DEBUG)
+unset (Boost_CXX_LIBRARY_RELEASE)
+unset (Boost_C_LIBRARY_DEBUG)
+unset (Boost_C_LIBRARY_RELEASE)
+unset (Boost_FOUND)
+unset (Boost_INCLUDE_DIRS)
+unset (Boost_LIBRARY_DIRS)
+unset (Boost_LIBRARIES)
+unset (BOOST_ROOT)
+unset (BOOST_INCLUDE_DIR)
+unset (BOOST_LIBRARYDIR)
+unset (Boost_DIR)
+
+#message("CMAKE_FIND_ROOT_PATH: ${CMAKE_FIND_ROOT_PATH}")
+
 find_package(Boost REQUIRED log)
 
 if(Boost_FOUND)
