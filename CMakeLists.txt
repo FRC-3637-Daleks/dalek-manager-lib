@@ -60,14 +60,18 @@ endfunction(get_sources)
 if (USE_WPILIB)
   message ("Using WPILIB")
   # Modify toolchain and libraries
-  list (APPEND CMAKE_FIND_ROOT_PATH "/opt")
   execute_process(COMMAND frc-cmake-toolchain OUTPUT_VARIABLE CMAKE_TOOLCHAIN_FILE)
   add_subdirectory("${PROJECT_SOURCE_DIR}/WPILib")
-  
 else (USE_WPILIB)
   set (CMAKE_TOOLCHAIN_FILE ${DEFAULT_TOOLCHAIN})
-  unset (CMAKE_FIND_ROOT_PATH)
 endif (USE_WPILIB)
+
+# Checks to see which libs to look up
+if (CMAKE_TOOLCHAIN_FILE)
+  list (APPEND CMAKE_FIND_ROOT_PATH "/opt")
+else (CMAKE_TOOLCHAIN_FILE)
+  unset (CMAKE_FIND_ROOT_PATH)
+endif (CMAKE_TOOLCHAIN_FILE)
 
 string (STRIP "${CMAKE_TOOLCHAIN_FILE}" CMAKE_TOOLCHAIN_FILE)
 include ("${CMAKE_TOOLCHAIN_FILE}")
