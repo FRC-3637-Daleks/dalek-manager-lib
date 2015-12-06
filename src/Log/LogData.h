@@ -96,6 +96,8 @@ private:
 class SystemData
 {
 public:
+	/// Allows implicit conversion from nullptr to the default constructed value
+	SystemData() {}
 	SystemData(const string& system,
 						const string& component_name,
 						const string& component_type):
