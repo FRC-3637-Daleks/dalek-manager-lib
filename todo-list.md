@@ -1,0 +1,19 @@
+- [ ] Text Logging
+  - [ ] Boost Log frontend interface
+- [ ] ValueSets
+- [ ] ConfigSets
+  - [ ] Specific Config sets for each of
+    - [ ] settings
+    - [ ] ports
+    - [ ] controls
+- [ ] Value Logging
+- [ ] MQTT integration
+  - [ ] MQTT Value publisher
+  - [ ] MQTT Subscribed Event Generator
+  - [ ] MQTT Remote Config Updater
+- [ ] WPILib integration
+  - [ ] Helper log set ups for wpilib objects
+  - [ ] Subsystem/Command framework frontend
+  - [ ] Helper config set ups for wpilib objects
+- [ ] Lua scripts
+  - [ ] Command registration in lua runtime environment
