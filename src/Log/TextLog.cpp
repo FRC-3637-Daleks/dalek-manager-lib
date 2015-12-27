@@ -22,6 +22,7 @@
 // Project Includes
 #include "TextLog.h"
 #include "LogAttributes.h"
+#include "ProjectConfig.h"
 
 // Boost Includes
 #include <boost/log/core.hpp>
@@ -98,6 +99,9 @@ void TextLog::Initialize()
 
 	core_->add_sink(clog_sink);
 
+	std::ostringstream mess("Started dalek-manager ");
+	mess << (VERSION_MAJOR) << '.' << (VERSION_MINOR);
+	Log(MessageData::INFO, mess.str());
 }
 
 void TextLog::Log(MessageData&& mess_data,
@@ -114,7 +118,7 @@ void TextLog::Log(MessageData&& mess_data,
 		tag::system_data::get_name(),
 		attributes::constant<tag::system_data::value_type>(std::move(sys_data)));
 
-	BOOST_LOG_SEV(slg, std::move(mess_data));
+	BOOST_LOG_SEV(slg, std::move(mess_data)) << message;
 }
 
 void TextLog::Log(MessageData&& mess_data, std::string&& message)
