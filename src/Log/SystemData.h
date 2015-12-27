@@ -40,12 +40,12 @@ class SystemData
 public:
 	/// Allows implicit conversion from nullptr to the default constructed value
 	SystemData(): SystemData("Logging", "", "SystemData") {}
-	SystemData(const string& system,
-						const string& component_name,
-						const string& component_type):
-						system_(system),
-						component_name_(component_name),
-						component_type_(component_type) {}
+	SystemData(string system,
+			   string component_name,
+			   string component_type):
+						system_(std::move(system)),
+						component_name_(std::move(component_name)),
+						component_type_(std::move(component_type)) {}
 	SystemData(const SystemData& other) = default;
 	SystemData(SystemData&& other) = default;
 

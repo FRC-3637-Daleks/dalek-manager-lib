@@ -104,9 +104,9 @@ void TextLog::Initialize()
 	Log(MessageData::INFO, mess.str());
 }
 
-void TextLog::Log(const MessageData& mess_data,
-			      const SystemData& sys_data,
-				  const std::string& message)
+void TextLog::Log(MessageData mess_data,
+			      SystemData sys_data,
+				  std::string message)
 {
 	using namespace boost::log;
 
@@ -114,16 +114,16 @@ void TextLog::Log(const MessageData& mess_data,
 	Core& core = GetCore();
 
 	text_logger slg;
-	slg.channel(sys_data);
+	slg.channel(std::move(sys_data));
 
-	BOOST_LOG_SEV(slg, mess_data) << message;
+	BOOST_LOG_SEV(slg, std::move(mess_data)) << std::move(message);
 }
 
-void TextLog::Log(const MessageData& mess_data, const std::string& message)
+void TextLog::Log(MessageData mess_data, std::string message)
 {
-	Log(mess_data,
+	Log(std::move(mess_data),
 		SystemData("Logging", "Logger", "TextLog"),
-		message);
+		std::move(message));
 }
 
 }  // namespace dman
