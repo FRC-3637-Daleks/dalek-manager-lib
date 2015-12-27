@@ -22,7 +22,7 @@
 #ifndef SRC_LOG_TEXTLOG_H_
 #define SRC_LOG_TEXTLOG_H_
 
-// Boost includes
+// Boost Includes
 #include <boost/log/core/core.hpp>
 
 // STD Includes
@@ -44,16 +44,16 @@ class TextLog
 {
 public:
 	/// Forwards boost log call
-	static void Log(MessageData&& message_data,
-					SystemData&& system_data,
+	static void Log(MessageData&& mess_data,
+					SystemData&& sys_data,
 					std::string&& message);
 
 private:
 	/// Log Core type
-	typedef boost::log::core Core;
+	using Core = boost::log::core;
 
 	/// Log Core Pointer Type
-	typedef boost::log::core_ptr CorePtr;
+	using CorePtr = boost::log::core_ptr;
 
 	/// Reference to boost's log core
 	static CorePtr core_;
@@ -67,7 +67,7 @@ private:
 	static void Initialize();
 
 	/// Logs for the logging core itself
-	static void Log(MessageData&& message_data, std::string&& message);
+	static void Log(MessageData&& mess_data, std::string&& message);
 };
 
 }  // namespace dman

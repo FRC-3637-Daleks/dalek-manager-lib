@@ -19,76 +19,18 @@
 
 */
 
-#ifndef SRC_LOG_LOGDATA_H_
-#define SRC_LOG_LOGDATA_H_
+#ifndef SRC_LOG_SYSTEMDATA_H_
+#define SRC_LOG_SYSTEMDATA_H_
 
-
-// Boost Includes
-#include <boost/log/sources/severity_channel_logger.hpp>
 
 // STD Includes
 #include <string>
-#include <chrono>
+#include <iostream>
 
 namespace dman
 {
 
 using std::string;
-
-
-/** Object which contains meta data on a per log basis.
- * Information contains type and importance of message.
- */
-class MessageData
-{
-public:
-	/// Specifies what kind of information is in the message
-	enum Message_t {
-		STATUS = 0,		///< Message is indicating a state change within the system
-		INFO,			///< Message is providing information about the system
-		WARN,			///< Message is warning user of potential conflict
-		ERROR,			///< Message is indicating a runtime error of some kind
-		FATAL			///< Message is indicating that the error should force program abort
-	};
-
-	/** Represents how important the information is. 
-	 * The greater the value the less important it is.
-	 */
-	typedef uint8_t Verbosity_t;
-
-public:
-	constexpr MessageData(const Message_t m, const Verbosity_t v = 0):
-		message_type_(m), verbosity_(v) {}
-	constexpr MessageData(const MessageData& other) = default;
-	constexpr MessageData(MessageData&& other) = default;
-
-public:
-	constexpr const Message_t get_message_type() const {return message_type_;}
-	constexpr const Verbosity_t get_verbosity() const {return verbosity_;}
-
-	/** Returns a string representation of the object used in the log text
-	 * Formatted as MessageType:Verbosity
-	 */
-	const string ToString() const;
-
-	/** Returns a comparable value representing how severe the log is.
-	 * The high word is the Messsage Type, the low word is the inverse Verbosity
-	 */
-	const uint16_t GetSeverity() const;
-
-public:
-	/// Implicit conversion to string
-	operator const string() const {return ToString();}
-
-	/// Implicit conversion to uint16_t
-	operator const uint16_t() const {return GetSeverity();}
-
-private:
-	Message_t message_type_;   ///< Type of the message
-	Verbosity_t verbosity_;    ///< Verbosity of the message
-};
-
-
 
 /** Object which contains meta data for a component a log is describing
  * Information contains hierarchy: SystemName "ComponentName":ComponentType
@@ -136,13 +78,9 @@ private:
 	string component_type_;
 };
 
-// Custom Logger typedefs for convenience
-using text_logger =
-    boost::log::sources::severity_channel_logger<MessageData, SystemData>;
-
-using text_logger_mt =
-    boost::log::sources::severity_channel_logger_mt<MessageData, SystemData>;
+/// Formatter for SystemData
+std::ostream& operator<< (std::ostream& strm, const SystemData &data);
 
 }  // namespace dman
 
-#endif  // SRC_LOG_LOGDATA_H_
+#endif  // SRC_LOG_SYSTEMDATA_H_
