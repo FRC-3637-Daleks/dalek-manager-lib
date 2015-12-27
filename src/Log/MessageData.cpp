@@ -42,7 +42,8 @@ std::ostream& operator<<(std::ostream& strm, const MessageData &data)
 		[MessageData::FATAL]  = "FATAL"
 	};
 
-	strm << data.get_message_type() << ":" << data.get_verbosity();
+	strm << message_strings[data.get_message_type()] << ":"
+		<< int(data.get_verbosity());
 
 	return strm;
 }

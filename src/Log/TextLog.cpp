@@ -92,21 +92,21 @@ void TextLog::Initialize()
 	(
 		expressions::stream <<
 	    std::setw(8) << std::setfill('0') << line_id.or_none() <<
-		": [" << system_data.or_none() << "] <" <<
-		message_data.or_none() << "> " <<
+		": [" << system_data.or_throw() << "] <" <<
+		message_data.or_throw() << "> " <<
 		expressions::message
 	);
 
 	core_->add_sink(clog_sink);
 
-	std::ostringstream mess("Started dalek-manager ");
-	mess << (VERSION_MAJOR) << '.' << (VERSION_MINOR);
+	std::ostringstream mess;
+	mess << "Started dalek-manager " << (VERSION_MAJOR) << '.' << (VERSION_MINOR);
 	Log(MessageData::INFO, mess.str());
 }
 
-void TextLog::Log(MessageData&& mess_data,
-						 SystemData&& sys_data,
-						 std::string&& message)
+void TextLog::Log(const MessageData& mess_data,
+			      const SystemData& sys_data,
+				  const std::string& message)
 {
 	using namespace boost::log;
 
@@ -114,18 +114,16 @@ void TextLog::Log(MessageData&& mess_data,
 	Core& core = GetCore();
 
 	text_logger slg;
-	slg.add_attribute(
-		tag::system_data::get_name(),
-		attributes::constant<tag::system_data::value_type>(std::move(sys_data)));
+	slg.channel(sys_data);
 
-	BOOST_LOG_SEV(slg, std::move(mess_data)) << message;
+	BOOST_LOG_SEV(slg, mess_data) << message;
 }
 
-void TextLog::Log(MessageData&& mess_data, std::string&& message)
+void TextLog::Log(const MessageData& mess_data, const std::string& message)
 {
-	Log(std::move(mess_data),
+	Log(mess_data,
 		SystemData("Logging", "Logger", "TextLog"),
-		std::move(message));
+		message);
 }
 
 }  // namespace dman

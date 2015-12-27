@@ -38,7 +38,7 @@ const std::string SystemData::ToString() const
 
 std::ostream& operator<< (std::ostream& strm, const SystemData &data)
 {
-	return strm << data;
+	return strm << data.ToString();
 }
 
 }  // namespace dman

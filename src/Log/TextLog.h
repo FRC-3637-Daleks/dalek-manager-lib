@@ -44,9 +44,9 @@ class TextLog
 {
 public:
 	/// Forwards boost log call
-	static void Log(MessageData&& mess_data,
-					SystemData&& sys_data,
-					std::string&& message);
+	static void Log(const MessageData& mess_data,
+					const SystemData& sys_data,
+					const std::string& message);
 
 private:
 	/// Log Core type
@@ -67,7 +67,7 @@ private:
 	static void Initialize();
 
 	/// Logs for the logging core itself
-	static void Log(MessageData&& mess_data, std::string&& message);
+	static void Log(const MessageData& mess_data, const std::string& message);
 };
 
 }  // namespace dman
