@@ -81,7 +81,7 @@ void TextLog::Initialize()
 								attributes::counter<tag::line_id::value_type>(0, 1));
 	// core_->add_global_attribute("Uptime", attributes::timer());
 
-	typedef sinks::synchronous_sink< sinks::text_ostream_backend > text_sink;
+	using text_sink = sinks::synchronous_sink< sinks::text_ostream_backend >;
 	boost::shared_ptr< text_sink > clog_sink = boost::make_shared< text_sink >();
 
 	/// Create standard output stream log
