@@ -55,9 +55,4 @@ const std::string MessageData::ToString() const
 	return ret.str();
 }
 
-const uint16_t MessageData::GetSeverity() const
-{
-	return get_message_type() << 8 | ~get_verbosity();
-}
-
 }  // namespace dman

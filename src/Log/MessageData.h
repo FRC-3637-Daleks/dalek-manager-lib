@@ -72,14 +72,17 @@ public:
 	/** Returns a comparable value representing how severe the log is.
 	 * The high word is the Messsage Type, the low word is the inverse Verbosity
 	 */
-	const uint16_t GetSeverity() const;
+	constexpr const uint16_t GetSeverity() const
+	{
+		return get_message_type() << 8 | ~get_verbosity();
+	}
 
 public:
 	/// Implicit conversion to string
 	operator const string() const {return ToString();}
 
 	/// Implicit conversion to uint16_t
-	operator const uint16_t() const {return GetSeverity();}
+	constexpr operator const uint16_t() const {return GetSeverity();}
 
 private:
 	Message_t message_type_;   ///< Type of the message
