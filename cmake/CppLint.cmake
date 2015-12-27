@@ -75,7 +75,7 @@ function(add_style_check_target TARGET_NAME SOURCES_LIST0) # PROJECT)
   
   foreach(item ${SOURCES_LIST})
     if(item)
-      string(REGEX MATCH "[^/]+/[^./]+.(cpp|hpp|h)" item_target_name ${item})
+      string(REGEX MATCH "[^/]+/[^./]+\\.(cpp|hpp|h)" item_target_name ${item})
       string(REPLACE "/" "_" item_target_name "${item_target_name}")
       
       # Executes command into build cache
