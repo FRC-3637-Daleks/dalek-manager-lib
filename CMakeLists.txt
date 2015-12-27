@@ -111,6 +111,9 @@ target_link_libraries(dalek-manager ${LIBRARIES})
 include(cmake/CppLint.cmake)
 add_style_check_target(dalek-manager "${SOURCES} ${HEADERS}")
 
-# Tests
-include (test/TextLog/test.cmake)
-include (test/LogAttributes/test.cmake)
+# Tester
+include (cmake/CppTest.cmake)
+file (GLOB TEST_SOURCE_FILES "${CMAKE_SOURCE_DIR}/tests/*.cpp")
+foreach (SOURCE_FILE ${TEST_SOURCE_FILES})
+  create_test_target(${SOURCE_FILE})
+endforeach()

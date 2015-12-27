@@ -5,3 +5,5 @@ build/
 cmake_install.cmake
 .in
 clear_cache.sh
+Test*
+!tests/Test*.cpp
