@@ -42,7 +42,6 @@
 #include <utility>
 #include <stdexcept>
 #include <iostream>
-#include <iomanip>
 
 
 namespace dman
@@ -90,11 +89,7 @@ void TextLog::Initialize()
 
 	clog_sink->set_formatter
 	(
-		expressions::stream <<
-	    std::setw(8) << std::setfill('0') << line_id.or_none() <<
-		": [" << system_data.or_throw() << "] <" <<
-		message_data.or_throw() << "> " <<
-		expressions::message
+		default_log_format
 	);
 
 	core_->add_sink(clog_sink);

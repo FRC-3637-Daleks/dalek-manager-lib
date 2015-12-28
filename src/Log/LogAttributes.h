@@ -31,6 +31,10 @@
 #include <boost/log/sources/severity_channel_logger.hpp>
 #include <boost/log/expressions/keyword_fwd.hpp>
 #include <boost/log/expressions/keyword.hpp>
+#include <boost/log/expressions.hpp>
+
+// STD Includes
+#include <iomanip>
 
 namespace dman
 {
@@ -39,6 +43,14 @@ namespace dman
 BOOST_LOG_ATTRIBUTE_KEYWORD(line_id, "LineID", unsigned int)
 BOOST_LOG_ATTRIBUTE_KEYWORD(message_data, "Severity", MessageData)
 BOOST_LOG_ATTRIBUTE_KEYWORD(system_data, "Channel", SystemData)
+
+/// Default format used by sinks
+auto default_log_format =
+		boost::log::expressions::stream <<
+		std::setw(8) << std::setfill('0') << line_id.or_none() <<
+		": [" << system_data.or_throw() << "] <" <<
+		message_data.or_throw() << "> " <<
+		boost::log::expressions::message;
 
 /// Custom Logger alias for convenience
 using text_logger =
