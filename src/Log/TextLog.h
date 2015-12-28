@@ -22,6 +22,9 @@
 #ifndef SRC_LOG_TEXTLOG_H_
 #define SRC_LOG_TEXTLOG_H_
 
+// Project Includes
+#include "StreamHandle.h"
+
 // Boost Includes
 #include <boost/log/core/core.hpp>
 
@@ -44,9 +47,12 @@ class TextLog
 {
 public:
 	/// Forwards boost log call
-	static void Log(MessageData mess_data,
+	static void Log(const MessageData &mess_data,
 					SystemData sys_data,
 					std::string message);
+
+	/// Returns StremHandle set to forward boost log call on destruction
+	static StreamHandle Log(const MessageData &mess_data, SystemData sys_data);
 
 private:
 	/// Log Core type
@@ -67,7 +73,10 @@ private:
 	static void Initialize();
 
 	/// Logs for the logging core itself
-	static void Log(MessageData mess_data, std::string message);
+	static void Log(const MessageData &mess_data, std::string message);
+
+	/// StreamHanlde interface for logging of logging core itself
+	static StreamHandle Log(const MessageData &mess_data);
 };
 
 }  // namespace dman

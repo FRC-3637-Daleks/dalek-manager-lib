@@ -99,12 +99,11 @@ void TextLog::Initialize()
 
 	core_->add_sink(clog_sink);
 
-	std::ostringstream mess;
-	mess << "Started dalek-manager " << (VERSION_MAJOR) << '.' << (VERSION_MINOR);
-	Log(MessageData::INFO, mess.str());
+	Log(MessageData::INFO) << "Starting dalek-manager " <<
+							  VERSION_MAJOR << '.' << VERSION_MINOR;
 }
 
-void TextLog::Log(MessageData mess_data,
+void TextLog::Log(const MessageData &mess_data,
 			      SystemData sys_data,
 				  std::string message)
 {
@@ -116,14 +115,33 @@ void TextLog::Log(MessageData mess_data,
 	text_logger slg;
 	slg.channel(std::move(sys_data));
 
-	BOOST_LOG_SEV(slg, std::move(mess_data)) << std::move(message);
+	BOOST_LOG_SEV(slg, mess_data) << std::move(message);
 }
 
-void TextLog::Log(MessageData mess_data, std::string message)
+StreamHandle TextLog::Log(const MessageData &mess_data, SystemData sys_data)
 {
-	Log(std::move(mess_data),
+	// Lambda calls other log function
+	auto flush_fn = [mess_data = mess_data,
+					 sys_data = std::move(sys_data)
+	]
+					 (std::string message)
+	{
+		TextLog::Log(mess_data, sys_data, message);
+	};
+
+	return StreamHandle(flush_fn);
+}
+
+void TextLog::Log(const MessageData &mess_data, std::string message)
+{
+	Log(mess_data,
 		SystemData("Logging", "Logger", "TextLog"),
 		std::move(message));
+}
+
+StreamHandle TextLog::Log(const MessageData &mess_data)
+{
+	return Log(std::move(mess_data), SystemData("Logging", "Logger", "TextLog"));
 }
 
 }  // namespace dman

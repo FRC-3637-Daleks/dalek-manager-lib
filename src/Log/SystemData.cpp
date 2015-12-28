@@ -31,7 +31,7 @@
 namespace dman
 {
 
-const std::string SystemData::ToString() const
+std::string SystemData::ToString() const
 {
 	return system_+" \""+component_name_+"\":"+component_type_;
 }

@@ -50,16 +50,16 @@ public:
 	SystemData(SystemData&& other) = default;
 
 public:
-	const string get_system() const {return system_;}
-	const string get_component_name() const {return component_name_;}
-	const string get_component_type() const {return component_type_;}
+	string get_system() const {return system_;}
+	string get_component_name() const {return component_name_;}
+	string get_component_type() const {return component_type_;}
 
 	/// Returns a string representation of the object used in the log text
-	const string ToString() const;
+	string ToString() const;
 
 public:
 	/// Implicit conversion to string
-	operator const string() const {return ToString();}
+	operator string() const {return std::move(ToString());}
 
 private:
 	/** Subsystem path

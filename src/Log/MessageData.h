@@ -56,33 +56,31 @@ public:
 	constexpr MessageData(const Message_t m, const Verbosity_t v = 0):
 		message_type_(m), verbosity_(v) {}
 	constexpr MessageData(const MessageData& other) = default;
-	constexpr MessageData(MessageData&& other) = default;
 	MessageData& operator= (const MessageData& other) = default;
-	MessageData& operator= (MessageData&& other) = default;
 
 public:
-	constexpr const Message_t get_message_type() const {return message_type_;}
-	constexpr const Verbosity_t get_verbosity() const {return verbosity_;}
+	constexpr Message_t get_message_type() const {return message_type_;}
+	constexpr Verbosity_t get_verbosity() const {return verbosity_;}
 
 	/** Returns a string representation of the object used in the log text
 	 * Formatted as MessageType:Verbosity
 	 */
-	const string ToString() const;
+	string ToString() const;
 
 	/** Returns a comparable value representing how severe the log is.
 	 * The high word is the Messsage Type, the low word is the inverse Verbosity
 	 */
-	constexpr const uint16_t GetSeverity() const
+	constexpr uint16_t GetSeverity() const
 	{
 		return get_message_type() << 8 | ~get_verbosity();
 	}
 
 public:
 	/// Implicit conversion to string
-	operator const string() const {return ToString();}
+	operator string() const {return ToString();}
 
 	/// Implicit conversion to uint16_t
-	constexpr operator const uint16_t() const {return GetSeverity();}
+	constexpr operator uint16_t() const {return GetSeverity();}
 
 private:
 	Message_t message_type_;   ///< Type of the message

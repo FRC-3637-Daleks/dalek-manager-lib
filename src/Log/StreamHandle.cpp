@@ -19,40 +19,55 @@
 
  */
 
-
 // Project Includes
-#include "MessageData.h"
+#include "StreamHandle.h"
 
 // STD Includes
 #include <string>
 #include <sstream>
-#include <iostream>
+#include <functional>
+#include <memory>
+#include <stdexcept>
 
 namespace dman
 {
 
-std::ostream& operator<<(std::ostream& strm, const MessageData &data)
+StreamHandle& StreamHandle::operator= (StreamHandle other)
 {
-	// Enum to string array only visible at function scope
-	static const char * message_strings[] = {
-		[MessageData::STATUS] = "STATUS",
-		[MessageData::INFO]   = "INFO",
-		[MessageData::WARN]   = "WARN",
-		[MessageData::ERROR]  = "ERROR",
-		[MessageData::FATAL]  = "FATAL"
-	};
+	// Perform assignmnet using copy-and swap idiom
+	fn_.swap(other.fn_);
+	buffer_.swap(other.buffer_);
 
-	strm << message_strings[data.get_message_type()] << ":"
-		<< int(data.get_verbosity());
-
-	return strm;
+	// Other should call the Flush for *this's previous contents
+	return *this;
 }
 
-std::string MessageData::ToString() const
+StreamHandle::~StreamHandle()
 {
-	std::ostringstream ret;
-	ret << *this;
-	return ret.str();
+	if(buffer_)
+		Flush();
+}
+
+void StreamHandle::Flush()
+{
+	/// Executes the flush
+	fn_(GetCurrentOutput());
+
+	/* This will transfer ownership to a local variable 
+	* which will destruct at function end
+	*/
+	auto bufferToDelete = std::move(buffer_);
+}
+
+StreamHandle::Buffer_t& StreamHandle::GetBuffer() const
+{
+	if(buffer_ == nullptr)
+	{
+		throw std::runtime_error(
+			"StreamHandle: Illegal attempt to access internal buffer "
+			"which has been flushed or is otherwise in an invalid state");
+	}
+	return *buffer_;
 }
 
 }  // namespace dman
