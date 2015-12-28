@@ -122,8 +122,7 @@ StreamHandle TextLog::Log(const MessageData &mess_data, SystemData sys_data)
 {
 	// Lambda calls other log function
 	auto flush_fn = [mess_data = mess_data,
-					 sys_data = std::move(sys_data)
-	]
+					 sys_data = std::move(sys_data)]
 					 (std::string message)
 	{
 		TextLog::Log(mess_data, sys_data, message);

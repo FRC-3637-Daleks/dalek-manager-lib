@@ -72,10 +72,10 @@ public:
 	 * @exception std::runtime_error The StreamHandle was already flushed
 	 */
 	template<typename T>
-	StreamHandle& operator<< (T&& rhs)
+	StreamHandle&& operator<< (T&& rhs)
 	{
 		GetBuffer() << std::forward<T>(rhs);
-		return *this;
+		return std::move(*this);
 	}
 
 	/** Manually flush the contents of the buffer

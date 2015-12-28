@@ -5,7 +5,16 @@ using namespace dman;
 
 int main(int argc, char **argv)
 {
-	TextLog::Log(MessageData::INFO, SystemData("Tester", "", "")) << "StreamHandle test successful";
-	TextLog::Log(MessageData::STATUS, SystemData("Tester", "", ""), "TextLog test successful!");
+	const SystemData sys_data("Tester", "main", "function");
+	TextLog::Log(MessageData::INFO, sys_data) << "StreamHandle test successful";
+	TextLog::Log(MessageData::STATUS, sys_data, "TextLog test successful!");
+	
+	auto strmA = TextLog::Log(MessageData::INFO, sys_data) << "This should flush ";
+	auto strmB = TextLog::Log(MessageData::INFO, sys_data) << "This should flush ";
+	
+	(strmB << "first").Flush();
+	strmA << "sec";
+	strmA << "ond";
+	
 	return 0;
 }
