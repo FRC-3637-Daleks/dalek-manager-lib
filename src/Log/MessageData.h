@@ -50,7 +50,7 @@ public:
 	/** Represents how important the information is. 
 	 * The greater the value the less important it is.
 	 */
-	using Verbosity_t = uint8_t;
+	using Verbosity_t = int8_t;
 
 public:
 	constexpr MessageData(const Message_t m, const Verbosity_t v = 0):
