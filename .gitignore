@@ -7,3 +7,4 @@ cmake_install.cmake
 clear_cache.sh
 Test*
 !tests/Test*.cpp
+ProjectConfig.h
