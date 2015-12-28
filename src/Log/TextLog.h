@@ -30,6 +30,7 @@
 
 // STD Includes
 #include <string>
+#include <functional>
 
 namespace dman
 {
@@ -52,6 +53,9 @@ public:
 	/// Log Sink Pointer Type
 	using SinkPtr = boost::shared_ptr<Sink>;
 
+	/// SimpleSink functor type
+	using SimpleSinkFn = std::function<void(std::string)>;
+
 	/// Forwards boost log call
 	static void Log(const MessageData &mess_data,
 					SystemData sys_data,
@@ -62,6 +66,9 @@ public:
 
 	/// Adds Sink to core
 	static void AddSink(const SinkPtr& sink);
+
+	/// Adds Simple Sink to core, a functor which will put a string somewhere
+	static void AddSimpleSink(SimpleSinkFn sink_fn);
 
 private:
 	/// Log Core type

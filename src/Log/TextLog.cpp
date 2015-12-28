@@ -43,6 +43,9 @@
 #include <stdexcept>
 #include <iostream>
 
+// Implementation Includes
+#include "SimpleSink.impl"
+
 
 namespace dman
 {
@@ -81,7 +84,7 @@ void TextLog::Initialize()
 	// core_->add_global_attribute("Uptime", attributes::timer());
 
 	using text_sink = sinks::synchronous_sink< sinks::text_ostream_backend >;
-	boost::shared_ptr< text_sink > clog_sink = boost::make_shared< text_sink >();
+	auto clog_sink = boost::make_shared< text_sink >();
 
 	/// Create standard output stream log
 	clog_sink->locked_backend()->add_stream(
@@ -97,6 +100,27 @@ void TextLog::Initialize()
 	Log(MessageData::INFO) << "Starting dalek-manager " <<
 							  VERSION_MAJOR << '.' << VERSION_MINOR <<
 							  " (git-rev: " << GIT_REV << ")";
+}
+
+void TextLog::AddSink(const TextLog::SinkPtr& sink)
+{
+	if(sink)
+		GetCore().add_sink(sink);
+}
+
+void TextLog::AddSimpleSink(TextLog::SimpleSinkFn sink_fn)
+{
+	using namespace boost::log;
+
+	using sink_type = sinks::synchronous_sink< SimpleSinkWrapper >;
+	auto sink = boost::make_shared< sink_type>(sink_fn);
+
+	sink->set_formatter
+	(
+		default_log_format
+	);
+
+	AddSink(sink);
 }
 
 void TextLog::Log(const MessageData &mess_data,
