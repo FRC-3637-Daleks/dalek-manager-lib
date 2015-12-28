@@ -15,6 +15,16 @@ int main(int argc, char **argv)
 	(strmB << "first").Flush();
 	strmA << "sec";
 	strmA << "ond";
+
+	try
+	{
+		strmB.Flush();
+	}
+	catch (std::runtime_error &e)
+	{
+		TextLog::Log(MessageData::ERROR, sys_data) << 
+			"Double flushing resulted in: " << e.what();
+	}
 	
 	return 0;
 }
