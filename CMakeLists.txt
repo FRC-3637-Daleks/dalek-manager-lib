@@ -10,6 +10,9 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 # Version Number
 set (DMAN_VERSION_MAJOR "0")
 set (DMAN_VERSION_MINOR "1")
+execute_process(COMMAND git rev-parse HEAD OUTPUT_VARIABLE DMAN_GIT_REV)
+string (STRIP ${DMAN_GIT_REV} DMAN_GIT_REV)
+set (DMAN_GIT_REV "\"${DMAN_GIT_REV}\"")
 
 # Compiler Settings
 # set (CMAKE_CXX_COMPILER_ID GNU)

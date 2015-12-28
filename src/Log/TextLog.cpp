@@ -95,7 +95,8 @@ void TextLog::Initialize()
 	core_->add_sink(clog_sink);
 
 	Log(MessageData::INFO) << "Starting dalek-manager " <<
-							  VERSION_MAJOR << '.' << VERSION_MINOR;
+							  VERSION_MAJOR << '.' << VERSION_MINOR <<
+							  " (git-rev: " << GIT_REV << ")";
 }
 
 void TextLog::Log(const MessageData &mess_data,

@@ -46,6 +46,12 @@ class SystemData;
 class TextLog
 {
 public:
+	/// Log Sink type
+	using Sink = boost::log::sinks::sink;
+
+	/// Log Sink Pointer Type
+	using SinkPtr = boost::shared_ptr<Sink>;
+
 	/// Forwards boost log call
 	static void Log(const MessageData &mess_data,
 					SystemData sys_data,
@@ -53,6 +59,9 @@ public:
 
 	/// Returns StremHandle set to forward boost log call on destruction
 	static StreamHandle Log(const MessageData &mess_data, SystemData sys_data);
+
+	/// Adds Sink to core
+	static void AddSink(const SinkPtr& sink);
 
 private:
 	/// Log Core type
