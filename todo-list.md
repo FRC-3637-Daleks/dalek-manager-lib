@@ -1,5 +1,5 @@
-- [ ] Text Logging
-  - [ ] Boost Log frontend interface
+- [x] Text Logging
+  - [x] Boost Log frontend interface
 - [ ] ValueSets
 - [ ] ConfigSets
   - [ ] Specific Config sets for each of
