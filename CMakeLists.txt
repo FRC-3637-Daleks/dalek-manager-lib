@@ -28,6 +28,13 @@ set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 # Configure header file to pass in cmake settings
 configure_file ("${PROJECT_SOURCE_DIR}/ProjectConfig.h.in" "${PROJECT_SOURCE_DIR}/ProjectConfig.h" )
 
+# Configure Doxyfile for documentation generation
+configure_file ("Doxyfile.in" "Doxyfile")
+add_custom_target (doc
+			doxygen Doxyfile
+			COMMENT "Generating API documentation with Doxygen" VERBATIM
+)
+
 # Add include directories
 # include_directories("${PROJECT_SOURCE_DIR}")
 

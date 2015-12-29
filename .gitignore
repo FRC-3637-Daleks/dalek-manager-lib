@@ -8,3 +8,5 @@ clear_cache.sh
 Test*
 !tests/Test*.cpp
 ProjectConfig.h
+Doxyfile
+doc/
