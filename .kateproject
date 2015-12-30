@@ -1,0 +1,12 @@
+{
+	"name": "dalek-manager",
+	"files": [{"git": 1}],
+	"build":
+	{
+		"directory": "build",
+		"build": "make",
+		"clean": "make clean",
+		"config": 'cmake -G "Unix Makefiles"',
+		"docs": "make doc"
+	}
+}
