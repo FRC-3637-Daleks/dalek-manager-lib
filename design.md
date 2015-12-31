@@ -141,12 +141,12 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
 
 #### `ValuableBase`
  - `value - boost::any` - will always contain some form of std::atomic<T>
- - `get<T>() - T, protected` - returns value
- - `set<T>(T), protected` - sets value
- - `GetAddr<T>() - const std::atomic<T> *` - returns address of internal value
+ - `ValuableBase(T val)` - will initialize the internal type
+ - `GetAddr<T>() - const std::atomic<T> *` - returns address of internal value. Throws if internal type mismatches
 
 #### `Valuable<T>`
  - extends `ValuableBase`, `Gettable`
+ - value_ref - std::atomic<T>&
  - `Get() - T, final` - returns get<T> of base
 
 #### `Reference<T>`
