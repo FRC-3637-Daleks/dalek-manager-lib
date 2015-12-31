@@ -139,19 +139,15 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
 #### `Updateable`
  - `Update(), pure virtual`
 
-#### `Valuable<T>`
- - extends `Gettable<T>`
- - `value - std::atomic<T>` - must ensure thread safety
- - `Get() - T, final` - returns value
- - `set(T), protected`
- - `GetAddr() - const T *` - returns address of value
+#### `ValuableBase`
+ - `value - boost::any` - will always contain some form of std::atomic<T>
+ - `get<T>() - T, protected` - returns value
+ - `set<T>(T), protected` - sets value
+ - `GetAddr<T>() - const std::atomic<T> *` - returns address of internal value
 
-#### `Valuable<string>`
- - extends `Gettable<string>`
- - `value - string`
- - `r, w - mutex`
- - `Get() - T, final` - waits for w. locks r.
- - `set(T), protected` - waits for w and r. locks w.
+#### `Valuable<T>`
+ - extends `ValuableBase`, `Gettable`
+ - `Get() - T, final` - returns get<T> of base
 
 #### `Reference<T>`
  - extends `Gettable<T>`
