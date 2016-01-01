@@ -139,15 +139,11 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
 #### `Updateable`
  - `Update(), pure virtual`
 
-#### `ValuableBase`
- - `value - boost::any` - will always contain some form of std::atomic<T>
- - `get<T>() - T, protected` - returns value
- - `set<T>(T), protected` - sets value
- - `GetAddr<T>() - const std::atomic<T> *` - returns address of internal value
-
 #### `Valuable<T>`
- - extends `ValuableBase`, `Gettable`
- - `Get() - T, final` - returns get<T> of base
+ - extends `Gettable<T>`
+ - `value - std::atomic<T>`
+ - `set(T), protected` - sets value
+ - `Get() - T, final` - returns value
 
 #### `Reference<T>`
  - extends `Gettable<T>`
@@ -193,12 +189,13 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
  - `thread` - Calls `Update` every period
  - `default_thread - UpdateThread *, static`
 
-#### `ValueStore<T>`
+#### `ValueStore`
  - `default - ValueStore<T> *, static`
- - `values - map<string, Valuable<T> *>`
+ - `values - map<string, boost::any>`
  - `mutex r, w`
- - `Value`
-   - `obj - pair<string, Valuable<T> *> *` - Points to the string, value pair in the parent ValueStore
+ - `Value<T>`
+   - `key - string` - Key value of this value
+   - `obj - Valuable<T> **` - Pointer to pointer to the internal data
    - `setter[=null] - Settable<T> *`
    - `GetKey() - string`
    - `GetValue() - T`
@@ -207,9 +204,9 @@ inspired by DiagRoboRIO, these classes consist of a framework for building a rea
    - `Initialize(obj - Pollable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)` - Calls above function and adds the Updateable part of the object to the specified UpdateThread at the same key.
    - `Initialize(obj - Settable<T> *)` - Calls the override with Gettable but also stores the setter.
    - `Release() - Valuable<T> *` - This will set the mapped value and setter to null and return what was in there.
- - `Get(key - string) - Value` - Returns and, if needed, creates a mapped object at `key`
- - `Initialize(key - string, obj - Valuable<T> *)`
- - `Initialize(key - string, obj - Valuable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)`
+ - `Get<T>(key - string) - Value<T>` - Returns and, if needed, creates a mapped object at `key`
+ - `Initialize<T>(key - string, obj - Valuable<T> *)`
+ - `Initialize<T>(key - string, obj - Valuable<T> *, updateStore = UpdateStore::default_store - UpdateStore*)`
 
 ### Logs
 
