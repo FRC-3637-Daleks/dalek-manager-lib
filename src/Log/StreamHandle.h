@@ -86,7 +86,7 @@ public:
 	/// Return current content of stream
 	std::string GetCurrentOutput() const
 	{
-		return std::move(GetBuffer().str());
+		return GetBuffer().str();
 	}
 
 private:

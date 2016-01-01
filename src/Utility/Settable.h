@@ -19,47 +19,27 @@
 
  */
 
-#ifndef SRC_LOG_SIMPLESINK_H_
-#define SRC_LOG_SIMPLESINK_H_
-
-// Project Includes
-#include "LogAttributes.h"
-
-// Boost Includes
-#include <boost/log/sinks/basic_sink_backend.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-
-// STD Includes
-#include <string>
-#include <functional>
+#ifndef SRC_UTILITY_SETTABLE_H_
+#define SRC_UTILITY_SETTABLE_H_
 
 namespace dman
 {
 
-/** Used by TextLog when adding a SimpleSink
+/** Abstract interface for an object which exposes an underlying T value through Set(T)
+ * Defines a polymorphic interface for Set(), allowing this to be stored in a list of
+ * objects for which the Set function is supported
  */
-class SimpleSinkWrapper: 
-	public boost::log::sinks::basic_formatted_sink_backend<
-		char,
-		boost::log::sinks::synchronized_feeding
-	>
+template<typename T>
+class Settable
 {
 public:
-	using Func_t = std::function<void(string)>;
+	virtual ~Settable() = default;
 
 public:
-	SimpleSinkWrapper(Func_t fn): fn_(std::move(fn)) {}
-
-public:
-	void consume(const boost::log::record_view& rec, const string_type& formatted_str)
-	{
-		fn_(formatted_str);
-	}
-
-private:
-	Func_t fn_;
+	/// Assigns underlying value.
+	virtual void Set(T&& val) = 0;
 };
 
 }  // namespace dman
 
-#endif  // SRC_LOG_SIMPLESINK_H_
+#endif  // SRC_UTILITY_SETTABLE_H_

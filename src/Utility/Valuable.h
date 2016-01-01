@@ -19,47 +19,59 @@
 
  */
 
-#ifndef SRC_LOG_SIMPLESINK_H_
-#define SRC_LOG_SIMPLESINK_H_
+#ifndef SRC_UTILITY_VALUABLE_H_
+#define SRC_UTILITY_VALUABLE_H_
 
 // Project Includes
-#include "LogAttributes.h"
-
-// Boost Includes
-#include <boost/log/sinks/basic_sink_backend.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
+#include "Gettable.h"
 
 // STD Includes
-#include <string>
-#include <functional>
+#include <atomic>
+#include <utility>
 
 namespace dman
 {
 
-/** Used by TextLog when adding a SimpleSink
+/** Holds and maintains a threadsafe interface for a value of type T
  */
-class SimpleSinkWrapper: 
-	public boost::log::sinks::basic_formatted_sink_backend<
-		char,
-		boost::log::sinks::synchronized_feeding
-	>
+template<typename T>
+class Valuable: public Gettable<T>
 {
 public:
-	using Func_t = std::function<void(string)>;
+	/// Default constructor
+	Valuable() = default;
+
+	/// Perfect forward constructs
+	Valuable(T&& val): value_(std::forward<T>(val)) {}
+
+	/// Copy Constructor
+	Valuable(const Valuable<T>& other) = default;
+
+	/// Move Constructor
+	Valuable(Valuable<T>&& other) = default;
+
+	/// Destructor
+	virtual ~Valuable() = default;
 
 public:
-	SimpleSinkWrapper(Func_t fn): fn_(std::move(fn)) {}
-
-public:
-	void consume(const boost::log::record_view& rec, const string_type& formatted_str)
+	/// Returns value atomically
+	T Get() const final
 	{
-		fn_(formatted_str);
+		return std::move(value_.load());
+	}
+
+protected:
+	/// Sets the value atomically
+	void setValue(T&& val)
+	{
+		value_.store(std::forward<T>(val));
 	}
 
 private:
-	Func_t fn_;
+	/// Internal value. I know nothing about atomics. Help me.
+	std::atomic<T> value_;
 };
 
 }  // namespace dman
 
-#endif  // SRC_LOG_SIMPLESINK_H_
+#endif  // SRC_UTILITY_VALUABLE_H_

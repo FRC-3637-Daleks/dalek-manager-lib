@@ -38,7 +38,9 @@ set(STYLE_FILTER)
  
  set(STYLE_FILTER ${STYLE_FILTER}-build/c++11,)
  
- set(STYLE_FILTER ${STYLE_FILTER}-build/include_what_you_use)
+ set(STYLE_FILTER ${STYLE_FILTER}-build/include_what_you_use,)
+ 
+ set(STYLE_FILTER ${STYLE_FILTER}-runtime/explicit,)
  
 
 # Add a target that runs cpplint.py

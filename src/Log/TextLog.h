@@ -56,18 +56,29 @@ public:
 	/// SimpleSink functor type
 	using SimpleSinkFn = std::function<void(std::string)>;
 
-	/// Forwards boost log call
+	/** Forwards boost log call
+	 * @param mess_data Message Type and Verbosity information
+	 * @param sys_data System, Component, and Component type information
+	 * @param message The log message
+	 */
 	static void Log(const MessageData &mess_data,
 					SystemData sys_data,
 					std::string message);
 
-	/// Returns StremHandle set to forward boost log call on destruction
+	/** Returns StremHandle set to forward boost log call on destruction
+	 * @param mess_data Message Type and Verbosity information
+	 * @param sys_data System, Component, and Component type information
+	 * @return A StreamHandle object which can be used like a std stream and
+	 * flushes on destruction
+	 */
 	static StreamHandle Log(const MessageData &mess_data, SystemData sys_data);
 
 	/// Adds Sink to core
 	static void AddSink(const SinkPtr& sink);
 
-	/// Adds Simple Sink to core, a functor which will put a string somewhere
+	/** Adds Simple Sink to core, a functor which will put a string somewhere
+	 * @param sink_fn a function object supporing operator(std::string)
+	 */
 	static void AddSimpleSink(SimpleSinkFn sink_fn);
 
 private:
@@ -91,7 +102,7 @@ private:
 	/// Logs for the logging core itself
 	static void Log(const MessageData &mess_data, std::string message);
 
-	/// StreamHanlde interface for logging of logging core itself
+	/// StreamHandle interface for logging of logging core itself
 	static StreamHandle Log(const MessageData &mess_data);
 };
 

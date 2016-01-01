@@ -19,47 +19,36 @@
 
  */
 
-#ifndef SRC_LOG_SIMPLESINK_H_
-#define SRC_LOG_SIMPLESINK_H_
+#ifndef SRC_UTILITY_POLLABLE_H_
+#define SRC_UTILITY_POLLABLE_H_
 
 // Project Includes
-#include "LogAttributes.h"
-
-// Boost Includes
-#include <boost/log/sinks/basic_sink_backend.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-
-// STD Includes
-#include <string>
-#include <functional>
+#include "Valuable.h"
+#include "Updateable.h"
 
 namespace dman
 {
 
-/** Used by TextLog when adding a SimpleSink
+/** Sets its value via some poll function upon Updating
  */
-class SimpleSinkWrapper: 
-	public boost::log::sinks::basic_formatted_sink_backend<
-		char,
-		boost::log::sinks::synchronized_feeding
-	>
+template<typename T>
+class Pollable: public Valuable<T>, public Updateable
 {
 public:
-	using Func_t = std::function<void(string)>;
+	virtual ~Pollable() = default;
 
 public:
-	SimpleSinkWrapper(Func_t fn): fn_(std::move(fn)) {}
-
-public:
-	void consume(const boost::log::record_view& rec, const string_type& formatted_str)
+	/// Sets the internal value to whatever poll returns
+	void Update() final
 	{
-		fn_(formatted_str);
+		setValue(std::move(poll()));
 	}
 
-private:
-	Func_t fn_;
+protected:
+	/// Returns a T
+	virtual T&& poll() = 0;
 };
 
 }  // namespace dman
 
-#endif  // SRC_LOG_SIMPLESINK_H_
+#endif  // SRC_UTILITY_POLLABLE_H_

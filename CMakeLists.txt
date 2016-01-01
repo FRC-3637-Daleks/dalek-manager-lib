@@ -39,9 +39,12 @@ add_custom_target (doc
 # include_directories("${PROJECT_SOURCE_DIR}")
 
 
-# Options which default to ON. Don't require external libraries
-option (USE_LOG "Compile logging features under Log" ON)
-option (USE_CONFIG "Compile config features under Config" ON)
+# Required core of the library
+# option (USE_LOG "Compile logging features under Log" ON)
+# option (USE_CONFIG "Compile config features under Config" ON)
+set (USE_LOG ON)
+set (USE_CONFIG ON)
+set (USE_UTILITY ON)
 
 # Options which default to OFF. Require external libraries
 option (USE_MQTT "Build mosquitto library and compile its dependents under MQTT/" OFF)
@@ -93,6 +96,10 @@ endif (USE_LOG)
 if (USE_CONFIG)
   add_subdirectory("${PROJECT_SOURCE_DIR}/Config")
 endif (USE_CONFIG)
+
+if (USE_UTILITY)
+  add_subdirectory("${PROJECT_SOURCE_DIR}/Utility")
+endif (USE_UTILITY)
 
 if (USE_MQTT)
   add_subdirectory("${PROJECT_SOURCE_DIR}/MQTT")

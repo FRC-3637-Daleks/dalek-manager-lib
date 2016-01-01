@@ -59,7 +59,7 @@ public:
 
 public:
 	/// Implicit conversion to string
-	operator string() const {return std::move(ToString());}
+	operator string() const {return ToString();}
 
 private:
 	/** Subsystem path

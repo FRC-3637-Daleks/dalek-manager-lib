@@ -3,10 +3,11 @@
 	"files": [{"git": 1}],
 	"build":
 	{
-		"directory": "build",
+		"directory": ".",
 		"build": "make",
 		"clean": "make clean",
-		"config": 'cmake -G "Unix Makefiles"',
+		"quick": "make %f",
+		"config": "make rebuild_cache"
 		"docs": "make doc"
 	}
 }

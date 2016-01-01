@@ -19,47 +19,34 @@
 
  */
 
-#ifndef SRC_LOG_SIMPLESINK_H_
-#define SRC_LOG_SIMPLESINK_H_
+#ifndef SRC_UTILITY_SETVALUE_H_
+#define SRC_UTILITY_SETVALUE_H_
 
 // Project Includes
-#include "LogAttributes.h"
-
-// Boost Includes
-#include <boost/log/sinks/basic_sink_backend.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-
-// STD Includes
-#include <string>
-#include <functional>
+#include "Valuable.h"
+#include "Settable.h"
 
 namespace dman
 {
 
-/** Used by TextLog when adding a SimpleSink
+/** Makes Valuable's set function public, letting user explicitly define what values go in
  */
-class SimpleSinkWrapper: 
-	public boost::log::sinks::basic_formatted_sink_backend<
-		char,
-		boost::log::sinks::synchronized_feeding
-	>
+template<typename T>
+class SetValue: public Valuable<T>, public Settable<T>
 {
 public:
-	using Func_t = std::function<void(string)>;
+	/// Use Valuable's constructorss
+	using Valuable<T>::Valuable;
+
+	virtual ~SetValue() = default;
 
 public:
-	SimpleSinkWrapper(Func_t fn): fn_(std::move(fn)) {}
-
-public:
-	void consume(const boost::log::record_view& rec, const string_type& formatted_str)
+	void Set(T&& val) final
 	{
-		fn_(formatted_str);
+		this->setValue(std::forward<T>(val));
 	}
-
-private:
-	Func_t fn_;
 };
 
 }  // namespace dman
 
-#endif  // SRC_LOG_SIMPLESINK_H_
+#endif  // SRC_UTILITY_SETVALUE_H_

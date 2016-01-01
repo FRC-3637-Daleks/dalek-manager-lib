@@ -19,41 +19,44 @@
 
  */
 
-#ifndef SRC_LOG_SIMPLESINK_H_
-#define SRC_LOG_SIMPLESINK_H_
+#ifndef SRC_UTILITY_FUNKYPOLL_H_
+#define SRC_UTILITY_FUNKYPOLL_H_
 
 // Project Includes
-#include "LogAttributes.h"
-
-// Boost Includes
-#include <boost/log/sinks/basic_sink_backend.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
+#include "Pollable.h"
 
 // STD Includes
-#include <string>
 #include <functional>
 
 namespace dman
 {
 
-/** Used by TextLog when adding a SimpleSink
+/** Pollable which polls via a function supplied at construction time
+ * The function is guaranteed to not be called until Update is called
  */
-class SimpleSinkWrapper: 
-	public boost::log::sinks::basic_formatted_sink_backend<
-		char,
-		boost::log::sinks::synchronized_feeding
-	>
+template<typename T>
+class FunkyPoll: public Pollable<T>
 {
 public:
-	using Func_t = std::function<void(string)>;
+	using Func_t = std::function<T()>;
 
 public:
-	SimpleSinkWrapper(Func_t fn): fn_(std::move(fn)) {}
+	/// Constructs with a user defined function
+	FunkyPoll(Func_t fn): fn_(std::move(fn)) {}
 
-public:
-	void consume(const boost::log::record_view& rec, const string_type& formatted_str)
+	/// Copy Constructor
+	FunkyPoll(const FunkyPoll&) = default;
+
+	/// Move Constructor
+	FunkyPoll(FunkyPoll&&) = default;
+
+	virtual ~FunkyPoll() = default;
+
+protected:
+	/// Overrides Poll to return the result of a call to the function
+	T&& poll() final
 	{
-		fn_(formatted_str);
+		return std::move(fn_());
 	}
 
 private:
@@ -62,4 +65,4 @@ private:
 
 }  // namespace dman
 
-#endif  // SRC_LOG_SIMPLESINK_H_
+#endif  // SRC_UTILITY_FUNKYPOLL_H_
