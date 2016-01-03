@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 	try
 	{
 		std::cout << "Attempting to reinitialize a..." << std::endl;
-		a.Initialize(static_cast<const dman::Valuable<int> *>(nullptr));
+		a.Initialize(std::shared_ptr< const dman::Valuable<int> >());
 	}
 	catch(std::logic_error &le)
 	{
@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 	try
 	{
 		std::cout << "Attempting to reinitialize a_clone..." << std::endl;
-		a_clone.Initialize(static_cast<const dman::Valuable<int> *>(nullptr));
+		a_clone.Initialize(std::shared_ptr< const dman::Valuable<int> >());
 	}
 	catch(std::logic_error &le)
 	{

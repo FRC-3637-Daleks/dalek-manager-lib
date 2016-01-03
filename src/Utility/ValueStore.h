@@ -80,10 +80,10 @@ public:
 	class Value
 	{
 	public:
-		using Stored_t = const Valuable<T> *;
+		using Stored_t = std::shared_ptr< const Valuable<T> >;
 		using Mapped_t = std::shared_ptr<Stored_t>;
 		using Setter_t = Settable<T>;
-		using Setter_ref_t = Setter_t *;
+		using Setter_ref_t = std::shared_ptr<Setter_t>;
 
 	public:
 		explicit Value(ValueData<T> vd): data_(std::move(vd)) {}
