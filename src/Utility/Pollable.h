@@ -37,14 +37,13 @@ class Pollable: public Valuable<T>, public Updateable
 public:
 	virtual ~Pollable() = default;
 
-public:
+protected:
 	/// Sets the internal value to whatever poll returns
-	void Update() final
+	void doUpdate() final
 	{
-		setValue(std::move(poll()));
+		this->setValue(poll());
 	}
 
-protected:
 	/// Returns a T
 	virtual T&& poll() = 0;
 };

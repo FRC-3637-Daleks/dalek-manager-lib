@@ -79,7 +79,7 @@ void UpdateStore::doUpdate()
 	{
 		if(updater->Update())
 		{
-			// ... On timeout code
+			//TODO: On timeout code
 		}
 	}
 

@@ -77,7 +77,7 @@ void UpdateThread::Start()
 
 	if(!has_updater())
 		throw std::logic_error(
-			"Attempt to start already started thread");
+			"Attempt to start UpdateThread without updater");
 
 	if(!updater_->HasTimeout())
 	{

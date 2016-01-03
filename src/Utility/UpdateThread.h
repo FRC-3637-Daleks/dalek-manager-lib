@@ -74,7 +74,7 @@ public:
 	 */
 	void SetPeriod(const Duration_t period);
 
-	bool has_updater() const {return updater_ == nullptr;}
+	bool has_updater() const {return updater_ != nullptr;}
 	Duration_t get_period() const {return period_;}
 
 	/// Returns the period of the updater. Returns zero if the updater is null.

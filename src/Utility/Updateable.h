@@ -44,7 +44,9 @@ public:
 
 public:
 	Updateable(): timedout_(false) {}
-	Updateable(Updateable&&) = default;
+	Updateable(Updateable&& other):
+		timedout_(other.timedout_.load()),
+		future_(std::move(other.future_)) {}
 
 	virtual ~Updateable() = default;
 
