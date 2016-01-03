@@ -31,6 +31,7 @@ set(STYLE_FILTER)
  set(STYLE_FILTER ${STYLE_FILTER}-whitespace/indent,)
  set(STYLE_FILTER ${STYLE_FILTER}-whitespace/braces,)
  set(STYLE_FILTER ${STYLE_FILTER}-whitespace/operators,)
+ set(STYLE_FILTER ${STYLE_FILTER}-whitespace/newline,)
 
  set(STYLE_FILTER ${STYLE_FILTER}-build/namespaces,)
 

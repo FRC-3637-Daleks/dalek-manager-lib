@@ -7,7 +7,6 @@
 		"build": "make",
 		"clean": "make clean",
 		"quick": "make %f",
-		"config": "make rebuild_cache"
 		"docs": "make doc"
 	}
 }
