@@ -38,7 +38,7 @@ UpdateThread::~UpdateThread()
 		Stop();
 }
 
-void UpdateThread::SetUpdater(Stored_t&& updater)
+void UpdateThread::SetUpdater(Stored_t updater)
 {
 	if(is_running())
 		throw std::logic_error(
@@ -83,7 +83,7 @@ void UpdateThread::Start()
 	{
 		// Move old updater into wrapper
 		auto wrapper_updater =
-			std::make_unique< TimeoutWrapper >(period_, std::move(updater_));
+			std::make_shared< TimeoutWrapper >(period_, std::move(updater_));
 
 		updater_ = std::move(wrapper_updater);
 	}

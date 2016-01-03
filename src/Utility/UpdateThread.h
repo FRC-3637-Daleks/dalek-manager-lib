@@ -43,14 +43,14 @@ namespace dman
 class UpdateThread
 {
 public:
-	using Stored_t = std::unique_ptr<Updateable>;
+	using Stored_t = std::shared_ptr<Updateable>;
 	using Duration_t = Updateable::Duration_t;
 
 public:
 	/// Initializes with no period
 	UpdateThread(): UpdateThread(Duration_t::zero()) {}
 
-	UpdateThread(const Duration_t period, Stored_t&& updater = nullptr):
+	UpdateThread(const Duration_t period, Stored_t updater = nullptr):
 		period_(period), updater_(std::move(updater)), running_(false) {}
 
 	UpdateThread(const UpdateThread&) = delete;
@@ -66,7 +66,7 @@ public:
 	 * @pre \code{.cpp} is_running() == false \endcode
 	 * @exception logic_error Thread was running
 	 */
-	void SetUpdater(Stored_t&& updater);
+	void SetUpdater(Stored_t updater);
 
 	/** Sets the period
 	 * @pre \code{.cpp} is_running() == false \endcode

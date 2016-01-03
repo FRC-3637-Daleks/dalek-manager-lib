@@ -44,9 +44,6 @@ public:
 	/// Constructs with a user defined function
 	FunkyPoll(Func_t fn): fn_(std::move(fn)) {}
 
-	/// Copy Constructor
-	FunkyPoll(const FunkyPoll&) = default;
-
 	/// Move Constructor
 	FunkyPoll(FunkyPoll&&) = default;
 
@@ -56,7 +53,7 @@ protected:
 	/// Overrides Poll to return the result of a call to the function
 	T&& poll() final
 	{
-		return std::move(fn_());
+		return std::forward<T>(fn_());
 	}
 
 private:

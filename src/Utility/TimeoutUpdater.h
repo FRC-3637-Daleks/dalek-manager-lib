@@ -59,7 +59,7 @@ private:
 class TimeoutWrapper: public TimeoutUpdater
 {
 public:
-	using Stored_t = std::unique_ptr<Updateable>;
+	using Stored_t = std::shared_ptr<Updateable>;
 
 public:
 	/// Initializes with timeout and other object
@@ -71,7 +71,7 @@ public:
 
 public:
 	void set_updater(Stored_t&& updater) {updater_ = std::move(updater);}
-	bool has_updater() const {return updater_ == nullptr;}
+	bool has_updater() const {return updater_ != nullptr;}
 	Stored_t&& release_updater() {return std::move(updater_);}
 
 	/** Returns true if the wrapper's timeout is greater than that of the

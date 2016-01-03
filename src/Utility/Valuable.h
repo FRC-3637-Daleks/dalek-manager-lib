@@ -57,7 +57,7 @@ public:
 	/// Returns value atomically
 	T Get() const final
 	{
-		return std::move(value_.load());
+		return value_.load();
 	}
 
 protected:

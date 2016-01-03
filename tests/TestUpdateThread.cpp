@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 	store.Add(&poll_milliseconds);
 
 	UpdateThread thread(50ms, 
-		std::make_unique<UpdateStore>(std::move(store)));
+		std::make_shared<UpdateStore>(std::move(store)));
 
 	thread.Start();
 
