@@ -41,7 +41,7 @@ protected:
 	/// Sets the internal value to whatever poll returns
 	void doUpdate() final
 	{
-		this->setValue(poll());
+		this->setValue(std::forward<T>(poll()));
 	}
 
 	/// Returns a T

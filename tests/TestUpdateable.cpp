@@ -3,6 +3,7 @@
 #include <chrono>
 #include <memory>
 #include <iostream>
+#include <string>
 
 #include "Utility/FunkyPoll.h"
 #include "Utility/TimeoutUpdater.h"
@@ -28,7 +29,7 @@ int main(int argc, char** argv)
 
 	auto get_pi = []() -> float
 	{
-		std::cout << "Calculating number after 0";
+		std::cout << "Calculating pi";
 		std::cout.flush();
 		for(int i = 0; i < 5; i++)
 		{
@@ -49,7 +50,7 @@ int main(int argc, char** argv)
 	TimeoutWrapper wrapper(4s);
 
 	wrapper.set_updater(three_second_poll);
-	std::cout << "Running one second function..." << std::endl;
+	std::cout << "Running three second function..." << std::endl;
 	if(wrapper.Update())
 		std::cout << "Function timed out, as it should not have";
 	else
@@ -57,7 +58,7 @@ int main(int argc, char** argv)
 			three_second_poll->Get() << std::endl;
 
 	wrapper.set_updater(five_second_poll);
-	std::cout << "Running two second function..." << std::endl;
+	std::cout << "Running five second function..." << std::endl;
 	if(wrapper.Update())
 	{
 		std::cout << "Function timed out, as it should have." <<
@@ -72,5 +73,5 @@ int main(int argc, char** argv)
 		std::cout << "Function did not timeout, produced: " <<
 			five_second_poll->Get() << std::endl;
 
-
+	return 0;
 }

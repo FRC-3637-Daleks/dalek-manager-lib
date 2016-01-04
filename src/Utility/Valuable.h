@@ -39,7 +39,7 @@ class Valuable: public Gettable<T>
 {
 public:
 	/// Default constructor
-	Valuable() = default;
+	Valuable(): value_(T()) {}
 
 	/// Perfect forward constructs
 	Valuable(T&& val): value_(std::forward<T>(val)) {}
@@ -57,14 +57,14 @@ public:
 	/// Returns value atomically
 	T Get() const final
 	{
-		return value_.load();
+		return value_;
 	}
 
 protected:
 	/// Sets the value atomically
 	void setValue(T&& val)
 	{
-		value_.store(std::forward<T>(val));
+		value_ = std::forward<T>(val);
 	}
 
 private:
