@@ -51,9 +51,9 @@ public:
 
 protected:
 	/// Overrides Poll to return the result of a call to the function
-	T&& poll() final
+	T poll() final
 	{
-		return std::forward<T>(fn_());
+		return fn_();
 	}
 
 private:

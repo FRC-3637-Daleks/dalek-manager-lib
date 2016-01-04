@@ -41,11 +41,11 @@ protected:
 	/// Sets the internal value to whatever poll returns
 	void doUpdate() final
 	{
-		this->setValue(std::forward<T>(poll()));
+		this->setValue(poll());
 	}
 
 	/// Returns a T
-	virtual T&& poll() = 0;
+	virtual T poll() = 0;
 };
 
 }  // namespace dman
