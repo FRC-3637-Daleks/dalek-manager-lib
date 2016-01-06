@@ -22,7 +22,7 @@
 // Project Includes
 #include "TextLog.h"
 #include "LogAttributes.h"
-#include "ProjectConfig.h"
+#include "ProjectInfo.h"
 
 // Boost Includes
 #include <boost/log/core.hpp>
@@ -45,7 +45,6 @@
 
 // Implementation Includes
 #include "SimpleSink.impl"
-
 
 namespace dman
 {
@@ -98,8 +97,9 @@ void TextLog::Initialize()
 	core_->add_sink(clog_sink);
 
 	Log(MessageData::INFO) << "Starting dalek-manager " <<
-							  VERSION_MAJOR << '.' << VERSION_MINOR <<
-							  " (git-rev: " << GIT_REV << ")";
+							  ProjectInfo::version_major << '.' <<
+							  ProjectInfo::version_minor <<
+							  " (git-rev: " << ProjectInfo::git_rev << ")";
 }
 
 void TextLog::AddSink(const TextLog::SinkPtr& sink)
