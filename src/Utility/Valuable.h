@@ -24,6 +24,7 @@
 
 // Project Includes
 #include "Gettable.h"
+#include "ConcurrentObject.h"
 
 // STD Includes
 #include <atomic>
@@ -37,6 +38,9 @@ namespace dman
 template<typename T>
 class Valuable: public Gettable<T>
 {
+public:
+	using Value_t = ConcurrentObject<T>;
+
 public:
 	/// Default constructor
 	Valuable(): value_(T()) {}
@@ -68,8 +72,8 @@ protected:
 	}
 
 private:
-	/// Internal value. I know nothing about atomics. Help me.
-	std::atomic<T> value_;
+	/// Internal value
+	Value_t value_;
 };
 
 }  // namespace dman
