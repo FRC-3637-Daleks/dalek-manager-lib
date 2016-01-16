@@ -61,7 +61,7 @@ public:
 	/// Returns timeout duration of the update. Returns 0 for no timeout
 	virtual Duration_t GetTimeout() const;
 
-	bool HasTimeout() const {return GetTimeout() == Duration_t::zero();}
+	bool has_timeout() const {return GetTimeout() == Duration_t::zero();}
 
 protected:
 	/// Derived functions override this to define an update method
@@ -70,7 +70,7 @@ protected:
 	/** Returns true if the timeout expired.
 	 * Won't return false until the timed out doUpdate finishes
 	 */
-	bool has_timedout() const {return timedout_.load();}
+	bool HasTimedout() const {return timedout_.load();}
 
 private:
 	Flag_t timedout_;

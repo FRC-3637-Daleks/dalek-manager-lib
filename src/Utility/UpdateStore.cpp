@@ -28,6 +28,11 @@
 #include <atomic>
 #include <stdexcept>
 
+// Other Includes
+#include "Log/TextLog.h"
+#include "Log/MessageData.h"
+#include "Log/SystemData.h"
+
 namespace dman
 {
 
@@ -66,7 +71,7 @@ void UpdateStore::Add(Stored_t updater)
 	if(updater == nullptr)
 		throw std::invalid_argument("nullptr updater in UpdateStore::Add");
 
-	if(updater->HasTimeout())
+	if(updater->has_timeout())
 		timeout_updaters_.push_back(updater);
 	else
 		zero_updaters_.push_back(updater);
@@ -75,17 +80,40 @@ void UpdateStore::Add(Stored_t updater)
 void UpdateStore::doUpdate()
 {
 	// Cycle through updaters with timeouts
-	for(auto updater : timeout_updaters_)
+	for(auto updater =  timeout_updaters_.begin();
+		updater != timeout_updaters_.end() && !HasTimedout();
+		updater++)
 	{
-		if(updater->Update())
+		if((*updater)->Update())
 		{
-			// TODO(EdWard): On timeout code
+			timeout_policy_.DoCustom(*updater);
+
+			if (timeout_policy_.logs())
+			{
+				TextLog::Log(MessageData(MessageData::ERROR),
+							 SystemData("Updaters",
+							 			"", "UpdateStore")) <<
+				"Updater #" << updater - timeout_updaters_.begin() <<
+				" timed out after " <<
+				std::chrono::duration_cast<std::chrono::microseconds>(
+					(*updater)->GetTimeout()).count() << "us.";
+			}
+
+			if (timeout_policy_.removes())
+			{
+				updater = timeout_updaters_.erase(updater);
+			}
+
+			if (timeout_policy_.bails())
+			{
+				return;
+			}
 		}
 	}
 
 	// Cycle through updaters without timeouts
 	for(auto updater = zero_updaters_.begin();
-		updater != zero_updaters_.end() && !has_timedout();
+		updater != zero_updaters_.end() && !HasTimedout();
 		updater++)
 	{
 		(*updater)->Update();
