@@ -18,12 +18,34 @@
     Boston, MA  02110-1301, USA.
 
  */
- 
- #include "OnTimeoutPolicy.h"
+
+#include "OnTimeoutPolicy.h"
 
 namespace dman
 {
 
+void OnTimeoutPolicy::AddCustom(Custom_fn_t custom)
+{
+    add_policy(PolicyType::CUSTOM);
+    custom_ = std::move(custom);
+}
+
+void OnTimeoutPolicy::RemoveCustom()
+{
+    custom_ = Custom_fn_t();
+    remove_policy(PolicyType::CUSTOM);
+}
+
+void OnTimeoutPolicy::DoCustom(Updateable * const updater)
+{
+    if (updater == nullptr)
+        return;
+
+    if (customs() && updater->has_timeout())
+    {
+        custom_(updater);
+    }
+}
 
 
 }  // namespace dman

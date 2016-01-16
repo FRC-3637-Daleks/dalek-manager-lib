@@ -24,6 +24,7 @@
 
 // Project Includes
 #include "Updateable.h"
+#include "OnTimeoutPolicy.h"
 
 // STD Includes
 #include <vector>
@@ -48,6 +49,11 @@ public:
 
 	UpdateStore(const Duration_t &default_timeout):
 		default_timeout_(default_timeout) {}
+
+	UpdateStore(const Duration_t &default_timeout,
+				OnTimeoutPolicy policy):
+		default_timeout_(default_timeout),
+		timeout_policy_(policy) {}
 
 	UpdateStore(const UpdateStore&) = delete;
 	UpdateStore(UpdateStore&&) = default;
@@ -74,6 +80,13 @@ public:
 	void set_default(Duration_t dur) {default_timeout_ = std::move(dur);}
 	Duration_t get_default() const {return default_timeout_;}
 
+	void set_timeout_policy(OnTimeoutPolicy pol)
+	{
+		timeout_policy_ = std::move(pol);
+	}
+
+	OnTimeoutPolicy get_timeout_policy() const {return timeout_policy_;}
+
 public:
 	/** Adds \c updater to the list of updaters called by the store's \c Update
 	 * If the updater has a nonzero timeout it will be added to a list of
@@ -96,6 +109,9 @@ private:
 
 	/// Default timeout Updateables with no timeout of their own represent
 	Duration_t default_timeout_;
+
+	/// Policy to consult when a timeout updater times out
+	OnTimeoutPolicy timeout_policy_;
 };
 
 }  // namespace dman

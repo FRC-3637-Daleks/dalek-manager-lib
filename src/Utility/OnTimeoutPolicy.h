@@ -22,6 +22,11 @@
 #ifndef SRC_UTILITY_ONTIMEOUTPOLICY_H_
 #define SRC_UTILITY_ONTIMEOUTPOLICY_H_
 
+// Project Includes
+#include "Updateable.h"
+
+
+// STD Includes
 #include <functional>
 
 namespace dman
@@ -31,16 +36,17 @@ class OnTimeoutPolicy
 {
 public:
     enum PolicyType {
-        REMOVE = 0x1,
-        LOG = 0x2,
-        CUSTOM = 0x4
+        REMOVE = 0x1,  ///< Intended to tell UpdateStore to remove Updateable
+        LOG = 0x2,  ///< Intended for caller to Log
+        CUSTOM = 0x4,  ///< Indicates a custom function to call
+        BAIL = 0x8  ///< Indicates UpdateStore to stop the current Update
     };
 
     using Custom_fn_t = std::function< void(Updateable *) >;
 
 public:
     OnTimeoutPolicy(uint8_t policy_init,
-                    Custom_fn_t custom): 
+                    Custom_fn_t custom):
         policy_(policy_init), custom_(custom) {}
 
     OnTimeoutPolicy(uint8_t policy_init = PolicyType::LOG):
@@ -50,29 +56,34 @@ public:
 
 public:
     void add_policy(uint8_t mask) {policy_ |= mask;}
+    void remove_policy(uint8_t mask) {policy_ ^= policy_ & mask;}
     uint8_t get_policy() const {return policy_;}
 
     bool removes() const {return policy_ & PolicyType::REMOVE;}
-    bool logs() const {return policy_ & PolicyType::LOG}
+    bool logs() const {return policy_ & PolicyType::LOG;}
     bool customs() const {return policy_ & PolicyType::CUSTOM &&
                                     custom_;}
+    bool bails() const {return policy_ & PolicyType::BAIL;}
 
     void add_remove() {add_policy(PolicyType::REMOVE);}
     void add_log() {add_policy(PolicyType::LOG);}
+    void add_bail() {add_policy(PolicyType::BAIL);}
 
+    /// Sets custom function to call on DoAction
     void AddCustom(Custom_fn_t custom);
 
+    /// Removes custom function to call on DoAction
     void RemoveCustom();
 
-    void DoAction()
+    /// Calls the custom function currently set
+    void DoCustom(Updateable * const updater);
 
 private:
     uint8_t policy_;
     Custom_fn_t custom_;
+
 };
 
-}
-
-
+}  // namespace dman
 
 #endif  // SRC_UTILITY_ONTIMEOUTPOLICY_H_

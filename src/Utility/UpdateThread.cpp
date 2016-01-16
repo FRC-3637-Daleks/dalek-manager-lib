@@ -79,7 +79,7 @@ void UpdateThread::Start()
 		throw std::logic_error(
 			"Attempt to start UpdateThread without updater");
 
-	if(!updater_->HasTimeout())
+	if(!updater_->has_timeout())
 	{
 		// Move old updater into wrapper
 		auto wrapper_updater =
