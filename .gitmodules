@@ -1,3 +1,6 @@
 [submodule "src/MQTT/org.eclipse.mosquitto"]
 	path = src/MQTT/org.eclipse.mosquitto
 	url = https://git.eclipse.org/r/mosquitto/org.eclipse.mosquitto
+[submodule "src/Config/json"]
+	path = src/Config/json
+	url = git@github.com:nlohmann/json.git
