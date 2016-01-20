@@ -35,8 +35,14 @@
 namespace dman
 {
 
+/** Configuration node which is represented by a json object
+ * or a series of subnodes
+ */
 class TreeNode: public Node
 {
+public:
+	virtual ~TreeNode() = default;
+
 public:
 	/** Looks up json object at the key for each item in \c GetRange() \\
 	 * and passes into that item's LoadConfig
@@ -60,21 +66,17 @@ public:
 
 protected:
 	using Key_t = std::string;
-	using Mapped_t = Node&;
-	using MapElement_t = std::pair<const Key_t, Mapped_t>;
+	using Mapped_base_t = Node *;
+	using MapElement_t = std::pair<const Key_t, Mapped_base_t>;
 	using Range_t = boost::any_range<MapElement_t,
 									 boost::single_pass_traversal_tag,
 									 MapElement_t,
 									 std::ptrdiff_t>;
 
-protected:
+private:
 	/** Returns range of any forward iterator implementation.
 	 */
-	virtual Range_t GetRange() = 0;
-	const Range_t GetRange() const
-	{
-		return const_cast<TreeNode*>(this)->GetRange();
-	}
+	virtual Range_t getRange() const = 0;
 };
 
 }  // namespace dman

@@ -35,13 +35,16 @@ bool TreeNode::LoadConfig(json config)
 {
 	bool ret = false;
 
-	auto range = GetRange();
+	auto range = getRange();
 	for(auto i : range)
 	{
+		if(i.second == nullptr)
+			continue;
+
 		try
 		{
 			// Attempts to pass to object the elment at the same key
-			ret |= i.second.LoadConfig(config.at(i.first));
+			ret |= i.second->LoadConfig(config.at(i.first));
 		}
 		catch (std::out_of_range& e)
 		{
@@ -57,10 +60,12 @@ json TreeNode::GetConfig() const
 {
 	json ret(json::value_t::object);
 
-	auto range = GetRange();
+	auto range = getRange();
 	for(auto i : range)
 	{
-		ret[i.first] = i.second.GetConfig();
+		if(i.second == nullptr)
+			continue;
+		ret[i.first] = i.second->GetConfig();
 	}
 
 	return ret;
@@ -76,11 +81,13 @@ json TreeNode::GetSchema() const
 	auto& required = (ret["required"] = json::array());
 	auto& properties = (ret["properties"] = json::object());
 
-	auto range = GetRange();
+	auto range = getRange();
 	for(auto i : range)
 	{
+		if(i.second == nullptr)
+			continue;
 		required.push_back(i.first);
-		properties[i.first] = i.second.GetSchema();
+		properties[i.first] = i.second->GetSchema();
 	}
 
 	return ret;

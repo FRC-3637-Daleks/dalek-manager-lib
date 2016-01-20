@@ -36,6 +36,9 @@ using json = nlohmann::json;
 class Node
 {
 public:
+	virtual ~Node() = default;
+
+public:
 	/** Loads data from json value
 	 * @param config json value this node represents
 	 * @return true if the data in \c config was sufficient to load all data
