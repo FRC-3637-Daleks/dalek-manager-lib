@@ -36,7 +36,7 @@ add_custom_target (doc
 )
 
 # Add include directories
-# include_directories("${PROJECT_SOURCE_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}")
 
 
 # Required core of the library
@@ -58,14 +58,19 @@ set (HEADERS)
 set (INCLUDES)
 set (INC_DIRS ${PROJECT_SOURCE_DIR})
 
-# Defines function for adding CPP Files in a directory to the SOURCES variable
-function(get_sources SOURCE_ARG SOURCE_HEADER_ARG INCLUDE_ARG)
-  file(GLOB function_sources "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
-  set(${SOURCE_ARG} ${function_sources}  PARENT_SCOPE)
-  file(GLOB function_source_headers "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-  set(${SOURCE_HEADER_ARG} ${function_source_headers} PARENT_SCOPE)
-  file(GLOB_RECURSE function_includes "${CMAKE_CURRENT_SOURCE_DIR}/*.(h|hpp)")
-  set(${INCLUDE_ARG} ${function_includes} PARENT_SCOPE)
+function(get_sources subdir)
+  file(GLOB function_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/${subdir}/*.cpp")
+  set(local_src ${SOURCES})
+  list(APPEND local_src ${function_sources})
+  set(SOURCES ${local_src} PARENT_SCOPE)
+  file(GLOB function_source_headers "${CMAKE_CURRENT_SOURCE_DIR}/src/${subdir}/*.h")
+  set(local_headers ${HEADERS})
+  list(APPEND local_headers ${function_source_headers})
+  set(HEADERS ${local_headers} PARENT_SCOPE)
+  file(GLOB_RECURSE function_includes "${CMAKE_CURRENT_SOURCE_DIR}/src/${subdir}/*.(h|hpp)")
+  set(local_includes ${INCLUDES})
+  list(APPEND local_includes ${function_includes})
+  set(INCLUDES ${local_includes} PARENT_SCOPE)
 endfunction(get_sources)
 
 # Subdirectories
@@ -74,7 +79,7 @@ if (USE_WPILIB)
   message ("Using WPILIB")
   # Modify toolchain and libraries
   execute_process(COMMAND frc-cmake-toolchain OUTPUT_VARIABLE CMAKE_TOOLCHAIN_FILE)
-  add_subdirectory("${PROJECT_SOURCE_DIR}/WPILib")
+  get_sources("WPILib")
 else (USE_WPILIB)
   set (CMAKE_TOOLCHAIN_FILE ${DEFAULT_TOOLCHAIN})
 endif (USE_WPILIB)
@@ -90,26 +95,79 @@ string (STRIP "${CMAKE_TOOLCHAIN_FILE}" CMAKE_TOOLCHAIN_FILE)
 include ("${CMAKE_TOOLCHAIN_FILE}")
 
 if (USE_LOG)
-  add_subdirectory("${PROJECT_SOURCE_DIR}/Log")
+  get_sources("Log")
+
+  #unset (Boost_INCLUDE_DIR)
+  #unset (Boost_LIBRARY_DIR)
+  #unset (Boost_CXX_LIBRARY_DEBUG)
+  #unset (Boost_CXX_LIBRARY_RELEASE)
+  #unset (Boost_C_LIBRARY_DEBUG)
+  #unset (Boost_C_LIBRARY_RELEASE)
+  #unset (Boost_FOUND)
+  #unset (Boost_INCLUDE_DIRS)
+  #unset (Boost_LIBRARY_DIRS)
+  #unset (Boost_LIBRARIES)
+  #unset (BOOST_ROOT)
+  #unset (BOOST_INCLUDE_DIR)
+  #unset (BOOST_LIBRARYDIR)
+  #unset (Boost_DIR)
+
+  set (Boost_THREADAPI "pthread")
+
+  find_package(Boost REQUIRED log_setup log)
+
+  if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+    list (APPEND ${LIBRARIES} ${Boost_LIBRARIES} pthread)
+   
+    # Set for dynamic linking
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_ALL_DYN_LINK")
+  endif(Boost_FOUND)
+  
 endif (USE_LOG)
 
 if (USE_CONFIG)
-  add_subdirectory("${PROJECT_SOURCE_DIR}/Config")
+  get_sources("Config")
+
+  include_directories("${PROJECT_SOURCE_DIR}/Config/json/src")
+
+  find_package(Boost REQUIRED)
+
+  if(Boost_FOUND)
+    include_directories("${Boost_INCLUDE_DIRS}")
+  endif(Boost_FOUND)
+  
 endif (USE_CONFIG)
 
 if (USE_UTILITY)
-  add_subdirectory("${PROJECT_SOURCE_DIR}/Utility")
+  get_sources("Utility")
+
+  find_package(Boost REQUIRED)
+
+  if(Boost_FOUND)
+    include_directories("${Boost_INCLUDE_DIRS}")
+  endif(Boost_FOUND)
+  
 endif (USE_UTILITY)
 
 if (USE_MQTT)
-  add_subdirectory("${PROJECT_SOURCE_DIR}/MQTT")
+  get_sources("MQTT")
+
+  # Adds mosquitto as dependency
+
+  add_subdirectory (${PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto)
+  include_directories("${PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto/lib/cpp")
+  include_directories("{PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto/lib/")
+  
+  list (APPEND LIBRARIES libmosquitto mosquittopp)
+
 endif (USE_MQTT)
 
 if (USE_LUA)
-  add_subdirectory("${PROJECT_SOURCE_DIR}/Auton")
+  get_sources("Auton")
 endif (USE_LUA)
 
-message("${INC_DIRS}")
+# message("${INC_DIRS}")
 include_directories ("${INC_DIRS}")
 
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
