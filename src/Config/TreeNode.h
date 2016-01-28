@@ -41,6 +41,15 @@ namespace dman
 class TreeNode: public Node
 {
 public:
+	using Key_t = std::string;
+	using Mapped_base_t = Node *;
+	using MapElement_t = std::pair<const Key_t, Mapped_base_t>;
+	using Range_t = boost::any_range<MapElement_t,
+									boost::single_pass_traversal_tag,
+									MapElement_t,
+									std::ptrdiff_t>;
+
+public:
 	virtual ~TreeNode() = default;
 
 public:
@@ -64,19 +73,10 @@ public:
 	 */
 	json GetSchema() const override;
 
-protected:
-	using Key_t = std::string;
-	using Mapped_base_t = Node *;
-	using MapElement_t = std::pair<const Key_t, Mapped_base_t>;
-	using Range_t = boost::any_range<MapElement_t,
-									 boost::single_pass_traversal_tag,
-									 MapElement_t,
-									 std::ptrdiff_t>;
-
-private:
+public:
 	/** Returns range of any forward iterator implementation.
 	 */
-	virtual Range_t getRange() const = 0;
+	virtual Range_t GetRange() const = 0;
 };
 
 }  // namespace dman

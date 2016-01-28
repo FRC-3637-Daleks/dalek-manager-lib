@@ -27,30 +27,47 @@
 
 // Boost Includes
 #include <boost/range/any_range.hpp>
+#include <boost/range/adaptor/indirected.hpp>
 
 // STD Includes
 #include <map>
 #include <memory>
+#include <functional>
 
 namespace dman
 {
 
+/** Defines Node which only contains subnodes of type T
+ */
 template<class T>
 class MapNode: public TreeNode
 {
 public:
 	using Node_t = T;
+	using Mapped_t = std::shared_ptr<Node_t>;
+	using NodeConstructor_t = std::function<Mapped_t()>;
+	using Map_t = std::map<Key_t, Mapped_t>;
 
 public:
-	template<class U> MapNode(const MapNode<U> other):
-		map_(other.map_.begin(), other.map_.end()) {}
-	virtual ~TreeNode() = default;
+	/** Constructs a MapNode
+	 * @param factory This functor is called whenever a new node is created \\
+	 * by default it uses std::make_shared<Node_t> with no arguments.\\
+	 * It must return a std::shared_ptr<Node_t> object
+	 */
+	MapNode(NodeConstructor_t factory = &std::make_shared<Node_t>):
+		node_factory_(std::move(factory)) {}
+
+	template<class U> MapNode(const MapNode<U>& other):
+		map_(other.map_.begin(), other.map_.end()),
+		node_factory_(other.node_factory_) {}
+
+	virtual ~MapNode() = default;
 
 public:
 	/** Returns a reference to the Node at key, silently creating it with \\
 	 * makeNode if one didn't exist before the call
 	 */
-	Node_t& operator[](const Key_t key)
+	Node_t& operator[](const Key_t& key)
 	{
 		auto val = map_[key];
 		if(val == nullptr)
@@ -68,29 +85,41 @@ public:
 	{
 		return const_cast<MapNode<T>*>(this)->at(key);
 	}
-	const Node_t& operator[](const Key_t key) const {return at(key);}
+	const Node_t& operator[](const Key_t &key) const {return at(key);}
 
-	//TODO(EdWard): Create more map_ accessor methods
-
-protected:
-	using Mapped_t = std::unique_ptr<Node_t>;
-	using Map_t = std::map<Key_t, Mapped_t>;
-
-private:
-	/** Returns iterator range to the stored \c map_
+public:
+	/** Returns a dereferenced range of the nodes
 	 */
-	Range_t getRange() const override
+	auto GetMapRange()
+	{
+		 return boost::adaptors::indirect(
+			 boost::range::make_iterator_range(map_.begin(), map_.end()));
+	}
+	auto GetMapRange() const
+	{
+		return boost::adaptors::indirect(
+			boost::range::make_iterator_range(map_.cbegin(), map_.cend()));
+	}
+
+	// TODO(EdWard): Create more map_ accessor methods
+
+public:
+	/** Returns iterator range to the stored \c map_ as pointers to \c Node s
+	 */
+	Range_t GetRange() const override
 	{
 		return Range_t(map_.begin(), map_.end());
 	}
 
+private:
 	/** Returns a new object to store in the map when a new node is requested
 	 * The default implementation returns a default constructed Mapped_t
 	 */
-	virtual Mapped_t makeNode() const {return std::make_unique<Node_t>();}
+	Mapped_t makeNode() const {return node_factory_();}
 
 private:
 	Map_t map_;
+	NodeConstructor_t node_factory_;
 };
 
 }  // namespace dman

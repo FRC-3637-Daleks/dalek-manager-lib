@@ -35,7 +35,7 @@ bool TreeNode::LoadConfig(json config)
 {
 	bool ret = false;
 
-	auto range = getRange();
+	auto range = GetRange();
 	for(auto i : range)
 	{
 		if(i.second == nullptr)
@@ -60,7 +60,7 @@ json TreeNode::GetConfig() const
 {
 	json ret(json::value_t::object);
 
-	auto range = getRange();
+	auto range = GetRange();
 	for(auto i : range)
 	{
 		if(i.second == nullptr)
@@ -81,7 +81,7 @@ json TreeNode::GetSchema() const
 	auto& required = (ret["required"] = json::array());
 	auto& properties = (ret["properties"] = json::object());
 
-	auto range = getRange();
+	auto range = GetRange();
 	for(auto i : range)
 	{
 		if(i.second == nullptr)

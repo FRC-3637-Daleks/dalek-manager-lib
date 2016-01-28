@@ -25,6 +25,8 @@ set (PROJECT_BINARY_DIR "build")
 set (OUTPUT_INCLUDE_DIR "${PROJECT_BINARY_DIR}/include")
 set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
+set (LIBRARIES)
+
 # Configure header file to pass in cmake settings
 configure_file ("${PROJECT_SOURCE_DIR}/ProjectConfig.h.in" "${PROJECT_SOURCE_DIR}/ProjectConfig.h" )
 
@@ -118,7 +120,7 @@ if (USE_LOG)
 
   if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
-    list (APPEND ${LIBRARIES} ${Boost_LIBRARIES} pthread)
+    list (APPEND LIBRARIES ${Boost_LIBRARIES} pthread)
    
     # Set for dynamic linking
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_ALL_DYN_LINK")
@@ -180,6 +182,7 @@ string (REPLACE " " ";" SOURCES_LIST "${SOURCES}")
 add_library(dalek-manager SHARED ${SOURCES_LIST})
 
 # Link Libraries
+message ("LIBRARIES: ${LIBRARIES}")
 target_link_libraries(dalek-manager ${LIBRARIES})
 
 # Linter
