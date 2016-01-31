@@ -11,3 +11,5 @@ ProjectConfig.h
 Doxyfile
 doc/
 .kateproject.d/
+*.json
+dalek/
