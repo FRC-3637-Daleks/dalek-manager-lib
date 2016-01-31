@@ -117,7 +117,8 @@ void Port::SetPortSpace(PortSpace_t port_space)
 
 bool Port::LoadConfig(json config)
 {
-	if(config.is_null())
+	auto val = config.get<const json::number_integer_t*>();
+	if(val == nullptr || (has_port_space() && get_port_space()->IsUsed(*val)))
 	{
 		try
 		{
@@ -127,9 +128,13 @@ bool Port::LoadConfig(json config)
 		{
 			SetValue(get_port_space()->GetAvailable());
 		}
+
+		return true;
 	}
-	SetValue(config.get<Value_t>());
-	return true;
+	else
+		SetValue(*val);
+
+	return false;
 }
 
 json Port::GetConfig() const

@@ -25,6 +25,9 @@ int main(int argc, char **argv)
 	
 	root["CAN"]("PDP");
 	root["CAN"]("PCM");
+	root["CAN"]("cobra");
+	root["CAN"]("lifter");
+	root["CAN"]("lifter-slave");
 	
 	root["Solenoids"]["pistons"]("out").SetDefault(0);
 	root["Solenoids"]["pistons"]("in").SetDefault(1);
@@ -39,7 +42,8 @@ int main(int argc, char **argv)
 			cin >> input;
 			try
 			{
-				root.LoadConfig(input);
+				if(root.LoadConfig(input))
+					cerr << "Config did not set all values" << endl;
 			}
 			catch(const UnavailablePortError& upe)
 			{

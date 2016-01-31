@@ -41,7 +41,7 @@ public:
 public:
 	/** Loads data from json value
 	 * @param config json value this node represents
-	 * @return true if the data in \c config was sufficient to load all data
+	 * @return true if the data in \c config wasn't sufficient to load all data
 	 */
 	virtual bool LoadConfig(json config) = 0;
 

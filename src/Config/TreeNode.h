@@ -55,8 +55,9 @@ public:
 
 public:
 	/** Looks up json object at the key for each item in \c GetRange() \\
-	 * and passes into that item's LoadConfig. If the object is lacking a key
-	 * it will pass in a null json object
+	 * and passes into that item's LoadConfig. If the object is lacking a \\
+	 * key it will add it to a separate list which will be passed null json \\
+	 * values.
 	 * @pre \code{.cpp} config.is_object() == true \endcode
 	 * @return Returns true if any of the sub objects returned true, \\
 	 * or there wasn't a member in config at a required key
