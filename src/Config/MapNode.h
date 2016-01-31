@@ -27,12 +27,13 @@
 
 // Boost Includes
 #include <boost/range/any_range.hpp>
-#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 
 // STD Includes
 #include <map>
 #include <memory>
 #include <functional>
+#include <utility>
 
 namespace dman
 {
@@ -92,13 +93,23 @@ public:
 	 */
 	auto GetMapRange()
 	{
-		 return boost::adaptors::indirect(
-			 boost::range::make_iterator_range(map_.begin(), map_.end()));
+		 return boost::adaptors::transform(
+			 boost::make_iterator_range(map_.begin(), map_.end()),
+			 [](const typename Map_t::value_type &pair)
+			 {
+				 return std::pair<const Key_t&, Node_t&>(
+					 pair.first, *pair.second);
+			 });
 	}
 	auto GetMapRange() const
 	{
-		return boost::adaptors::indirect(
-			boost::range::make_iterator_range(map_.cbegin(), map_.cend()));
+		return boost::adaptors::transform(
+			boost::make_iterator_range(map_.cbegin(), map_.cend()),
+			[](const typename Map_t::value_type &pair)
+			{
+				return std::pair<const Key_t&, const Node_t&>(
+					pair.first, *pair.second);
+			});
 	}
 
 	// TODO(EdWard): Create more map_ accessor methods
@@ -108,7 +119,13 @@ public:
 	 */
 	Range_t GetRange() const override
 	{
-		return Range_t(map_.begin(), map_.end());
+		return boost::adaptors::transform(
+			boost::make_iterator_range(map_.begin(), map_.end()),
+			[](const typename Map_t::value_type &pair)
+			{
+				return std::pair<const Key_t&, Node*>(
+					pair.first, pair.second.get());
+			});
 	}
 
 private:

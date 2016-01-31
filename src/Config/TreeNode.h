@@ -44,9 +44,10 @@ public:
 	using Key_t = std::string;
 	using Mapped_base_t = Node *;
 	using MapElement_t = std::pair<const Key_t, Mapped_base_t>;
-	using Range_t = boost::any_range<MapElement_t,
+	using MapElementReference_t = std::pair<const Key_t&, Mapped_base_t>;
+	using Range_t = boost::any_range<MapElementReference_t,
 									boost::single_pass_traversal_tag,
-									MapElement_t,
+									MapElementReference_t,
 									std::ptrdiff_t>;
 
 public:

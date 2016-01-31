@@ -28,6 +28,7 @@
 
 // Boost Includes
 #include <boost/range/any_range.hpp>
+#include <boost/range/join.hpp>
 
 // STD Includes
 #include <map>
@@ -50,11 +51,13 @@ class HybridNode: public TreeNode
 {
 public:
 	using MapLeaf_t = MapNode<Leaf_t>;
+	using LeafFactory_t = typename MapLeaf_t::NodeConstructor_t;
 	using MapGroup_t = MapNode<Group_t>;
+	using GroupFactory_t = typename MapGroup_t::NodeConstructor_t;
 
 public:
-	HybridNode(MapLeaf_t::NodeConstructor_t leaf_factory,
-			   MapGroup_t::NodeConstructor_t group_factory):
+	HybridNode(LeafFactory_t leaf_factory,
+			   GroupFactory_t group_factory):
 			   leaves_(std::move(leaf_factory)),
 			   groups_(std::move(group_factory)) {}
 
@@ -99,28 +102,32 @@ class BasicHybridNode: public HybridNode<Leaf_t, BasicHybridNode<Leaf_t> >
 public:
 	using Self_t = BasicHybridNode<Leaf_t>;
 	using Base_t = HybridNode<Leaf_t, Self_t>;
+	using MapLeaf_t = typename Base_t::MapLeaf_t;
+	using LeafFactory_t = typename Base_t::LeafFactory_t;
+	using MapGroup_t = typename Base_t::MapGroup_t;
+	using GroupFactory_t = typename Base_t::GroupFactory_t;
 
 public:
-	using HybridNode::HybridNode;
+	using Base_t::HybridNode;
 
 	/** Each Group created under this object will be passed in leaf_factory \\
 	 * and a group factory function which does the same
 	 */
-	BasicHybridNode(const MapLeaf_t::NodeConstructor_t &leaf_factory):
+	BasicHybridNode(const LeafFactory_t &leaf_factory):
 		Base_t(leaf_factory, MakeMakeNode(leaf_factory)) {}
 	virtual ~BasicHybridNode() = default;
 
 private:
-	static MapGroup_t::NodeConstructor_t MakeMakeNode(
-		MapLeaf_t::NodeConstructor_t leaf_factory)
+	static GroupFactory_t MakeMakeNode(
+		LeafFactory_t leaf_factory)
 	{
 		return [leaf_factory]() {return MakeNode(leaf_factory);};
 	}
 
 	static std::shared_ptr<Base_t> MakeNode(
-		const MapLeaf_t::NodeConstructor_t &leaf_factory)
+		const LeafFactory_t &leaf_factory)
 	{
-		return std::make_shared<Base_t>(leaf_factory, 
+		return std::make_shared<Base_t>(leaf_factory,
 										MakeMakeNode(leaf_factory));
 	}
 };
