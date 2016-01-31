@@ -151,7 +151,10 @@ bool Port::LoadConfig(json config)
 
 json Port::GetConfig() const
 {
-	return json(get_value());
+	if(get_value() == empty)
+		return json(nullptr);
+	else
+		return json(get_value());
 }
 
 json Port::GetSchema() const

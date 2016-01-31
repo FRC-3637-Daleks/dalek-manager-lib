@@ -147,6 +147,7 @@ public:
 	bool LoadConfig(json config) override;
 
 	/** Returns a json integer containing the current value of the object
+	 * If the value is empty it returns a null json value
 	 */
 	json GetConfig() const override;
 
