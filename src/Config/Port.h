@@ -49,6 +49,10 @@ public:
 public:
 	/** Defines a Port whose value must be unique and within the bounds
 	 * defined by \c port_space
+	 * Value is initialized to emtpy
+	 * The default value will be the first available value within the \\
+	 * port space, unless the port space is null in which case the default \\
+	 * will be empty as well
 	 */
 	explicit Port(PortSpace_t port_space);
 
@@ -57,14 +61,20 @@ public:
 	 * \c init_value
 	 * @pre init_value isn't already being used in the port_space
 	 * @exception UnavailablePortError If preconditions aren't met
+	 * @post Port's value and default will equal \c init_value if \\
+	 * preconditions were met. If an UnavailablePortError was thrown \\
+	 * value will be empty and default will be the first available port in \\
+	 * the port space
 	 */
 	Port(PortSpace_t port_space, const Value_t init_value);
 
 	/** Defines a Port whose value can be anything
 	 * @param init_value value to initialize the Port
 	 */
-	explicit Port(const Value_t init_value = 0):
-		value_(init_value), default_value_(init_value), port_space_(nullptr) {}
+	explicit Port(const Value_t init_value = empty):
+		value_(init_value),
+		default_value_(init_value == empty? 0:init_value),
+		port_space_(nullptr) {}
 
 	/** It's ambiguous what coyping a Port would naturally be, and the ideal
 	 * behavior is too volatile in different scenarios and is too implicit
@@ -80,9 +90,20 @@ public:
 
 public:
 	const Value_t get_value() const {return value_;}
+	const bool is_empty() const {return value_ == empty;}
 	const Value_t get_default() const {return default_value_;}
 	const PortSpace_t get_port_space() const {return port_space_;}
 	const bool has_port_space() const {return port_space_ == nullptr;}
+
+	/** Returns the current value if it is not empty.
+	 * Returns the default value if the value is empty.
+	 */
+	const Value_t GetValueOrDefault() const;
+
+	/** Sets the default to \c default_value and returns \\
+	 * \c GetValueOrDefault()
+	 */
+	const Value_t GetValueOrDefault(const Value_t default_value);
 
 	/** Attempts the value of the port to \c value
 	 * If the port doesn't belong to a port space it's a trivial assignment
@@ -106,9 +127,14 @@ public:
 	void SetPortSpace(PortSpace_t port_space);
 
 public:
-	/** Calls set value with number in config
-	 * @pre config is a json integer, and the stored value isn't already in use
-	 * @exception std::domain_error If value stored in config is not integer
+	/** Calls set value with number in config.
+	 * If config is a null json value it will set the port to the default \\
+	 * and if the default is unavailable, it will set the port to the first \\
+	 * available port
+	 * @pre config is a json integer, and the stored value isn't already in \\
+	 * use, or the config is a json null
+	 * @exception std::domain_error If value stored in config is not integer \\
+	 * or null
 	 * @exception UnavailablePortError If the port isn't available
 	 * @see SetValue
 	 */

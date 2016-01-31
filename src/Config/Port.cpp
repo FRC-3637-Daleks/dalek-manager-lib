@@ -30,23 +30,50 @@ namespace dman
 Port::Port(PortSpace_t port_space):
 	value_(empty),
 	default_value_(empty),
-	port_space_(port_space) {}
+	port_space_(port_space)
+{
+	if(has_port_space())
+		default_value_ = get_port_space()->GetAvailable();
+}
 
 Port::Port(PortSpace_t port_space, const Value_t init_value):
 	port_space_(port_space)
 {
-	if(has_port_space())
+	try
 	{
-		port_space_->Use(init_value);
+		if(has_port_space())
+		{
+			port_space_->Use(init_value);
+		}
+		value_ = init_value;
+		default_value_ = init_value;
 	}
-	value_ = init_value;
-	default_value_ = init_value;
+	catch(const UnavailablePortError& upe)
+	{
+		value_ = empty;
+		default_value_ = get_port_space()->GetAvailable();
+		throw UnavailablePortError(upe);
+	}
 }
 
 Port::~Port()
 {
 	if(has_port_space())
 		port_space_->Release(value_);
+}
+
+const Port::Value_t Port::GetValueOrDefault() const
+{
+	if(get_value() == empty)
+		return get_default();
+	else
+		return get_value();
+}
+
+const Port::Value_t Port::GetValueOrDefault(const Value_t default_value)
+{
+	SetDefault(default_value);
+	return GetValueOrDefault();
 }
 
 void Port::SetValue(const Value_t value)
@@ -90,6 +117,17 @@ void Port::SetPortSpace(PortSpace_t port_space)
 
 bool Port::LoadConfig(json config)
 {
+	if(config.is_null())
+	{
+		try
+		{
+			SetValue(get_default());
+		}
+		catch(const UnavailablePortError& upe)
+		{
+			SetValue(get_port_space()->GetAvailable());
+		}
+	}
 	SetValue(config.get<Value_t>());
 	return true;
 }
