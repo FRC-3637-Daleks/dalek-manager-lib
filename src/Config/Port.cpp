@@ -118,21 +118,33 @@ void Port::SetPortSpace(PortSpace_t port_space)
 bool Port::LoadConfig(json config)
 {
 	auto val = config.get<const json::number_integer_t*>();
-	if(val == nullptr || (has_port_space() && get_port_space()->IsUsed(*val)))
+	if(val == nullptr || (
+		has_port_space() &&  // it has a port space
+		get_port_space()->IsUsed(*val) &&  // that value in the space is used
+		get_value() != *val)  // that value isn't its own value
+	)
 	{
-		try
+		if(get_value() == empty)  // the value is empty so we set it to defaults
 		{
-			SetValue(get_default());
+			try
+			{
+				SetValue(get_default());
+			}
+			catch(const UnavailablePortError& upe)
+			{
+				SetValue(get_port_space()->GetAvailable());
+			}
 		}
-		catch(const UnavailablePortError& upe)
+		else
 		{
-			SetValue(get_port_space()->GetAvailable());
+			// otherwise keep the current value
 		}
-
 		return true;
 	}
 	else
+	{
 		SetValue(*val);
+	}
 
 	return false;
 }
