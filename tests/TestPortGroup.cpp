@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string>
 #include <iostream>
+#include <fstream>
 
 #include "Config/PortGroup.h"
 #include "Config/PortSpace.h"
@@ -39,10 +40,13 @@ int main(int argc, char **argv)
 		if(string("load") == argv[i])
 		{
 			json input;
-			cin >> input;
+			
+			ifstream file(argv[++i]);
+			
+			file >> input;
 			try
 			{
-				if(root.LoadConfig(input))
+				if(root.LoadConfig(std::move(input)))
 					cerr << "Config did not set all values" << endl;
 			}
 			catch(const UnavailablePortError& upe)
@@ -57,6 +61,23 @@ int main(int argc, char **argv)
 		else if(string("schema") == argv[i])
 		{
 			cout << std::setw(4) << root.GetSchema() << endl;
+		}
+		else if(string("assemble") == argv[i])
+		{
+			json input;
+			
+			ifstream file(argv[++i]);
+			
+			file >> input;
+			try
+			{
+				if(root.AssembleConfig(std::move(input)))
+					cerr << "Config did not set all values" << endl;
+			}
+			catch(const UnavailablePortError& upe)
+			{
+				cerr << upe.what() << endl;
+			}
 		}
 	}
 	

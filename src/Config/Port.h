@@ -128,9 +128,15 @@ public:
 
 public:
 	/** Calls set value with number in config.
-	 * If config is a null json value or an unavailable integer, it will set \\
-	 * the port to the default and if the default is unavailable, it will \\
-	 * set the port to the first available port
+	 * It will set the port to the default and if the default is \\
+	 * unavailable, it will set the port to the first available port if:
+	 *  - The config value is a null json object
+	 *  - OR 
+	 *    -# The Port belongs to a port space
+	 *    -# AND The input value is already used by the port space
+	 *    -# AND The input value is different from the port's current value
+	 * If the current value isn't empty and the above conditions are met then
+	 * the port just keeps its current value
 	 * @pre config is a json integer, and the stored value isn't already in \\
 	 * use, or the config is a json null
 	 * @exception std::domain_error If value stored in config is not integer \\
