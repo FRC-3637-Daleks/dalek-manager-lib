@@ -45,6 +45,16 @@ public:
 	 */
 	virtual bool LoadConfig(json config) = 0;
 
+	/** Derived classes should override this to generate nodes for every \\
+	 * element in \c config
+	 * By default it just passes the config to \c Node::LoadConfig
+	 * @return Result of \c Node::LoadConfig(std::move(config))
+	 */
+	virtual bool AssembleConfig(json config)
+	{
+		return LoadConfig(std::move(config));
+	}
+
 	/** Returns json representation of data represented by this node
 	 * @return json object representing the configuration of this node
 	 */

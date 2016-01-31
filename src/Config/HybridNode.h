@@ -88,6 +88,22 @@ public:
 		return boost::join(leaves_.GetRange(), groups_.GetRange());
 	}
 
+public:
+	bool AssembleConfig(json config) override
+	{
+		if(!config.is_object())
+			return true;
+
+		bool ret = false;
+		for(auto element = config.begin(); element != config.end(); element++)
+		{
+			if(element.value().is_object())
+				ret |= (*this)[element.key()].AssembleConfig(element.value());
+			else
+				ret |= (*this)(element.key()).AssembleConfig(element.value());
+		}
+	}
+
 private:
 	MapLeaf_t leaves_;
 	MapGroup_t groups_;

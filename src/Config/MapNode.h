@@ -31,9 +31,11 @@
 
 // STD Includes
 #include <map>
+#include <unordered_map>
 #include <memory>
 #include <functional>
 #include <utility>
+#include <stdexcept>
 
 namespace dman
 {
@@ -126,6 +128,28 @@ public:
 				return std::pair<const Key_t&, Node*>(
 					pair.first, pair.second.get());
 			});
+	}
+
+public:
+	/** Creates a Node for every value in the config object.
+	 * If the node already exists it won't create it.
+	 * Calls AssembleConfig on all subnodes.
+	 * @param config JSON object this node will correspond to
+	 * @return true if any subnodes returned true or the config wasn't a \\
+	 * json object
+	 */
+	bool AssembleConfig(json config) override
+	{
+		if(!config.is_object())
+			return true;
+
+		bool ret = false;
+		for(auto element = config.begin(); element != config.end(); element++)
+		{
+			ret |= (*this)[element.key()].AssembleConfig(element.value());
+		}
+
+		return ret;
 	}
 
 private:
