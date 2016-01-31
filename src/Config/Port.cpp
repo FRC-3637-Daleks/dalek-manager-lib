@@ -33,7 +33,7 @@ Port::Port(PortSpace_t port_space):
 	port_space_(port_space)
 {
 	if(has_port_space())
-		default_value_ = get_port_space()->GetAvailable();
+		default_value_ = get_port_space()->GetNextDefault();
 }
 
 Port::Port(PortSpace_t port_space, const Value_t init_value):
@@ -51,7 +51,7 @@ Port::Port(PortSpace_t port_space, const Value_t init_value):
 	catch(const UnavailablePortError& upe)
 	{
 		value_ = empty;
-		default_value_ = get_port_space()->GetAvailable();
+		default_value_ = get_port_space()->GetNextDefault();
 		throw UnavailablePortError(upe);
 	}
 }

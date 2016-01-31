@@ -45,7 +45,7 @@ public:
 
 public:
 	PortSpace(const Value_t min, const Value_t max):
-		min_(min), max_(max), space_(max-min+1, false) {}
+		min_(min), max_(max), space_(max-min+1, false), default_count_(min) {}
 
 public:
 	const Value_t get_min() const {return min_;}
@@ -73,6 +73,13 @@ public:
 	 */
 	const Value_t GetAvailable() const;
 
+	/** Each call will return a unique, available port value
+	 * Internally the \c PortSpace keeps track of the last default \\
+	 * it returned. When its called it will increment this value until \\
+	 * it lands on an available port
+	 */
+	const Value_t GetNextDefault();
+
 private:
 	const bool getPort(const Value_t port) const;
 	void setPort(const Value_t port, const bool state);
@@ -81,6 +88,7 @@ private:
 	Value_t min_;
 	Value_t max_;
 	Space_t space_;
+	Value_t default_count_;
 };
 
 }  // namespace dman

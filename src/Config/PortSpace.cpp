@@ -60,6 +60,20 @@ const PortSpace::Value_t PortSpace::GetAvailable() const
 	return empty;
 }
 
+const PortSpace::Value_t PortSpace::GetNextDefault()
+{
+	default_count_++;
+	if(default_count_ > max_)
+		return empty;  // out of values :(
+
+	if(IsUsed(default_count_))
+		return GetNextDefault();  // this isn't available, try again
+	else
+		return default_count_;
+
+	//^ Recursion may be a bad idea here
+}
+
 const bool PortSpace::getPort(const Value_t port) const
 {
 	if(port < min_ || port > max_)
