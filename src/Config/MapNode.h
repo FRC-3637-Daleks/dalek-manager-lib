@@ -138,7 +138,7 @@ public:
 	 * @return true if any subnodes returned true or the config wasn't a \\
 	 * json object
 	 */
-	bool AssembleConfig(json config) override
+	bool AssembleConfig(const json &config) override
 	{
 		if(!config.is_object())
 			return true;

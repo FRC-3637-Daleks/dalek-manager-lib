@@ -89,7 +89,7 @@ public:
 	}
 
 public:
-	bool AssembleConfig(json config) override
+	bool AssembleConfig(const json &config) override
 	{
 		if(!config.is_object())
 			return true;

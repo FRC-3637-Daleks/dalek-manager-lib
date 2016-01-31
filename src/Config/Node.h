@@ -43,16 +43,16 @@ public:
 	 * @param config json value this node represents
 	 * @return true if the data in \c config wasn't sufficient to load all data
 	 */
-	virtual bool LoadConfig(json config) = 0;
+	virtual bool LoadConfig(const json &config) = 0;
 
 	/** Derived classes should override this to generate nodes for every \\
 	 * element in \c config
 	 * By default it just passes the config to \c Node::LoadConfig
 	 * @return Result of \c Node::LoadConfig(std::move(config))
 	 */
-	virtual bool AssembleConfig(json config)
+	virtual bool AssembleConfig(const json &config)
 	{
-		return LoadConfig(std::move(config));
+		return LoadConfig(config);
 	}
 
 	/** Returns json representation of data represented by this node

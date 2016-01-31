@@ -115,7 +115,7 @@ void Port::SetPortSpace(PortSpace_t port_space)
 	}
 }
 
-bool Port::LoadConfig(json config)
+bool Port::LoadConfig(const json &config)
 {
 	auto val = config.get<const json::number_integer_t*>();
 	if(val == nullptr || (

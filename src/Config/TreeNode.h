@@ -62,7 +62,7 @@ public:
 	 * @return Returns true if any of the sub objects returned true, \\
 	 * or there wasn't a member in config at a required key
 	 */
-	bool LoadConfig(json config) override;
+	bool LoadConfig(const json &config) override;
 
 	/** Returns json object formed with the json value returned by each item \\
 	 * in \c GetRange()

@@ -31,7 +31,7 @@
 namespace dman
 {
 
-bool TreeNode::LoadConfig(json config)
+bool TreeNode::LoadConfig(const json &config)
 {
 	bool ret = false;
 

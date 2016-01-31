@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 			file >> input;
 			try
 			{
-				if(root.LoadConfig(std::move(input)))
+				if(root.LoadConfig(input))
 					cerr << "Config did not set all values" << endl;
 			}
 			catch(const UnavailablePortError& upe)
@@ -71,8 +71,8 @@ int main(int argc, char **argv)
 			file >> input;
 			try
 			{
-				if(root.AssembleConfig(std::move(input)))
-					cerr << "Config did not set all values" << endl;
+				if(root.AssembleConfig(input))
+					cerr << "Config could not generate all values" << endl;
 			}
 			catch(const UnavailablePortError& upe)
 			{

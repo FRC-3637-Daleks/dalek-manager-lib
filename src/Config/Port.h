@@ -144,7 +144,7 @@ public:
 	 * @exception UnavailablePortError If the port isn't available
 	 * @see SetValue
 	 */
-	bool LoadConfig(json config) override;
+	bool LoadConfig(const json &config) override;
 
 	/** Returns a json integer containing the current value of the object
 	 * If the value is empty it returns a null json value
