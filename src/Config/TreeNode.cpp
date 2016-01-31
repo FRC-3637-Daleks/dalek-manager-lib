@@ -41,15 +41,19 @@ bool TreeNode::LoadConfig(json config)
 		if(i.second == nullptr)
 			continue;
 
-		try
+		auto sub_config = config.find(i.first);
+		if(sub_config != config.end())
 		{
-			// Attempts to pass to object the elment at the same key
-			ret |= i.second->LoadConfig(config.at(i.first));
+			// Passes object at key the json value at that key
+			ret |= i.second->LoadConfig(*sub_config);
 		}
-		catch (std::out_of_range& e)
+		else
 		{
-			// Signals failure
+			// Signals missing values
 			ret = true;
+
+			// Passes in null json value
+			i.second->LoadConfig(nullptr);
 		}
 	}
 
