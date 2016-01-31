@@ -70,7 +70,7 @@ public:
 	 */
 	Node_t& operator[](const Key_t& key)
 	{
-		auto val = map_[key];
+		auto& val = map_[key];
 		if(val == nullptr)
 			val = makeNode();
 		return *val;
