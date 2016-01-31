@@ -93,7 +93,7 @@ public:
 	const bool is_empty() const {return value_ == empty;}
 	const Value_t get_default() const {return default_value_;}
 	const PortSpace_t get_port_space() const {return port_space_;}
-	const bool has_port_space() const {return port_space_ == nullptr;}
+	const bool has_port_space() const {return port_space_ != nullptr;}
 
 	/** Returns the current value if it is not empty.
 	 * Returns the default value if the value is empty.

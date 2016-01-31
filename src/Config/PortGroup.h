@@ -54,6 +54,7 @@ public:
 	/// Returns the port space to which this group is a member
 	PortSpace_t get_port_space() {return port_space_;}
 	PortSpace_const_t get_port_space() const {return port_space_;}
+	bool has_port_space() const {return port_space_ != nullptr;}
 
 	/** Sets the Port Space to which this group belongs
 	 * @warning This will not propogate this space to subnodes.
