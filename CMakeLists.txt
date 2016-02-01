@@ -82,13 +82,14 @@ if (USE_WPILIB)
   # Modify toolchain and libraries
   execute_process(COMMAND frc-cmake-toolchain OUTPUT_VARIABLE CMAKE_TOOLCHAIN_FILE)
   get_sources("WPILib")
+  
 else (USE_WPILIB)
   set (CMAKE_TOOLCHAIN_FILE ${DEFAULT_TOOLCHAIN})
 endif (USE_WPILIB)
 
 # Checks to see which libs to look up
 if (CMAKE_TOOLCHAIN_FILE)
-  list (APPEND CMAKE_FIND_ROOT_PATH "/opt")
+  list (APPEND CMAKE_FIND_ROOT_PATH "/opt" )
 else (CMAKE_TOOLCHAIN_FILE)
   unset (CMAKE_FIND_ROOT_PATH)
 endif (CMAKE_TOOLCHAIN_FILE)
@@ -115,6 +116,7 @@ if (USE_LOG)
   #unset (Boost_DIR)
 
   set (Boost_THREADAPI "pthread")
+  set (Boost_USE_STATIC_LIBS "ON")
 
   find_package(Boost REQUIRED log_setup log)
 
@@ -123,7 +125,7 @@ if (USE_LOG)
     list (APPEND LIBRARIES ${Boost_LIBRARIES} pthread)
    
     # Set for dynamic linking
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_ALL_DYN_LINK")
+    # set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_ALL_DYN_LINK")
   endif(Boost_FOUND)
   
 endif (USE_LOG)
@@ -157,10 +159,10 @@ if (USE_MQTT)
 
   # Adds mosquitto as dependency
 
-  add_subdirectory (${PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto)
+  add_subdirectory (${PROJECT_SOURCE_DIR}/MQTT/mosquitto)
   include_directories("${PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto/lib/cpp")
   include_directories("{PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto/lib/")
-  
+    
   list (APPEND LIBRARIES libmosquitto mosquittopp)
 
 endif (USE_MQTT)
@@ -179,7 +181,7 @@ endforeach()
 
 # Library target
 string (REPLACE " " ";" SOURCES_LIST "${SOURCES}")
-add_library(dalek-manager SHARED ${SOURCES_LIST})
+add_library(dalek-manager STATIC ${SOURCES_LIST})
 
 # Link Libraries
 message ("LIBRARIES: ${LIBRARIES}")
