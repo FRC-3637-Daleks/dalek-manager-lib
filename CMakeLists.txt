@@ -88,7 +88,7 @@ endif (USE_WPILIB)
 
 # Checks to see which libs to look up
 if (CMAKE_TOOLCHAIN_FILE)
-  list (APPEND CMAKE_FIND_ROOT_PATH "/opt")
+  list (APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_SOURCE_DIR}/arm-frc-linux-gnueabi/")
 else (CMAKE_TOOLCHAIN_FILE)
   unset (CMAKE_FIND_ROOT_PATH)
 endif (CMAKE_TOOLCHAIN_FILE)
@@ -159,8 +159,8 @@ if (USE_MQTT)
   # Adds mosquitto as dependency
 
   add_subdirectory (${PROJECT_SOURCE_DIR}/MQTT/mosquitto)
-  include_directories("${PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto/lib/cpp")
-  include_directories("{PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto/lib/")
+  include_directories("${PROJECT_SOURCE_DIR}/MQTT/mosquitto/lib/cpp")
+  include_directories("${PROJECT_SOURCE_DIR}/MQTT/mosquitto/lib/")
     
   list (APPEND LIBRARIES libmosquitto mosquittopp)
 
