@@ -115,6 +115,7 @@ if (USE_LOG)
   #unset (Boost_DIR)
 
   set (Boost_THREADAPI "pthread")
+  set (Boost_USE_STATIC_LIBS "ON")
 
   find_package(Boost REQUIRED log_setup log)
 
@@ -123,7 +124,7 @@ if (USE_LOG)
     list (APPEND LIBRARIES ${Boost_LIBRARIES} pthread)
    
     # Set for dynamic linking
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_ALL_DYN_LINK")
+    # set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_ALL_DYN_LINK")
   endif(Boost_FOUND)
   
 endif (USE_LOG)
@@ -157,10 +158,10 @@ if (USE_MQTT)
 
   # Adds mosquitto as dependency
 
-  add_subdirectory (${PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto)
+  add_subdirectory (${PROJECT_SOURCE_DIR}/MQTT/mosquitto)
   include_directories("${PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto/lib/cpp")
   include_directories("{PROJECT_SOURCE_DIR}/MQTT/org.eclipse.mosquitto/lib/")
-  
+    
   list (APPEND LIBRARIES libmosquitto mosquittopp)
 
 endif (USE_MQTT)
@@ -179,7 +180,7 @@ endforeach()
 
 # Library target
 string (REPLACE " " ";" SOURCES_LIST "${SOURCES}")
-add_library(dalek-manager SHARED ${SOURCES_LIST})
+add_library(dalek-manager STATIC ${SOURCES_LIST})
 
 # Link Libraries
 message ("LIBRARIES: ${LIBRARIES}")
