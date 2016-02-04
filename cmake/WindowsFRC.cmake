@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 set(ARM_PREFIX arm-frc-linux-gnueabi)
 
 set(CMAKE_SYSTEM_NAME Windows)
-set(CMAKE_SYSROOT $ENV{FRC}/${ARM_PREFIX})
+set(CMAKE_SYSROOT $ENV{FRC})
+
+message ("why ${CMAKE_SYSROOT}")
 
 set(CMAKE_C_COMPILER ${CMAKE_SYSROOT}/bin/${ARM_PREFIX}-gcc)
 set(CMAKE_CXX_COMPILER ${CMAKE_SYSROOT}/bin/${ARM_PREFIX}-g++)
