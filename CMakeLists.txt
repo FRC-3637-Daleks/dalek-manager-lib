@@ -124,6 +124,7 @@ if (USE_LOG)
   set (Boost_THREADAPI "pthread")
   set (Boost_USE_STATIC_LIBS "ON")
 
+  message("TOOLCHAIN FILE: ${CMAKE_TOOLCHAIN_FILE}")
   find_package(Boost REQUIRED log_setup log)
 
   if(Boost_FOUND)

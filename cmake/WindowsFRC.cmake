@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 set(ARM_PREFIX arm-frc-linux-gnueabi)
 
-set(CMAKE_SYSTEM_NAME Windows)
+set(CMAKE_SYSTEM_NAME "linux")
 set(CMAKE_SYSROOT $ENV{FRC})
 
 
 set(CMAKE_C_COMPILER ${CMAKE_SYSROOT}/bin/${ARM_PREFIX}-gcc.exe)
 set(CMAKE_CXX_COMPILER ${CMAKE_SYSROOT}/bin/${ARM_PREFIX}-g++.exe)
 
+set(CMAKE_SHARED_LINKER_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
