@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 set(ARM_PREFIX arm-frc-linux-gnueabi)
 
-set(CMAKE_SYSTEM_NAME "linux")
+set(CMAKE_SYSTEM_NAME "Linux")
 set(CMAKE_SYSROOT $ENV{FRC})
 
 
