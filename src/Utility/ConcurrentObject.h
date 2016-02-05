@@ -153,7 +153,7 @@ public:
  */
 template<typename T>
 using ConcurrentObject =
-	BasicConcurrentObject<T, std::is_trivially_copyable<T>::value>;
+	BasicConcurrentObject<T, std::is_constructible<T>::value>;
 
 }  // namespace dman
 

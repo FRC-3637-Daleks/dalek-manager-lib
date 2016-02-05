@@ -112,7 +112,7 @@ if (USE_LOG)
   set (Boost_USE_STATIC_LIBS "ON")
 
   message("CMAKE_FIND_ROOT_PATH: ${CMAKE_FIND_ROOT_PATH}")
-  find_package(Boost REQUIRED log_setup log)
+  find_package(Boost REQUIRED log_setup log filesystem system thread)
 
   if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
