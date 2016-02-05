@@ -45,7 +45,7 @@ BOOST_LOG_ATTRIBUTE_KEYWORD(message_data, "Severity", MessageData)
 BOOST_LOG_ATTRIBUTE_KEYWORD(system_data, "Channel", SystemData)
 
 /// Default format used by sinks
-auto default_log_format =
+const auto default_log_format =
 		boost::log::expressions::stream <<
 		std::setw(8) << std::setfill('0') << line_id.or_none() <<
 		": [" << system_data.or_throw() << "] <" <<
