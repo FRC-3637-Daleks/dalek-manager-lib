@@ -90,6 +90,8 @@ endif (USE_WPILIB)
 if (CMAKE_TOOLCHAIN_FILE)
   list (APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_SOURCE_DIR}/arm-frc-linux-gnueabi/")
 else (CMAKE_TOOLCHAIN_FILE)
+  list (APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_SOURCE_DIR}/lib/")
+  message ("ye")
   unset (CMAKE_FIND_ROOT_PATH)
 endif (CMAKE_TOOLCHAIN_FILE)
 
