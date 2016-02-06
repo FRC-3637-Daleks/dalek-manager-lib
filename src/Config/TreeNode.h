@@ -22,7 +22,8 @@
 #ifndef SRC_CONFIG_TREENODE_H_
 #define SRC_CONFIG_TREENODE_H_
 
-// Project Includes
+// Project Includesnamespace dman
+
 #include "Node.h"
 
 // Boost Includes
