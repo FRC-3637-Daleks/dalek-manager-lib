@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016, EdWard <dman>
+    Copyright (C) 2016, EdWard <ezeward4@gmail.com>
     ---
     
     This program is free software; you can redistribute it and/or

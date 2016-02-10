@@ -56,6 +56,14 @@ public:
 	using GroupFactory_t = typename MapGroup_t::NodeConstructor_t;
 
 public:
+	HybridNode() = default;
+
+	HybridNode(LeafFactory_t leaf_factory):
+		leaves_(std::move(leaf_factory)) {}
+
+	HybridNode(GroupFactory_t group_factory):
+		groups_(std::move(group_factory)) {}
+
 	HybridNode(LeafFactory_t leaf_factory,
 			   GroupFactory_t group_factory):
 			   leaves_(std::move(leaf_factory)),
