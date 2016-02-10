@@ -50,10 +50,13 @@ public:
 
 public:
     /// Returns if there is no value set
-    bool is_empty() const {return get_value().is_null();}
+    bool is_empty() const {return value_.is_null();}
+
+    /// Returns if no type hsa been set
+    bool has_no_type() const {return type_ == json::value_t::null;}
 
     /// Returns the data type of this Setting
-    json::value_t get_type() const {return get_value().type();}
+    json::value_t get_type() const {return type_;}
 
     /// Returns the current internal value
     json get_value() {return value_;}
@@ -109,6 +112,7 @@ public:
 private:
     json value_;
     json default_value_;
+    json::value_t type_;
 };
 
 

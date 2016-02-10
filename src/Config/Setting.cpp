@@ -48,8 +48,7 @@ const char * const Setting::JSONTypeToString(json::value_t type)
     }
 }
 
-Setting::Setting(json::value_t type):
-    value_(type), default_value_(type)
+Setting::Setting(json::value_t type): type_(type)
 {
 }
 
@@ -71,16 +70,22 @@ const json& Setting::GetValueOrDefault() const
 
 void Setting::SetValue(json value)
 {
-    if (is_empty() || get_type() == value.type())
+    if (has_no_type() || get_type() == value.type())
+    {
+        type_ = value.type();
         value_ = std::move(value);
+    }
     else
         throw SettingTypeMismatchError(get_type(), value.type());
 }
 
 void Setting::SetDefault(json default_value)
 {
-    if (is_empty() || get_type() == default_value.type())
+    if (has_no_type() || get_type() == default_value.type())
+    {
+        type_ = default_value.type();
         default_value_ = std::move(default_value);
+    }
     else
         throw SettingTypeMismatchError(get_type(),
             default_value.type());
@@ -88,7 +93,7 @@ void Setting::SetDefault(json default_value)
 
 bool Setting::LoadConfig(const json& config)
 {
-    if (is_empty() || get_type() == config.type())
+    if (has_no_type() || get_type() == config.type())
         SetValue(config);
     else
     {
