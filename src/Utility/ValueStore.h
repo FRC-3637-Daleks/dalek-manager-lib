@@ -80,7 +80,7 @@ public:
 	class Value
 	{
 	public:
-		using Stored_t = std::shared_ptr< const Valuable<T> >;
+		using Stored_t = std::shared_ptr< const Gettable<T> >;
 		using Mapped_t = std::shared_ptr<Stored_t>;
 		using Setter_t = Settable<T>;
 		using Setter_ref_t = std::shared_ptr<Setter_t>;
@@ -117,7 +117,7 @@ public:
 				throw std::logic_error(
 					std::string("ValueStore::Value(") + get_key() +
 					") was not initialized before GetValue was called");
-			return GetValuable().Get();
+			return GetGettable().Get();
 		}
 
 		/** Sets the internal value to val
@@ -165,7 +165,7 @@ public:
 		}
 
 	private:
-		const Valuable<T>& GetValuable() const
+		const Gettable<T>& GetGettable() const
 		{
 			if(!initialized())
 				throw std::logic_error(
