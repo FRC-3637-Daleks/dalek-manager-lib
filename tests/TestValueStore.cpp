@@ -1,4 +1,5 @@
 #include "Utility/ValueStore.h"
+#include "Utility/Reference.h"
 
 #include <stdlib.h>
 #include <iostream>
@@ -9,9 +10,11 @@ int main(int argc, char** argv)
 	dman::ValueStore store;
 	auto a = store.Get<float>("a");
 	auto a_clone = store.Get<float>("a");
+	auto a_bind = store.Bind<float>("a_bind", "a");
 	a.Initialize(new dman::SetValue<float>(3.1415));
 	std::cout << "a is " << a.GetValue() << std::endl;
 	std::cout << "a_clone " << a_clone.GetValue() << std::endl;
+	std::cout << "a_bind " << a_bind.GetValue() << std::endl;
 	
 	try
 	{
