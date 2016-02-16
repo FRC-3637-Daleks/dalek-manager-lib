@@ -48,6 +48,7 @@ class MapNode: public TreeNode
 public:
 	using Node_t = T;
 	using Mapped_t = std::shared_ptr<Node_t>;
+	using ConstMapped_t = std::shared_ptr<const Node_t>;
 	using NodeConstructor_t = std::function<Mapped_t()>;
 	using Map_t = std::map<Key_t, Mapped_t>;
 
@@ -74,7 +75,7 @@ public:
 	{
 		auto& val = map_[key];
 		if(val == nullptr)
-			val = makeNode();
+			val = makeNode(key);
 		return *val;
 	}
 
@@ -89,6 +90,14 @@ public:
 		return const_cast<MapNode<T>*>(this)->at(key);
 	}
 	const Node_t& operator[](const Key_t &key) const {return at(key);}
+
+	/** Returns the shared_ptr resource which stores the subnode at \c key
+	 */
+	Mapped_t ref_at(const Key_t& key) {return map_.at(key);}
+	ConstMapped_t ref_at(const Key_t& key) const
+	{
+		return const_cast<MapNode<T>*>(this)->ref_at(key);
+	}
 
 public:
 	/** Returns a dereferenced range of the nodes
@@ -155,8 +164,13 @@ public:
 private:
 	/** Returns a new object to store in the map when a new node is requested
 	 * The default implementation returns a default constructed Mapped_t
+	 * Dev-Client has choice to either specify a Node Factory, or override this
+	 * @param key The key at which this node is being placed
 	 */
-	Mapped_t makeNode() const {return node_factory_();}
+	virtual Mapped_t makeNode(const Key_t& key) const
+	{
+		return node_factory_();
+	}
 
 private:
 	Map_t map_;
