@@ -97,7 +97,7 @@ ValueStore::Value<T> ValueStore::Bind(Key_t key, Key_t ref_key)
         }
         else
         {
-            throw std::logic_error(std::string("ValueStore: ") + 
+            throw std::logic_error(std::string("ValueStore: ") +
                 key + " is already initialized and does not own " +
                 " a reference object");
         }
@@ -111,7 +111,7 @@ ValueStore::Value<T> ValueStore::Bind(Key_t key, Key_t ref_key)
 }
 
 
-}
+}  // namespace dman
 
 
 #endif  // SRC_UTILITY_REFERENCE_H_
