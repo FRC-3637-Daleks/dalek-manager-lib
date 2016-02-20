@@ -90,6 +90,7 @@ public:
 
 public:
 	const Value_t get_value() const {return value_;}
+	operator const Value_t() const {return get_value();}
 	const bool is_empty() const {return value_ == empty;}
 	const Value_t get_default() const {return default_value_;}
 	const PortSpace_t get_port_space() const {return port_space_;}
