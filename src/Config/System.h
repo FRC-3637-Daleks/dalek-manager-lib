@@ -19,8 +19,8 @@
 
  */
 
-#ifndef SRC_CONFIG_SUBSYSTEM_H_
-#define SRC_CONFIG_SUBSYSTEM_H_
+#ifndef SRC_CONFIG_SYSTEM_H_
+#define SRC_CONFIG_SYSTEM_H_
 
 // Project Includes
 #include "PortGroup.h"
@@ -35,19 +35,19 @@
 namespace dman
 {
 
-class Subsystem
+class System
 {
 public:
     using Key_t = TreeNode::Key_t;
-    using Base_t = MapNode<Subsystem>;
-    using SubsystemRef_t = Subsystem&;
-    using SubSubsystems_t = std::map<Key_t, SubsystemRef_t>;
+    using Base_t = MapNode<System>;
+    using SystemRef_t = System&;
+    using SubSystems_t = std::map<Key_t, SystemRef_t>;
 
 public:
-    virtual ~Subsystem() = default;
+    virtual ~System() = default;
 
     /// Can't copy subsystems
-    Subsystem(const Subsystem&) = delete;
+    System(const System&) = delete;
 
 public:
     /** Registers all values being used and published by this subsystem by \\
@@ -71,7 +71,7 @@ public:
     Key_t GetPath() const;
 
     /// Returns reference to parent
-    const Subsystem * get_parent() const {return parent_;}
+    const System * get_parent() const {return parent_;}
 
     /// Returns true if this subsystem has no parent
     bool is_orphan() const {return get_parent() == nullptr;}
@@ -79,43 +79,43 @@ public:
     /// Returns true if the subsystem successfully configured
     bool is_ready() const {return ready_;}
 
-    /** Returns Sub-Subsystem at \c key
+    /** Returns Sub-System at \c key
      * @exception std::out_of_range If key is not a subsubsystem of this object
      */
-    const SubsystemRef_t GetSubSubsystem(const Key_t& key) const;
+    const SystemRef_t GetSubSystem(const Key_t& key) const;
 
     /// Returns true if a subsystem by that key exists
-    bool IsSubSubsystem(const Key_t& key) const;
+    bool IsSubSystem(const Key_t& key) const;
 
 protected:
     /** Constructs subsystem by name.
-     * Protected because non-derived Subsystems are not allowed
+     * Protected because non-derived Systems are not allowed
      */
-    Subsystem(Key_t name, Subsystem * parent = nullptr);
+    System(Key_t name, System * parent = nullptr);
 
     /** Can move subsystems
      * @post \code{.cpp} other.name_ == "" && other.parent_ == nullptr &&
      * sub_subsystems_.empty() \endcode
      */
-    Subsystem(Subsystem&& other);
+    System(System&& other);
 
 protected:
     /// Returns mutable reference to parent
-    Subsystem * get_parent() {return parent_;}
+    System * get_parent() {return parent_;}
 
     /// Sets parent of this subsystem to \c parent
-    void SetParent(Subsystem * parent);
+    void SetParent(System * parent);
 
-    /** Returns mutable reference to Sub Subsystem at \c key
+    /** Returns mutable reference to Sub System at \c key
      * @exception std::out_of_range If \c key is not a subsubsystem of \\
      * this object
      */
-    SubsystemRef_t GetSubSubsystem(const Key_t& key);
+    SystemRef_t GetSubSystem(const Key_t& key);
 
-    /** Adds \c subsystem to Sub-Subsystems at \c key
+    /** Adds \c subsystem to Sub-Systems at \c key
      * @exception std::domain_error If \c key is already a subsubsystem of this object
      */
-    void AddSubSubsystem(const Key_t& key, SubsystemRef_t subsystem);
+    void AddSubSystem(const Key_t& key, SystemRef_t subsystem);
 
 protected:
     /** Override this function to set up config and runtime values used by
@@ -134,7 +134,7 @@ protected:
      * If this function returns a reference it must be guaranteed to not be \\
      * deleted
      * @exception <unknown> throws if the \c parent_->GetPortSpace throws
-     * @exception OrphanSubsystemError is thrown if this subsystem is an orphan
+     * @exception OrphanSystemError is thrown if this subsystem is an orphan
      */
     virtual PortGroup& GetPortSpace(const Key_t& space);
 
@@ -143,14 +143,14 @@ protected:
      * @param settings Name of settings to return. \\
      * Defaults to blank, indicating just the regular settings of the subsystem
      * @exception <unknown> throws if the \c parent_->GetPortSpace throws
-     * @exception OrphanSubsystemError is thrown if this subsystem is an orphan
+     * @exception OrphanSystemError is thrown if this subsystem is an orphan
      */
     virtual SettingGroup& GetSettings(const Key_t& settings = "");
 
 private:
     Key_t name_;
-    Subsystem *parent_;
-    SubSubsystems_t sub_subsystems_;
+    System *parent_;
+    SubSystems_t sub_subsystems_;
     bool ready_;
 };
 
@@ -158,4 +158,4 @@ private:
 }  // namespace dman
 
 
-#endif  // SRC_CONFIG_SUBSYSTEM_H_
+#endif  // SRC_CONFIG_SYSTEM_H_

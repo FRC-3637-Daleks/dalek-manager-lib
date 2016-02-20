@@ -20,8 +20,8 @@
  */
 
 // Project Includes
-#include "Subsystem.h"
-#include "OrphanSubsystemError.h"
+#include "System.h"
+#include "OrphanSystemError.h"
 
 // STD Includes
 #include <string>
@@ -30,7 +30,7 @@
 namespace dman
 {
 
-void Subsystem::Register()
+void System::Register()
 {
     doRegister();
 
@@ -40,7 +40,7 @@ void Subsystem::Register()
     }
 }
 
-bool Subsystem::Configure()
+bool System::Configure()
 {
     bool ret = doConfigure();
 
@@ -56,7 +56,7 @@ bool Subsystem::Configure()
     return ready_ = ret;
 }
 
-Subsystem::Key_t Subsystem::GetPath() const
+System::Key_t System::GetPath() const
 {
     if (is_orphan())
         return get_name();
@@ -64,23 +64,23 @@ Subsystem::Key_t Subsystem::GetPath() const
         return get_parent()->GetPath() + '/' + get_name();
 }
 
-const Subsystem::SubsystemRef_t
-Subsystem::GetSubSubsystem(const Key_t& key) const
+const System::SystemRef_t
+System::GetSubSystem(const Key_t& key) const
 {
     return sub_subsystems_.at(key);
 }
 
-bool Subsystem::IsSubSubsystem(const Key_t& key) const
+bool System::IsSubSystem(const Key_t& key) const
 {
     return sub_subsystems_.count(key) > 0;
 }
 
-Subsystem::Subsystem(Key_t name, Subsystem * parent):
+System::System(Key_t name, System * parent):
     name_(name), parent_(parent), ready_(false)
 {
 }
 
-Subsystem::Subsystem(Subsystem&& other):
+System::System(System&& other):
     name_(std::move(other.name_)),
     parent_(other.parent_),
     sub_subsystems_(std::move(other.sub_subsystems_)),
@@ -90,39 +90,39 @@ Subsystem::Subsystem(Subsystem&& other):
     other.ready_ = false;
 }
 
-void Subsystem::SetParent(Subsystem * parent)
+void System::SetParent(System * parent)
 {
     parent_ = parent;
 }
 
-Subsystem::SubsystemRef_t Subsystem::GetSubSubsystem(const Key_t& key)
+System::SystemRef_t System::GetSubSystem(const Key_t& key)
 {
     return sub_subsystems_.at(key);
 }
 
-void Subsystem::AddSubSubsystem(const Key_t& key, SubsystemRef_t subsystem)
+void System::AddSubSystem(const Key_t& key, SystemRef_t subsystem)
 {
     // The second value of the pair returned by emplace indicates whether
     // there was indeed a value added to the map
     if (!sub_subsystems_.emplace(key, subsystem).second)
-        throw std::domain_error(std::string("Subsystem: ") +
+        throw std::domain_error(std::string("System: ") +
             key + " is already a subsubsystem of " + name_);
 
     subsystem.SetParent(this);
 }
 
-PortGroup& Subsystem::GetPortSpace(const Key_t& space)
+PortGroup& System::GetPortSpace(const Key_t& space)
 {
     if (is_orphan())
-        throw OrphanSubsystemError(get_name());
+        throw OrphanSystemError(get_name());
 
     return get_parent()->GetPortSpace(space)[get_name()];
 }
 
-SettingGroup& Subsystem::GetSettings(const Key_t& settings)
+SettingGroup& System::GetSettings(const Key_t& settings)
 {
     if (is_orphan())
-        throw OrphanSubsystemError(get_name());
+        throw OrphanSystemError(get_name());
 
     return get_parent()->GetSettings(settings)[get_name()];
 }

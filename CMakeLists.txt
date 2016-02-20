@@ -97,6 +97,12 @@ endfunction(get_sources)
 if (USE_WPILIB)
   message ("Using WPILIB")
   get_sources("WPILib")
+#  find_package(WPILib REQUIRED)
+  if(WPILIB_FOUND)
+    include_directories(${WPILIB_INCLUDES})
+	list (APPEND LIBRARIES ${WPILIB_LIBRARIES})
+  endif()
+	
 endif (USE_WPILIB)
 
 # Checks to see which libs to look up
