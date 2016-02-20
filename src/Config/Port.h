@@ -90,6 +90,7 @@ public:
 
 public:
 	const Value_t get_value() const {return value_;}
+	operator const Value_t() const {return get_value();}
 	const bool is_empty() const {return value_ == empty;}
 	const Value_t get_default() const {return default_value_;}
 	const PortSpace_t get_port_space() const {return port_space_;}
@@ -105,7 +106,7 @@ public:
 	 */
 	const Value_t GetValueOrDefault(const Value_t default_value);
 
-	/** Attempts the value of the port to \c value
+	/** Attempts to set the value of the port to \c value
 	 * If the port doesn't belong to a port space it's a trivial assignment
 	 * If the port belongs to a port space it ensures that \c value is not
 	 * already taken within the space. If \c value isn't taken it releases

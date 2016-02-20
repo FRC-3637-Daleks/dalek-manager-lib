@@ -1,4 +1,22 @@
 cmake_minimum_required (VERSION 3.0)
+
+set (CMAKE_CXX_VERSION 4.9)
+
+if (USE_WPILIB)
+  message ("Using WPILIB")
+  # Modify toolchain and libraries
+  if (WIN32)
+    message ("Winblows")
+	set(CMAKE_TOOLCHAIN_FILE "cmake/WindowsFRC.cmake")
+  else (WIN32)
+    message("Good")
+    execute_process(COMMAND frc-cmake-toolchain OUTPUT_VARIABLE CMAKE_TOOLCHAIN_FILE)
+  endif (WIN32)
+else (USE_WPILIB)
+  set (CMAKE_TOOLCHAIN_FILE ${DEFAULT_TOOLCHAIN})
+endif (USE_WPILIB)
+
+
 project (dalek_manager_lib)
 
 # include(${CMAKE_TOOLCHAIN_FILE})
@@ -17,7 +35,6 @@ set (DMAN_GIT_REV "\"${DMAN_GIT_REV}\"")
 # Compiler Settings
 # set (CMAKE_CXX_COMPILER_ID GNU)
 set (CMAKE_CXX_FLAGS "-std=c++1y")
-set (CMAKE_CXX_VERSION 4.9)
 
 # Directory Structure
 set (PROJECT_SOURCE_DIR "src")
@@ -79,18 +96,12 @@ endfunction(get_sources)
 
 if (USE_WPILIB)
   message ("Using WPILIB")
-  # Modify toolchain and libraries
-  if (WIN32)
-    message ("Winblows")
-	set(CMAKE_TOOLCHAIN_FILE "cmake/WindowsFRC.cmake")
-  else (WIN32)
-    message("Good")
-    execute_process(COMMAND frc-cmake-toolchain OUTPUT_VARIABLE CMAKE_TOOLCHAIN_FILE)
-  endif (WIN32)
   get_sources("WPILib")
-  
-else (USE_WPILIB)
-  set (CMAKE_TOOLCHAIN_FILE ${DEFAULT_TOOLCHAIN})
+  find_package(WPILib REQUIRED)
+  if(WPILIB_FOUND)
+    include_directories(${WPILIB_INCLUDES})
+	list (APPEND LIBRARIES ${WPILIB_LIBRARIES})
+  endif()
 endif (USE_WPILIB)
 
 # Checks to see which libs to look up
@@ -99,7 +110,10 @@ if (CMAKE_TOOLCHAIN_FILE)
   # list (APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_SOURCE_DIR}/" "${CMAKE_SOURCE_DIR}/arm-frc-linux-gnueabi/")
   set (Boost_INCLUDE_DIR ${CMAKE_SOURCE_DIR})
   set (Boost_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/arm-frc-linux-gnueabi/)
+  message("Boost_LIBRARY_DIR: ${Boost_LIBRARY_DIR}")
 else (CMAKE_TOOLCHAIN_FILE)
+  list (APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_SOURCE_DIR}/lib/")
+  message ("ye")
   unset (CMAKE_FIND_ROOT_PATH)
 endif (CMAKE_TOOLCHAIN_FILE)
 

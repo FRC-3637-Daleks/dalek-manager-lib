@@ -1,7 +1,7 @@
 [submodule "src/Config/json"]
 	path = src/Config/json
-	url = git@github.com:nlohmann/json.git
+	url = https://github.com/nlohmann/json.git
 [submodule "src/MQTT/mosquitto"]
 	path = src/MQTT/mosquitto
-	url = git@github.com:EdWard680/mosquitto.git
+	url = https://github.com/EdWard680/mosquitto.git
 
