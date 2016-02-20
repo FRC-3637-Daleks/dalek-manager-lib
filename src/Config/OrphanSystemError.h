@@ -19,11 +19,11 @@
 
  */
 
-#ifndef SRC_CONFIG_ORPHANSUBSYSTEMERROR_H_
-#define SRC_CONFIG_ORPHANSUBSYSTEMERROR_H_
+#ifndef SRC_CONFIG_ORPHANSYSTEMERROR_H_
+#define SRC_CONFIG_ORPHANSYSTEMERROR_H_
 
 // Project Includes
-#include "Subsystem.h"
+#include "System.h"
 
 // STD Includes
 #include <stdexcept>
@@ -32,18 +32,18 @@
 namespace dman
 {
 
-class OrphanSubsystemError: public std::logic_error
+class OrphanSystemError: public std::logic_error
 {
 public:
-    using Key_t = Subsystem::Key_t;
+    using Key_t = System::Key_t;
 
 public:
-    OrphanSubsystemError(const Key_t& name):
-        std::logic_error(std::string("Subsystem: ") +
+    OrphanSystemError(const Key_t& name):
+        std::logic_error(std::string("System: ") +
             name + " has no parent from which it can request configs")
         {}
 };
 
 }  // namespace dman
 
-#endif  // SRC_CONFIG_ORPHANSUBSYSTEMERROR_H_
+#endif  // SRC_CONFIG_ORPHANSYSTEMERROR_H_
