@@ -6,10 +6,10 @@
 
 using namespace dman;
 
-class Piston: public Subsystem
+class Piston: public System
 {
 public:
-	Piston(std::string id): Subsystem(id) {}
+	Piston(std::string id): System(id) {}
 
 protected:
 	void doRegister() override
@@ -52,8 +52,8 @@ public:
 		RootSystem(std::move(home_path)),
 		left("left"), right("right")
 	{
-		AddSubSubsystem("left", left);
-		AddSubSubsystem("right", right);
+		AddSubSystem("left", left);
+		AddSubSystem("right", right);
 	}
 
 private:

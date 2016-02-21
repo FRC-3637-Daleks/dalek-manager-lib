@@ -23,7 +23,7 @@
 #define SRC_CONFIG_ROOTSYSTEM_H_
 
 // Project Includes
-#include "Subsystem.h"
+#include "System.h"
 #include "ConfigContext.h"
 
 // STD Includes
@@ -32,7 +32,7 @@
 namespace dman
 {
 
-class RootSystem: public Subsystem
+class RootSystem: public System
 {
 public:
     virtual ~RootSystem() = default;

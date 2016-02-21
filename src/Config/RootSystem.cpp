@@ -25,7 +25,7 @@ namespace dman
 {
 
 RootSystem::RootSystem(std::string config_home, Key_t name):
-    Subsystem(std::move(name)), context_(std::move(config_home))
+    System(std::move(name)), context_(std::move(config_home))
 {
 }
 
