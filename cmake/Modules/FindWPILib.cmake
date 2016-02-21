@@ -17,19 +17,13 @@ endif()
 set(WPILib_SUFFIXES wpilib WPILib include lib)
 set(WPILib_NAMES wpilib libwpilib wpi libwpi)
 
-# Find includes
-find_path(WPILib_INCLUDE_DIR
-	NAMES WPILib.h
-	PATHS ${WPILIB_HOME}/include ${WPILIB_HOME} ENV WPILIB
-	PATH_SUFFIXES ${WPILib_SUFFIXES}
-)
+#Find Includes
+set(WPILib_INCLUDE_DIR ${WPILIB_HOME}/include)
+#find_path(WPILib_INCLUDE_DIR "WPILib.h" "${WPILIB_HOME}/include/")
 
 # Library
-find_library(WPILib_LIBRARY
-	NAMES ${WPILib_NAMES}
-	PATHS ${WPILIB_HOME}/lib ${WPILIB_HOME} ENV WPILIB
-	PATH_SUFFIXES ${WPILib_SUFFIXES}
-)
+set(WPILib_LIBRARY ${WPILIB_HOME}/lib/libwpi.so)
+#find_library(WPILib_LIBRARY libwpi.so ${WPILIB_HOME}/lib)
 
 # Handle Args
 include(FindPackageHandleStandardArgs)
