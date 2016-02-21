@@ -90,7 +90,7 @@ public:
 	 * @param port_space shared pointer to port space
 	 * @return The root of this port space (primary sub node at \c space_name
 	 */
-	PortGroup RegisterPortSpace(const PortGroup::Key_t& space_name,
+	PortGroup& RegisterPortSpace(const PortGroup::Key_t& space_name,
 						   PortGroup::PortSpace_t port_space);
 
 public:

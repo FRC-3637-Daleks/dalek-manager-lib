@@ -26,10 +26,11 @@
 #include <string>
 
 // WPILib Includes
-#include "Subsystem.h"
+#include "WPILib.h"
 
 // Project Includes
 #include "Config/System.h"
+#include "Config/RootSystem.h"
 
 namespace dman
 {

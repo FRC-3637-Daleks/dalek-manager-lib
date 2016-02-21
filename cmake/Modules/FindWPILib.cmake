@@ -4,13 +4,12 @@ if(WPILIB_HOME)
 else()
   set(WPILIB_HOME $ENV{WPILIB})
   if(WPILIB_HOME)
+	  set(WPILIB_HOME ${WPILIB_HOME}/cpp/current)
       message("WPILIB_HOME: ${WPILIB_HOME}")
   else()
 	message("ERROR: Environment variable $WPILIB was not set")
   endif()
 endif()
-# CMake Find Module for WPILib by Matt Coffin
-
 
 
 # Common attributes
