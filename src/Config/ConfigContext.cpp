@@ -93,7 +93,14 @@ json ConfigContext::GetConfigFile(const std::string &path) const
 		return json::value_t::null;
 	std::ifstream config_file(filename);
 	json ret;
-	ret << config_file;
+	try
+	{
+		ret << config_file;
+	}
+	catch(const std::invalid_argument& e)
+	{
+		ret = nullptr;
+	}
 	return ret;
 }
 
