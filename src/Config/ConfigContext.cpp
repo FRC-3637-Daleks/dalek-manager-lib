@@ -33,20 +33,41 @@ namespace dman
 
 ConfigContext::ConfigContext(std::string home_path)
 {
-	SetHomePath(std::move(home_path));
+	try
+	{
+		SetHomePath(std::move(home_path));
+	}
+	catch(const InvalidManifestError& e)
+	{
+		manifest_ = json(json::value_t::null);
+	}
+}
+
+void ConfigContext::assertValidManifest() const
+{
+	if(has_no_manifest())
+		throw InvalidManifestError(home_ + "/manifest.json");
 }
 
 std::string ConfigContext::getFilename(const std::string &path) const
 {
+	assertValidManifest();
+
 	auto manifest_node = get_manifest();
 
 	for(int i = 0, j = path.find_first_of('/');
 		i != std::string::npos;
-	i = j, j = path.find_first_of('/', j))
+		i = j+1, j = path.find_first_of('/', j+1))
 	{
 		try
 		{
-			manifest_node = manifest_node.at(path.substr(i, j));
+			if (j != std::string::npos)
+				manifest_node = manifest_node.at(path.substr(i, j - i));
+			else
+			{
+				manifest_node = manifest_node.at(path.substr(i, j));
+				break;
+			}
 		}
 		catch(const std::logic_error& e)
 		{
@@ -55,6 +76,9 @@ std::string ConfigContext::getFilename(const std::string &path) const
 	}
 
 	std::string ret = manifest_node.get<std::string>();
+	if(ret.empty())
+		return ret;
+
 	if(ret[0] != '/')  // Ensure it's an absolute path just to be safe
 		ret = get_home_path() + ret;
 
@@ -63,18 +87,29 @@ std::string ConfigContext::getFilename(const std::string &path) const
 
 json ConfigContext::GetConfigFile(const std::string &path) const
 {
-	std::ifstream config_file(getFilename(path));
-	return json(config_file);
+	assertValidManifest();
+	auto filename = getFilename(path);
+	if (filename == "")
+		return json::value_t::null;
+	std::ifstream config_file(filename);
+	json ret;
+	ret << config_file;
+	return ret;
 }
 
 void ConfigContext::SaveConfigFile(const std::string &path, json config) const
 {
+	assertValidManifest();
+	auto filename = getFilename(path);
+	if(filename.empty())
+		throw InvalidManifestError(home_ + "/manifest.json", path);
 	std::ofstream config_file(getFilename(path));
 	config_file << std::setw(4) << std::move(config);
 }
 
 bool ConfigContext::LoadConfig()
 {
+	assertValidManifest();
 	InvalidManifestError ports_error, settings_error;
 	InvalidManifestError *error = nullptr;
 
@@ -100,7 +135,7 @@ bool ConfigContext::LoadConfig()
 		error = &settings_error;
 	}
 
-	if(error == nullptr)
+	if(error != nullptr)
 		throw *error;
 
 	return ret;
@@ -108,6 +143,7 @@ bool ConfigContext::LoadConfig()
 
 bool ConfigContext::AssembleConfig()
 {
+	assertValidManifest();
 	InvalidManifestError ports_error, settings_error;
 	InvalidManifestError *error = nullptr;
 
@@ -133,7 +169,7 @@ bool ConfigContext::AssembleConfig()
 		error = &settings_error;
 	}
 
-	if(error == nullptr)
+	if(error != nullptr)
 		throw *error;
 
 	return ret;
@@ -141,6 +177,7 @@ bool ConfigContext::AssembleConfig()
 
 void ConfigContext::SaveConfig() const
 {
+	assertValidManifest();
 	InvalidManifestError ports_error, settings_error;
 	InvalidManifestError *error = nullptr;
 
@@ -164,7 +201,7 @@ void ConfigContext::SaveConfig() const
 		error = &settings_error;
 	}
 
-	if(error == nullptr)
+	if(error != nullptr)
 		throw *error;
 }
 
@@ -193,7 +230,7 @@ void ConfigContext::SaveSchema() const
 		error = &settings_error;
 	}
 
-	if(error == nullptr)
+	if(error != nullptr)
 		throw *error;
 }
 
@@ -207,12 +244,14 @@ PortGroup ConfigContext::RegisterPortSpace(const PortGroup::Key_t& space_name,
 
 void ConfigContext::SetHomePath(std::string home)
 {
-	home_ = std::move(home);
-	std::ifstream manifest_file(home_ + "/manifest.json");
+	std::ifstream manifest_file(home + "/manifest.json");
 	if(manifest_file.fail())
-		throw InvalidManifestError(home_ + "/manifest.json");
+	{
+		throw InvalidManifestError(home + "/manifest.json");
+	}
 
-	manifest_ = json(manifest_file);
+	manifest_ = json::parse(std::move(manifest_file));
+	home_ = std::move(home);
 }
 
 }  // namespace dman
