@@ -35,6 +35,7 @@ class Setting: public Node
 {
 public:
     static const char * const JSONTypeToString(json::value_t type);
+	static bool CanConvert(json::value_t from, json::value_t to);
 
 public:
     /// Type must remain constant if non-null.
@@ -62,7 +63,10 @@ public:
     json get_value() {return value_;}
     const json& get_value() const {return value_;}
     template<typename T>
-    T get_value() const {return get_value().get<T>();}
+    T get_value() const
+    {
+		return get_value().get<T>();
+	}
 
     /// Returns the current default value
     json get_default() {return default_value_;}

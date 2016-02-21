@@ -41,7 +41,13 @@ namespace dman
 class ConfigContext
 {
 public:
-	ConfigContext(std::string home_path = "/home/lvuser/dman/dalek/");
+	ConfigContext() = default;
+
+	/** Constructs ConfigContext preloading manifest at home_path
+	 * If it fails to load this manifest, it will set the manifest to null,
+	 * and \c has_no_manifest() will return \c true
+	 */
+	ConfigContext(std::string home_path);
 	virtual ~ConfigContext() = default;
 
 public:
@@ -94,11 +100,14 @@ public:
 	/** Changes the path to the home directory and reloads the manifest file
 	 * Manifest file is loaded from \c manifest.json from the home directory
 	 * @exception InvalidManifestError if the manifest file could not be found
+	 * State of the object will be as it was before the call if it throws
 	 */
 	void SetHomePath(std::string home);
 
 	/// Returns the loaded manifest json object
 	json get_manifest() const {return manifest_;}
+
+	bool has_no_manifest() const {return manifest_.is_null();}
 
 	/** Returns the json file corresponding to that json path in the manifest
 	 * @return json tree corresponding to that path
@@ -116,6 +125,9 @@ public:
 private:
 	/// Gets the filename from the path in the manifest
 	std::string getFilename(const std::string &path) const;
+
+private:
+	void assertValidManifest() const;
 
 private:
 	std::string home_;

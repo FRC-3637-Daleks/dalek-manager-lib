@@ -145,7 +145,7 @@ protected:
      * @exception <unknown> throws if the \c parent_->GetPortSpace throws
      * @exception OrphanSystemError is thrown if this subsystem is an orphan
      */
-    virtual SettingGroup& GetSettings(const Key_t& settings = "");
+    virtual SettingGroup& GetSettings(const Key_t& settings = "settings");
 
 private:
     Key_t name_;

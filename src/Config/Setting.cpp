@@ -48,6 +48,23 @@ const char * const Setting::JSONTypeToString(json::value_t type)
     }
 }
 
+bool Setting::CanConvert(json::value_t from, json::value_t to)
+{
+	using value_t = json::value_t;
+
+	if(from == to)
+		return true;
+
+	if(to == value_t::null)
+		return true;
+
+	if(from == value_t::number_integer && to == value_t::number_float ||
+		from == value_t::number_float && to == value_t::number_integer)
+		return true;
+
+	return false;
+}
+
 Setting::Setting(json::value_t type): type_(type)
 {
 }
@@ -70,7 +87,9 @@ const json& Setting::GetValueOrDefault() const
 
 void Setting::SetValue(json value)
 {
-    if (has_no_type() || get_type() == value.type())
+    if (has_no_type() ||
+		get_type() == value.type() ||
+		value.is_number() && value_.is_number())
     {
         type_ = value.type();
         value_ = std::move(value);
@@ -81,7 +100,9 @@ void Setting::SetValue(json value)
 
 void Setting::SetDefault(json default_value)
 {
-    if (has_no_type() || get_type() == default_value.type())
+    if (has_no_type() ||
+		get_type() == default_value.type() ||
+		default_value.is_number() && value_.is_number())
     {
         type_ = default_value.type();
         default_value_ = std::move(default_value);
@@ -93,8 +114,12 @@ void Setting::SetDefault(json default_value)
 
 bool Setting::LoadConfig(const json& config)
 {
-    if (has_no_type() || get_type() == config.type())
+    if (has_no_type() ||
+		get_type() == config.type() ||
+		config.is_number() && value_.is_number())
+	{
         SetValue(config);
+	}
     else
     {
         SetValue(default_value_);
