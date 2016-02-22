@@ -69,6 +69,7 @@ set (USE_UTILITY ON)
 option (USE_MQTT "Build mosquitto library and compile its dependents under MQTT/" OFF)
 option (USE_WPILIB "Link wpilib and use frc toolchain, as well as compile its dependents under WPILib/" OFF)
 option (USE_LUA "Link lua and compile its autonomous mode dependnets under Auton/" OFF)
+option (USE_LINT "Style checks source files. Only run this if you are intending to pull request" OFF)
 
 # Values set in the subdirectories
 set (SOURCES)
@@ -197,8 +198,10 @@ message ("LIBRARIES: ${LIBRARIES}")
 target_link_libraries(dalek-manager ${LIBRARIES})
 
 # Linter
-include(cmake/CppLint.cmake)
-add_style_check_target(dalek-manager "${SOURCES} ${HEADERS}")
+if(USE_LINT)
+  include(cmake/CppLint.cmake)
+  add_style_check_target(dalek-manager "${SOURCES} ${HEADERS}")
+endif()
 
 # Tester
 include (cmake/CppTest.cmake)
