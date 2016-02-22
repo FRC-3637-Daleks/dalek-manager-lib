@@ -241,10 +241,10 @@ void ConfigContext::SaveSchema() const
 		throw *error;
 }
 
-PortGroup ConfigContext::RegisterPortSpace(const PortGroup::Key_t& space_name,
+PortGroup& ConfigContext::RegisterPortSpace(const PortGroup::Key_t& space_name,
 										   PortGroup::PortSpace_t port_space)
 {
-	auto ret = ports_[space_name];
+	auto& ret = ports_[space_name];
 	ret.PropogatePortSpace(std::move(port_space));
 	return ret;
 }
