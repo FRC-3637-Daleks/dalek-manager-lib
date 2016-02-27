@@ -25,13 +25,15 @@
 // Project Includes
 #include "PortGroup.h"
 #include "SettingGroup.h"
-#include "Utility/ValueStore.h"
-#include "Utility/UpdateStore.h"
-#include "Utility/UpdateThread.h"
 
 // STD Includes
 #include <map>
 #include <string>
+
+// External Includes
+#include "Utility/ValueStore.h"
+#include "Utility/UpdateStore.h"
+#include "Utility/UpdateThread.h"
 
 // Library Includes
 #include "json.hpp"

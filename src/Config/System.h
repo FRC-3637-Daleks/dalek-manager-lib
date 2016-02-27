@@ -28,13 +28,14 @@
 #include "TreeNode.h"
 #include "OrphanSystemError.h"
 
-#include "Utility/ValueStore.h"
-#include "Utility/UpdateStore.h"
-#include "Utility/UpdateThread.h"
-
 // STD Includes
 #include <string>
 #include <map>
+
+// External Includes
+#include "Utility/ValueStore.h"
+#include "Utility/UpdateStore.h"
+#include "Utility/UpdateThread.h"
 
 
 namespace dman
