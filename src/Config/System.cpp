@@ -38,6 +38,8 @@ void System::Register()
     {
         subsystem.second.Register();
     }
+
+    Log(MessageData::INFO, "Register", "dman::System") << "System Registered";
 }
 
 bool System::Configure()
@@ -46,11 +48,19 @@ bool System::Configure()
 
     for (auto subsystem : sub_subsystems_)
     {
-        if (ret &= subsystem.second.Configure())
+        if (!(ret &= subsystem.second.Configure()))
         {
-            // Failure...
+			Log(MessageData::WARN, "Configure", "dman::System") <<
+			"Failed to Configure Subsystem: " << subsystem.second.GetPath();
         }
     }
+
+	if (ret)
+		Log(MessageData::STATUS, "Configure", "dman::System") <<
+			"Configured successfully. System is ready";
+	else
+		Log(MessageData::WARN, "Configure", "dman::System") <<
+			"There were errors configuring";
 
     // set ready flag
     return ready_ = ret;
@@ -76,11 +86,14 @@ bool System::IsSubSystem(const Key_t& key) const
 }
 
 System::System(Key_t name, System * parent):
+	LogObject(SystemData(name, "", "")),
     name_(name), parent_(parent), ready_(false)
 {
+	SetParent(parent);
 }
 
 System::System(System&& other):
+	LogObject(other),
     name_(std::move(other.name_)),
     parent_(other.parent_),
     sub_subsystems_(std::move(other.sub_subsystems_)),
@@ -93,6 +106,7 @@ System::System(System&& other):
 void System::SetParent(System * parent)
 {
     parent_ = parent;
+	SetSystemName(GetPath());
 }
 
 System::SystemRef_t System::GetSubSystem(const Key_t& key)

@@ -32,16 +32,17 @@
 #include <string>
 #include <map>
 
-// External Includes
+// External Module Includes
 #include "Utility/ValueStore.h"
 #include "Utility/UpdateStore.h"
 #include "Utility/UpdateThread.h"
+#include "Log/LogObject.h"
 
 
 namespace dman
 {
 
-class System
+class System: public LogObject
 {
 public:
     using Key_t = TreeNode::Key_t;

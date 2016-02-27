@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2015, EdWard <ezeward4@gmail.com>
+    Copyright (C) 2016 EdWard <ezeward4@gmail.com>
     ---
     
     This program is free software; you can redistribute it and/or
@@ -19,40 +19,41 @@
 
  */
 
+#ifndef SRC_LOG_LOGOBJECT_H_
+#define SRC_LOG_LOGOBJECT_H_
 
 // Project Includes
+#include "StreamHandle.h"
 #include "MessageData.h"
-
-// STD Includes
-#include <string>
-#include <sstream>
-#include <iostream>
+#include "SystemData.h"
 
 namespace dman
 {
 
-std::ostream& operator<<(std::ostream& strm, const MessageData &data)
+/** Holds SystemData passed into Log function
+ */
+class LogObject
 {
-	// Enum to string array only visible at function scope
-	static const char * message_strings[] = {
-		[MessageData::STATUS] = "STATUS",
-		[MessageData::INFO]   = "INFO",
-		[MessageData::WARN]   = "WARN",
-		[MessageData::ERR]  = "ERROR",
-		[MessageData::FATAL]  = "FATAL"
-	};
+public:
+	LogObject() = default;
+	LogObject(const LogObject&) = default;
+	LogObject(LogObject&&) = default;
+	LogObject(std::string name): system_name_(std::move(name)) {}
 
-	strm << message_strings[data.get_message_type()] << "("
-		<< int(data.get_verbosity()) << ")";
+public:
+	std::string get_system_name() const {return system_name_;}
+	void SetSystemName(std::string name) {system_name_ = std::move(name);}
 
-	return strm;
-}
+public:
+	StreamHandle Log(const MessageData& message_data = MessageData::INFO,
+					 std::string component_name = "",
+					std::string component_type = "");
 
-std::string MessageData::ToString() const
-{
-	std::ostringstream ret;
-	ret << *this;
-	return ret.str();
-}
+private:
+	std::string system_name_;
+};
+
 
 }  // namespace dman
+
+#endif  // SRC_LOG_LOGOBJECT_H_
