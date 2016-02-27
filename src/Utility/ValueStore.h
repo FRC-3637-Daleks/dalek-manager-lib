@@ -63,6 +63,7 @@ private:
 	struct ValueData
 	{
 		using Key_t = std::string;
+		ValueData() = default;
 		ValueData(Key_t key,
 				  typename Value<T>::Mapped_t value_ref,
 				  typename Value<T>::Setter_t *setter = nullptr,
@@ -98,6 +99,7 @@ public:
 		using Reference_t = Reference<T>;
 
 	public:
+		Value() = default;
 		explicit Value(ValueData<T> vd): data_(std::move(vd)) {}
 		Value(const Value&) = default;
 		Value(Value&&) = default;
