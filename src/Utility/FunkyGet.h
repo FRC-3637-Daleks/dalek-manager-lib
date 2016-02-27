@@ -50,7 +50,7 @@ public:
 	virtual ~FunkyGet() = default;
 
 public:
-	T Get() final
+	T Get() const final
 	{
 		return fn_();
 	}
