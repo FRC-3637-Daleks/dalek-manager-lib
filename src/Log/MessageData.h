@@ -42,7 +42,7 @@ public:
 		STATUS = 0,		///< Message is indicating a state change within the system
 		INFO,			///< Message is providing information about the system
 		WARN,			///< Message is warning user of potential conflict
-		ERROR,			///< Message is indicating a runtime error of some kind
+		ERR,			///< Message is indicating a runtime error of some kind
 		FATAL			///< Message is indicating that the error should force program abort
 	};
 	using Message_t = uint8_t;
