@@ -145,6 +145,13 @@ public:
 					") was not initialized before GetValue was called");
 			return GetGettable().Get();
 		}
+		
+		T GetValueOr(T fail) const
+		{
+			if(!initialized())
+				return fail;
+			return GetGettable().Get();
+		}
 
 		/** Sets the internal value to val
 		 * @pre \code{.cpp} can_set() == true \endcode
