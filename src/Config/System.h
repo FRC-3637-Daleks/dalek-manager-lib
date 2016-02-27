@@ -26,6 +26,11 @@
 #include "PortGroup.h"
 #include "SettingGroup.h"
 #include "TreeNode.h"
+#include "OrphanSystemError.h"
+
+#include "Utility/ValueStore.h"
+#include "Utility/UpdateStore.h"
+#include "Utility/UpdateThread.h"
 
 // STD Includes
 #include <string>
@@ -146,6 +151,29 @@ protected:
      * @exception OrphanSystemError is thrown if this subsystem is an orphan
      */
     virtual SettingGroup& GetSettings(const Key_t& settings = "settings");
+
+protected:
+    virtual ValueStore& GetValueStore(const Key_t& store_name = "defualt");
+    virtual UpdateStore& GetUpdateStore(const Key_t& store_name = "default");
+    virtual UpdateThread& GetUpdateThread(
+        const Key_t& thread_name = "default");
+
+    template<typename T>
+    ValueStore::Value<T> GetLocalValue(Key_t key,
+                                        const Key_t& store_name = "default")
+    {
+        return GetValueStore(store_name).Get<T>(getLocalValueName(key));
+    }
+
+private:
+    virtual Key_t getLocalValueName(Key_t local_name)
+    {
+        if (is_orphan())
+            throw OrphanSystemError(get_name());
+
+        return get_parent()->getLocalValueName(
+            get_name() + '/' + std::move(local_name));
+    }
 
 private:
     Key_t name_;

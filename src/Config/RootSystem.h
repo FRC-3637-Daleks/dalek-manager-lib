@@ -55,6 +55,13 @@ protected:
     SettingGroup& GetSettings(const Key_t& settings = "settings") override;
 
 protected:
+    ValueStore& GetValueStore(const Key_t& store_name = "default") override;
+    UpdateStore& GetUpdateStore(const Key_t& store_name = "default") override;
+    UpdateThread& GetUpdateThread(
+        const Key_t& thread_name = "default") override;
+
+
+protected:
     /** Assembles the current configuration
      */
     void doRegister() override;
@@ -63,6 +70,8 @@ protected:
      */
     bool doConfigure() override;
 
+private:
+    Key_t getLocalValueName(Key_t local_name) override;
 
 private:
     ConfigContext context_;

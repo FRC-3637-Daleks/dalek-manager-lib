@@ -35,7 +35,7 @@ namespace dman
 class OrphanSystemError: public std::logic_error
 {
 public:
-    using Key_t = System::Key_t;
+    using Key_t = std::string;
 
 public:
     OrphanSystemError(const Key_t& name):

@@ -261,4 +261,19 @@ void ConfigContext::SetHomePath(std::string home)
 	home_ = std::move(home);
 }
 
+ValueStore& ConfigContext::GetValueStore(const Key_t& name)
+{
+	return value_stores_[name];
+}
+
+UpdateStore& ConfigContext::GetUpdateStore(const Key_t& name)
+{
+	return update_stores_[name];
+}
+
+UpdateThread& ConfigContext::GetUpdateThread(const Key_t& name)
+{
+	return update_threads_[name];
+}
+
 }  // namespace dman

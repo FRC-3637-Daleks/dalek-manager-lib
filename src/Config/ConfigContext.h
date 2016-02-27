@@ -25,6 +25,9 @@
 // Project Includes
 #include "PortGroup.h"
 #include "SettingGroup.h"
+#include "Utility/ValueStore.h"
+#include "Utility/UpdateStore.h"
+#include "Utility/UpdateThread.h"
 
 // STD Includes
 #include <map>
@@ -40,6 +43,10 @@ namespace dman
  */
 class ConfigContext
 {
+public:
+	using Key_t = std::string;
+	template<class ValueT> using Map_t = std::map<Key_t, ValueT>;
+
 public:
 	ConfigContext() = default;
 
@@ -94,6 +101,16 @@ public:
 						   PortGroup::PortSpace_t port_space);
 
 public:
+	/// Returns a reference to a value store named \c name
+	ValueStore& GetValueStore(const Key_t& name = "default");
+
+	/// Returns a reference to an update store named \c name
+	UpdateStore& GetUpdateStore(const Key_t& name = "default");
+
+	/// Returns a reference to an update thread named \c name
+	UpdateThread& GetUpdateThread(const Key_t& name = "default");
+
+public:
 	/// Return path to home directory
 	std::string get_home_path() const {return home_;}
 
@@ -134,6 +151,9 @@ private:
 	json manifest_;
 	PortGroup ports_;
 	SettingGroup settings_;
+	Map_t<ValueStore> value_stores_;
+	Map_t<UpdateStore> update_stores_;
+	Map_t<UpdateThread> update_threads_;
 };
 
 

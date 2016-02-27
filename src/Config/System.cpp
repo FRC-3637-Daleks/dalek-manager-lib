@@ -127,4 +127,31 @@ SettingGroup& System::GetSettings(const Key_t& settings)
     return get_parent()->GetSettings(settings)[get_name()];
 }
 
+ValueStore& System::GetValueStore(const Key_t& store_name)
+{
+    if (is_orphan())
+        throw OrphanSystemError(get_name());
+
+    return get_parent()->GetValueStore(store_name);
+}
+
+UpdateStore& System::GetUpdateStore(const Key_t& store_name)
+{
+    if (is_orphan())
+        throw OrphanSystemError(get_name());
+
+    return get_parent()->GetUpdateStore(store_name);
+}
+
+UpdateThread& System::GetUpdateThread(const Key_t& thread_name)
+{
+    if (is_orphan())
+        throw OrphanSystemError(get_name());
+
+    return get_parent()->GetUpdateThread(thread_name);
+}
+
+
+
+
 }  // namespace dman
