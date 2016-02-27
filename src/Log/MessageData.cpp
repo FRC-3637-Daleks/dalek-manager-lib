@@ -38,7 +38,7 @@ std::ostream& operator<<(std::ostream& strm, const MessageData &data)
 		[MessageData::STATUS] = "STATUS",
 		[MessageData::INFO]   = "INFO",
 		[MessageData::WARN]   = "WARN",
-		[MessageData::ERROR]  = "ERROR",
+		[MessageData::ERR]  = "ERROR",
 		[MessageData::FATAL]  = "FATAL"
 	};
 
