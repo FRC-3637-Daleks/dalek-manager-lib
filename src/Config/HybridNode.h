@@ -110,6 +110,8 @@ public:
 			else
 				ret |= (*this)(element.key()).AssembleConfig(element.value());
 		}
+
+		return ret;
 	}
 
 private:

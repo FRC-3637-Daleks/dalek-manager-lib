@@ -155,7 +155,7 @@ protected:
     virtual SettingGroup& GetSettings(const Key_t& settings = "settings");
 
 protected:
-    virtual ValueStore& GetValueStore(const Key_t& store_name = "defualt");
+    virtual ValueStore& GetValueStore(const Key_t& store_name = "default");
     virtual UpdateStore& GetUpdateStore(const Key_t& store_name = "default");
     virtual UpdateThread& GetUpdateThread(
         const Key_t& thread_name = "default");
