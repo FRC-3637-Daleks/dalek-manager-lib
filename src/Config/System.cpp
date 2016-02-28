@@ -32,6 +32,8 @@ namespace dman
 
 void System::Register()
 {
+	SetSystemName(GetPath());
+
     doRegister();
 
     for (auto subsystem : sub_subsystems_)
