@@ -65,7 +65,6 @@ RootSystem::Key_t RootSystem::getLocalValueName(Key_t local_name)
 
 void RootSystem::doRegister()
 {
-    context_.AssembleConfig();
 }
 
 bool RootSystem::doConfigure()
