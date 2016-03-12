@@ -31,6 +31,11 @@
 namespace dman
 {
 
+TreeNode::TreeNode()
+{
+	SetFormat(Node::SchemaFormat_t::grid);
+}
+
 bool TreeNode::LoadConfig(const json &config)
 {
 	bool ret = false;
@@ -77,7 +82,7 @@ json TreeNode::GetConfig() const
 
 json TreeNode::GetSchema() const
 {
-	json ret(json::value_t::object);
+	json ret(base_schema_);
 
 	ret["type"] = "object";
 	ret["additionalProperties"] = false;

@@ -159,7 +159,7 @@ json Port::GetConfig() const
 
 json Port::GetSchema() const
 {
-	json ret(json::value_t::object);
+	json ret(base_schema_);
 
 	ret["type"] = "integer";
 	ret["default"] = default_value_;

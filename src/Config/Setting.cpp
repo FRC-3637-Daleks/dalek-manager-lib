@@ -136,7 +136,7 @@ json Setting::GetConfig() const
 
 json Setting::GetSchema() const
 {
-    json ret(json::value_t::object);
+    json ret(base_schema_);
 
     ret["type"] = JSONTypeToString(get_type());
     ret["default"] = get_default();

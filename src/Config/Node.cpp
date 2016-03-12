@@ -56,6 +56,10 @@ const char * const Node::get_format_string(SchemaFormat_t format)
 	return schema_formats[format];
 }
 
+Node::Node(): base_schema_(json::value_t::object)
+{
+}
+
 std::string Node::GetDescription() const
 {
 	if (base_schema_.count("description"))

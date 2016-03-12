@@ -66,6 +66,7 @@ public:
 	static const char * const get_format_string(SchemaFormat_t format);
 
 public:
+	Node();
 	virtual ~Node() = default;
 
 public:
