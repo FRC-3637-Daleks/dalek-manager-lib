@@ -68,15 +68,23 @@ public:
 	virtual ~MapNode() = default;
 
 public:
+	/** Returns the stored shared_ptr to the Node at key, silently creating it \\
+	 * with makeNode if one didn't exist before the call
+	 */
+	Mapped_t ref(const Key_t& key)
+	{
+		auto& val = map_[key];
+		if(val == nullptr)
+			val = makeNode(key);
+		return val;
+	}
+
 	/** Returns a reference to the Node at key, silently creating it with \\
 	 * makeNode if one didn't exist before the call
 	 */
 	Node_t& operator[](const Key_t& key)
 	{
-		auto& val = map_[key];
-		if(val == nullptr)
-			val = makeNode(key);
-		return *val;
+		return *ref(key);
 	}
 
 	/** Returns a reference to the Node at key, complaining via exceptions \\
