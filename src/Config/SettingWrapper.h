@@ -42,6 +42,11 @@ constexpr Node::SchemaFormat_t GetDefaultSchemaFormat();
 
 using NullSettingError = std::logic_error;
 
+/** Class which maintains a reference to a setting
+ * Good to use in Systems which simply set member variables to a setting \\
+ * at configure time. Also allows for extensions upon the core setting schema
+ * @tparam T Consistent Type which this setting will act as
+ */
 template<typename T>
 class SettingWrapper
 {
@@ -50,7 +55,7 @@ public:
 	using Value_t = T;
 
 public:
-	SettingWrapper(Reference_t ref): reference_(ref)
+	explicit SettingWrapper(Reference_t ref): reference_(ref)
 	{
 		if (ref)
 			ref->SetFormat(GetDefaultSchemaFormat<T>());

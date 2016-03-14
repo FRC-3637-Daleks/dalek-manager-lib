@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	EnumWrapper<Wow>::SetString(SECOND, "SECOND");
 	EnumWrapper<Wow>::SetString(LAST, "LAST");
 
-	EnumWrapper<Wow> wow(root["amaze"].Leaves().ref("wow"));
+	auto wow = root["amaze"].WrapSetting<EnumWrapper<Wow> >("wow");
 	wow.SetEnumDefault(FIRST);
 
 	for(int i = 0; i < argc; i++)

@@ -30,8 +30,10 @@ namespace dman
 
 /** Creates a setting that has a checkbox of an enumeration set
  * Converts the string value to the corresponding enum value
- * EnumT must be an enum type whose last element is N
+ * @tparam EnumT Must be an enumeration with elements from 0 to EnumT \\
  * e.g. \code{.cpp} enum Enum {state1 = 0, state2, N} \endcode
+ * @tparam EnumN Number of values in the enum. By default looks for \\
+ * EnumT::N. If this value is not present in the enum, this param must be set
  */
 template<class EnumT, int EnumN = EnumT::N>
 class EnumWrapper: SettingWrapper<std::string>
@@ -72,7 +74,7 @@ public:
 	}
 
 public:
-	EnumWrapper(Reference_t ref): Base_t(ref)
+	explicit EnumWrapper(Reference_t ref): Base_t(ref)
 	{
 		if (ref)
 		{
