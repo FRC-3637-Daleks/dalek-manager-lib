@@ -190,7 +190,8 @@ foreach(dir ${dirs})
 endforeach()
 
 # Library target
-string (REPLACE " " ";" SOURCES_LIST "${SOURCES}")
+#string (REPLACE " " ";" SOURCES_LIST "${SOURCES}")
+set (SOURCES_LIST ${SOURCES})
 add_library(dalek-manager STATIC ${SOURCES_LIST})
 
 # Link Libraries
