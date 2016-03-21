@@ -25,6 +25,7 @@
 // Project Includes
 #include "HybridNode.h"
 #include "Setting.h"
+#include "SettingWrapper.h"
 
 namespace dman
 {
@@ -39,6 +40,16 @@ public:
 public:
     SettingGroup() = default;
     virtual ~SettingGroup() = default;
+
+public:
+	/** Passes a reference to a setting to a new object of type WrapperT
+	 * @tparam WrapperT Must be constructible with std::shared_ptr<Setting>
+	 */
+	template<class WrapperT>
+	WrapperT WrapSetting(Key_t key)
+	{
+		return WrapperT(leaf_ref(key));
+	}
 };
 
 

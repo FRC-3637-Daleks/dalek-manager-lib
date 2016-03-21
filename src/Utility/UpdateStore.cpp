@@ -90,7 +90,7 @@ void UpdateStore::doUpdate()
 
 			if (timeout_policy_.logs())
 			{
-				TextLog::Log(MessageData(MessageData::ERROR),
+				TextLog::Log(MessageData(MessageData::ERR),
 							 SystemData("Updaters",
 							 			"", "UpdateStore")) <<
 				"Updater #" << updater - timeout_updaters_.begin() <<

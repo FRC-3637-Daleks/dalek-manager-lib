@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2015, EdWard <ezeward4@gmail.com>
+    Copyright (C) 2016, EdWard <ezeward4@gmail.com>
     ---
     
     This program is free software; you can redistribute it and/or
@@ -19,40 +19,20 @@
 
  */
 
-
 // Project Includes
-#include "MessageData.h"
-
-// STD Includes
-#include <string>
-#include <sstream>
-#include <iostream>
+#include "LogObject.h"
+#include "TextLog.h"
 
 namespace dman
 {
 
-std::ostream& operator<<(std::ostream& strm, const MessageData &data)
+StreamHandle LogObject::Log(const MessageData& message_data,
+							std::string component_name,
+							std::string component_type)
 {
-	// Enum to string array only visible at function scope
-	static const char * message_strings[] = {
-		[MessageData::STATUS] = "STATUS",
-		[MessageData::INFO]   = "INFO",
-		[MessageData::WARN]   = "WARN",
-		[MessageData::ERR]  = "ERROR",
-		[MessageData::FATAL]  = "FATAL"
-	};
-
-	strm << message_strings[data.get_message_type()] << "("
-		<< int(data.get_verbosity()) << ")";
-
-	return strm;
+	return TextLog::Log(message_data, SystemData(system_name_,
+		std::move(component_name), std::move(component_type)));
 }
 
-std::string MessageData::ToString() const
-{
-	std::ostringstream ret;
-	ret << *this;
-	return ret.str();
-}
 
 }  // namespace dman

@@ -33,7 +33,7 @@ namespace dman
 
 std::string SystemData::ToString() const
 {
-	return system_+" \""+component_name_+"\":"+component_type_;
+	return system_+" | \""+component_name_+"\" | "+component_type_;
 }
 
 std::ostream& operator<< (std::ostream& strm, const SystemData &data)

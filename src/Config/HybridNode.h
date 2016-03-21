@@ -88,6 +88,16 @@ public:
 	Group_t& operator[] (const Key_t& key) {return groups_[key];}
 	const Group_t& operator[] (const Key_t& key) const {return groups_[key];}
 
+	/// Returns the shared_ptr pointing to the leaf at \c key
+	typename MapNode<Leaf_t>::Mapped_t leaf_ref(const Key_t& key)
+	{
+		return leaves_.ref(key);
+	}
+	typename MapNode<Leaf_t>::ConstMapped_t leaf_ref(const Key_t& key) const
+	{
+		return leaves_.ref(key);
+	}
+
 public:
 	/** Returns joint iterator range to the stored maps
 	 */
@@ -110,6 +120,8 @@ public:
 			else
 				ret |= (*this)(element.key()).AssembleConfig(element.value());
 		}
+
+		return ret;
 	}
 
 private:

@@ -65,14 +65,14 @@ public:
     template<typename T>
     T get_value() const
     {
-		return get_value().get<T>();
+		return get_value().template get<T>();
 	}
 
     /// Returns the current default value
     json get_default() {return default_value_;}
     const json& get_default() const {return default_value_;}
     template<typename T>
-    T get_default() const {return get_default().get<T>();}
+    T get_default() const {return get_default().template get<T>();}
 
     /// Returns the current value, if this is null, returns the default value
     json GetValueOrDefault();

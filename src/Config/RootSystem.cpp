@@ -42,9 +42,29 @@ SettingGroup& RootSystem::GetSettings(const Key_t& settings)
         return context_.get_settings()[settings];
 }
 
+ValueStore& RootSystem::GetValueStore(const Key_t& store_name)
+{
+    return context_.GetValueStore(store_name);
+}
+
+UpdateStore& RootSystem::GetUpdateStore(const Key_t& store_name)
+{
+    return context_.GetUpdateStore(store_name);
+}
+
+UpdateThread& RootSystem::GetUpdateThread(const Key_t& thread_name)
+{
+    return context_.GetUpdateThread(thread_name);
+}
+
+RootSystem::Key_t RootSystem::getLocalValueName(Key_t local_name)
+{
+    return get_name() + '/' + local_name;
+}
+
+
 void RootSystem::doRegister()
 {
-    context_.AssembleConfig();
 }
 
 bool RootSystem::doConfigure()

@@ -22,6 +22,9 @@
 #ifndef SRC_CONFIG_NODE_H_
 #define SRC_CONFIG_NODE_H_
 
+// STD Includes
+#include <string>
+
 // Lib Includes
 #include "json.hpp"
 
@@ -36,6 +39,34 @@ using json = nlohmann::json;
 class Node
 {
 public:
+	enum SchemaFormat_t {
+		color = 0,
+		date,
+		datetime,
+		datetime_local,
+		email,
+		month,
+		number,
+		range,
+		tel,
+		text,
+		textarea,
+		time,
+		url,
+		week,
+		checkbox,
+		table,
+		tabs,
+		select,
+		grid,
+		n_formats
+	};
+
+	static const char * const schema_formats[n_formats];
+	static const char * const get_format_string(SchemaFormat_t format);
+
+public:
+	Node();
 	virtual ~Node() = default;
 
 public:
@@ -61,9 +92,25 @@ public:
 	virtual json GetConfig() const = 0;
 
 	/** Returns json schema detailing valid json this node can load
+	 * The default implementation of this function returns the base_schema_
 	 * @return json object representing schema
 	 */
-	virtual json GetSchema() const = 0;
+	virtual json GetSchema() const {return base_schema_;}
+
+public:
+	/// The description shows up below the title/key in the editor
+	std::string GetDescription() const;
+	void SetDescription(std::string description);
+
+	/// The format defines how the input will look on the screen
+	std::string GetFormat() const;
+	void SetFormat(std::string format);
+	void SetFormat(SchemaFormat_t format);
+	bool IsFormat(SchemaFormat_t format) const;
+
+public:
+	/// Base Schema returned by the default form of GetSchema
+	json base_schema_;
 };
 
 }  // namespace dman

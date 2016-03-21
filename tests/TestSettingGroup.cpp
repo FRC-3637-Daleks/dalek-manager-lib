@@ -5,9 +5,12 @@
 
 #include "Config/SettingGroup.h"
 #include "Config/UnavailablePortError.h"
+#include "Config/EnumSetting.h"
 
 using namespace dman;
 using namespace std;
+
+enum Wow {FIRST = 0, SECOND, LAST, N};
 
 int main(int argc, char **argv)
 {
@@ -21,6 +24,13 @@ int main(int argc, char **argv)
 	}
 
 	root["auton"]("mode").SetDefault("portcullis");
+	
+	EnumWrapper<Wow>::SetString(FIRST, "FIRST");
+	EnumWrapper<Wow>::SetString(SECOND, "SECOND");
+	EnumWrapper<Wow>::SetString(LAST, "LAST");
+
+	auto wow = root["amaze"].WrapSetting<EnumWrapper<Wow> >("wow");
+	wow.SetEnumDefault(FIRST);
 
 	for(int i = 0; i < argc; i++)
 	{
@@ -67,6 +77,8 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+	
+	cerr << "Final wow is " << int(wow.GetEnumValueOrDefault()) << endl;
 	
 	return 0;
 }

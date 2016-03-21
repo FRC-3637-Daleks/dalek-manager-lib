@@ -44,7 +44,7 @@ public:
 public:
 	GenericTrigger(TriggerFn_t fn): func_(std::move(fn)) {}
 	GenericTrigger(ValueStore::Value<bool> value):
-		func_([value]() {return value.GetValue();}) {}
+		func_([value]() {return value.GetValueOr(false);}) {}
 
 public:
 	TriggerFn_t get_trigger() const {return func_;}

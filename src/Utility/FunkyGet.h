@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2015, EdWard <ezeward4@gmail.com>
+    Copyright (C) 2016 EdWard <ezeward4@gmail.com>
     ---
     
     This program is free software; you can redistribute it and/or
@@ -19,40 +19,48 @@
 
  */
 
+#ifndef SRC_UTILITY_FUNKYGET_H_
+#define SRC_UTILITY_FUNKYGET_H_
 
 // Project Includes
-#include "MessageData.h"
+#include "Gettable.h"
 
 // STD Includes
-#include <string>
-#include <sstream>
-#include <iostream>
+#include <functional>
 
 namespace dman
 {
 
-std::ostream& operator<<(std::ostream& strm, const MessageData &data)
+/** Gettable which calls the internal function supplied at construction time
+ * The function is guaranteed to not be called until Get is called
+ */
+template<typename T>
+class FunkyGet: public Gettable<T>
 {
-	// Enum to string array only visible at function scope
-	static const char * message_strings[] = {
-		[MessageData::STATUS] = "STATUS",
-		[MessageData::INFO]   = "INFO",
-		[MessageData::WARN]   = "WARN",
-		[MessageData::ERR]  = "ERROR",
-		[MessageData::FATAL]  = "FATAL"
-	};
+public:
+	using Func_t = std::function<T()>;
 
-	strm << message_strings[data.get_message_type()] << "("
-		<< int(data.get_verbosity()) << ")";
+public:
+	/// Constructs with a user defined function
+	FunkyGet(Func_t fn): fn_(std::move(fn)) {}
 
-	return strm;
-}
+	/// Move Constructor
+	FunkyGet(FunkyGet&&) = default;
 
-std::string MessageData::ToString() const
-{
-	std::ostringstream ret;
-	ret << *this;
-	return ret.str();
-}
+	virtual ~FunkyGet() = default;
+
+public:
+	T Get() const final
+	{
+		return fn_();
+	}
+
+private:
+	Func_t fn_;
+};
+
+
 
 }  // namespace dman
+
+#endif  // SRC_UTILITY_FUNKYGET_H_

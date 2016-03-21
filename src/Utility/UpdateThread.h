@@ -51,7 +51,7 @@ public:
 	UpdateThread(): UpdateThread(Duration_t::zero()) {}
 
 	UpdateThread(const Duration_t period, Stored_t updater = nullptr):
-		period_(period), updater_(std::move(updater)), running_(false) {}
+		updater_(std::move(updater)), period_(period), running_(false) {}
 
 	UpdateThread(const UpdateThread&) = delete;
 	UpdateThread(UpdateThread&&) = default;

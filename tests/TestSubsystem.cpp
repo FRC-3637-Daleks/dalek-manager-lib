@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
+#include <memory>
 
 #include "Config/RootSystem.h"
 #include "Config/PortSpace.h"
@@ -20,6 +21,9 @@ protected:
 
 		auto& settings = GetSettings();
 		settings("transition-seconds").SetDefault(1.0);
+
+		GetLocalValue<int>("position").Initialize(
+			std::make_shared<Valuable<int> >(2));
 	}
 
 	bool doConfigure() override
@@ -99,6 +103,12 @@ int main(int argc, char **argv)
 		std::cout << "Robot configured successfully" << std::endl;
 	else
 		std::cout << "Robot is not ready" << std::endl;
+
+	{
+		std::cout << "Checking if value is present" << std::endl;
+		auto value = robot.get_context().GetValueStore().Get<int>("Robot/left/position");
+		std::cout << "Robot/left/position: " << value.GetValue() << std::endl;
+	}
 
 	return 0;
 }

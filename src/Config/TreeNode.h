@@ -52,6 +52,7 @@ public:
 									std::ptrdiff_t>;
 
 public:
+	TreeNode();
 	virtual ~TreeNode() = default;
 
 public:
