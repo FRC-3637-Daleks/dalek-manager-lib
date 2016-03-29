@@ -92,6 +92,7 @@ System::System(Key_t name, System * parent):
     name_(name), parent_(parent), ready_(false)
 {
 	SetParent(parent);
+	Log(MessageData(MessageData::INFO, 3), name_, "System") << "Constructed";
 }
 
 System::System(System&& other):
