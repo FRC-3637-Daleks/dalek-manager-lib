@@ -61,6 +61,12 @@ public:
 			ref->SetFormat(GetDefaultSchemaFormat<T>());
 	}
 
+	SettingWrapper(const SettingWrapper<T>&) = default;
+	SettingWrapper(SettingWrapper<T>&&) = default;
+
+	SettingWrapper<T>& operator= (SettingWrapper<T> &&) = default;
+	SettingWrapper<T>& operator= (const SettingWrapper<T>&) = default;
+
 	virtual ~SettingWrapper() = default;
 
 public:

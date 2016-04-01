@@ -40,6 +40,8 @@ class EnumWrapper: SettingWrapper<std::string>
 {
 public:
 	using Base_t = SettingWrapper<std::string>;
+	using Base_t::Base_t;
+	using Base_t::operator=;
 
 public:
 	/// Array containing the string representations of the enum values
