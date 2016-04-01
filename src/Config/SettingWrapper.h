@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016 EdWard <>
+    Copyright (C) 2016 EdWard <ezeward4@gmail.com>
     ---
     
     This program is free software; you can redistribute it and/or
@@ -55,7 +55,7 @@ public:
 	using Value_t = T;
 
 public:
-	explicit SettingWrapper(Reference_t ref): reference_(ref)
+	explicit SettingWrapper(Reference_t ref = nullptr): reference_(ref)
 	{
 		if (ref)
 			ref->SetFormat(GetDefaultSchemaFormat<T>());

@@ -76,7 +76,7 @@ public:
 	}
 
 public:
-	explicit EnumWrapper(Reference_t ref): Base_t(ref)
+	explicit EnumWrapper(Reference_t ref = nullptr): Base_t(ref)
 	{
 		if (ref)
 		{
