@@ -16,11 +16,7 @@
 #ifndef BOOST_CONFIG_HPP
 #  include <boost/config.hpp>
 #endif
-#
-#ifndef BOOST_CSTDINT_HPP
-#  include <boost/cstdint.hpp>
-#endif
-#
+
 #if defined(BOOST_HAS_PRAGMA_ONCE)
 #  pragma once
 #endif
@@ -68,14 +64,6 @@
 
 namespace boost {
 namespace intrusive {
-
-#if !defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
-#  ifdef BOOST_HAS_INTPTR_T
-      using ::boost::uintptr_t;
-#  else
-      typedef std::size_t uintptr_t;
-#  endif
-#endif
 
 ////////////////////////////
 //     Node algorithms
@@ -196,7 +184,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -211,7 +198,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -226,7 +212,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -266,7 +251,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -281,7 +265,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -296,7 +279,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -312,7 +294,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -327,7 +308,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -342,7 +322,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -383,7 +362,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -398,7 +376,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -413,7 +390,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -429,7 +405,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -444,7 +419,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -459,7 +433,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -474,7 +447,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -489,7 +461,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>
@@ -504,7 +475,6 @@ template
    , class O3  = void
    , class O4  = void
    , class O5  = void
-   , class O6  = void
    >
 #else
 template<class T, class ...Options>

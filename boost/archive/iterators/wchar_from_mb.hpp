@@ -19,17 +19,18 @@
 #include <boost/assert.hpp>
 #include <cctype>
 #include <cstddef> // size_t
-#include <cwchar> // mbstate_t and mbrtowc
+#include <cstdlib> // mblen
 
 #include <boost/config.hpp>
 #if defined(BOOST_NO_STDC_NAMESPACE)
 namespace std{ 
-    using ::mbstate_t;
-    using ::mbrtowc;
+    using ::mblen; 
+    using ::mbtowc; 
 } // namespace std
 #endif
 
 #include <boost/serialization/throw_exception.hpp>
+#include <boost/serialization/pfto.hpp>
 
 #include <boost/iterator/iterator_adaptor.hpp>
 #include <boost/archive/iterators/dataflow_exception.hpp>
@@ -88,8 +89,8 @@ class wchar_from_mb
 public:
     // make composible buy using templated constructor
     template<class T>
-    wchar_from_mb(T start) : 
-        super_t(Base(static_cast< T >(start))),
+    wchar_from_mb(BOOST_PFTO_WRAPPER(T) start) : 
+        super_t(Base(BOOST_MAKE_PFTO_WRAPPER(static_cast< T >(start)))),
         m_full(false)
     {}
     // intel 7.1 doesn't like default copy constructor
@@ -101,17 +102,23 @@ public:
 
 template<class Base>
 wchar_t wchar_from_mb<Base>::drain(){
-    std::mbstate_t mbs;
+    char buffer[9];
+    char * bptr = buffer;
+    char val;
+    for(std::size_t i = 0; i++ < (unsigned)MB_CUR_MAX;){
+        val = * this->base_reference();
+        *bptr++ = val;
+        int result = std::mblen(buffer, i);
+        if(-1 != result)
+            break;
+        ++(this->base_reference());
+    }
     wchar_t retval;
-    std::size_t result;
-    do {
-        char val = *this->base_reference();
-        result = std::mbrtowc(&retval, &val, 1, &mbs);
-        if(result == static_cast<std::size_t>(-1))
-            boost::serialization::throw_exception(iterators::dataflow_exception(
-                iterators::dataflow_exception::invalid_conversion
-            ));
-    } while (result == static_cast<std::size_t>(-2));
+    int result = std::mbtowc(& retval, buffer, MB_CUR_MAX);
+    if(0 >= result)
+        boost::serialization::throw_exception(iterators::dataflow_exception(
+            iterators::dataflow_exception::invalid_conversion
+        ));
     return retval;
 }
 

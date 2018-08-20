@@ -50,7 +50,7 @@ namespace detail {
 # else
         (void) fac;     // remove "unused parameter" warning
         using namespace std;
-        return isdigit(c) != 0; 
+        return isdigit(c); 
 #endif 
     }
  

@@ -36,7 +36,11 @@ struct stack_allocate
 private:
     typedef typename boost::aligned_storage<
         sizeof(T), 
-        boost::alignment_of<T>::value
+        #if BOOST_WORKAROUND(__BORLANDC__,BOOST_TESTED_AT(0x560))
+            8
+        #else
+            boost::alignment_of<T>::value
+        #endif
     > type;
     type storage_;
 };

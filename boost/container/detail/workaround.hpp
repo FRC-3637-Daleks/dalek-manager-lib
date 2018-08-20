@@ -19,6 +19,8 @@
 #  pragma once
 #endif
 
+#include <boost/container/detail/config_begin.hpp>
+
 #if    !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)\
     && !defined(BOOST_INTERPROCESS_DISABLE_VARIADIC_TMPL)
    #define BOOST_CONTAINER_PERFECT_FORWARDING
@@ -57,23 +59,6 @@
 #define BOOST_CONTAINER_DOCIGN(T) T
 #define BOOST_CONTAINER_DOCONLY(T)
 
-/*
-   we need to import/export our code only if the user has specifically
-   asked for it by defining either BOOST_ALL_DYN_LINK if they want all boost
-   libraries to be dynamically linked, or BOOST_CONTAINER_DYN_LINK
-   if they want just this one to be dynamically liked:
-*/
-#if defined(BOOST_ALL_DYN_LINK) || defined(BOOST_CONTAINER_DYN_LINK)
-
-   /* export if this is our own source, otherwise import: */
-   #ifdef BOOST_CONTAINER_SOURCE
-   #  define BOOST_CONTAINER_DECL BOOST_SYMBOL_EXPORT
-   #else
-   #  define BOOST_CONTAINER_DECL BOOST_SYMBOL_IMPORT
-   
-   #endif  /* BOOST_CONTAINER_SOURCE */
-#else
-   #define BOOST_CONTAINER_DECL
-#endif  /* DYN_LINK */
+#include <boost/container/detail/config_end.hpp>
 
 #endif   //#ifndef BOOST_CONTAINER_DETAIL_WORKAROUND_HPP

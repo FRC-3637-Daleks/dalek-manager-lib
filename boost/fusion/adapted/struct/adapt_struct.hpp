@@ -17,8 +17,6 @@
 #include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/comparison/less.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
-#include <boost/preprocessor/seq/seq.hpp>
-#include <boost/preprocessor/variadic/to_seq.hpp>
 #include <boost/type_traits/add_reference.hpp>
 #include <boost/type_traits/is_const.hpp>
 #include <boost/type_traits/add_const.hpp>
@@ -63,28 +61,25 @@
             (1)NAME_SEQ,                                                        \
             struct_tag,                                                         \
             0,                                                                  \
-            BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER(                        \
-                BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)),                         \
+            BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER(__VA_ARGS__),           \
             BOOST_FUSION_ADAPT_STRUCT_C)
 
-#   define BOOST_FUSION_ADAPT_STRUCT(...)                                       \
+#   define BOOST_FUSION_ADAPT_STRUCT(NAME, ...)                                 \
         BOOST_FUSION_ADAPT_STRUCT_BASE(                                         \
             (0),                                                                \
-            (0)(BOOST_PP_SEQ_HEAD(BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))),      \
+            (0)(NAME),                                                          \
             struct_tag,                                                         \
             0,                                                                  \
-            BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER(                        \
-              BOOST_PP_SEQ_TAIL(BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))),        \
+            BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER(__VA_ARGS__),           \
             BOOST_FUSION_ADAPT_STRUCT_C)
 
-#   define BOOST_FUSION_ADAPT_STRUCT_AS_VIEW(...)                               \
+#   define BOOST_FUSION_ADAPT_STRUCT_AS_VIEW(NAME, ...)                         \
         BOOST_FUSION_ADAPT_STRUCT_BASE(                                         \
             (0),                                                                \
-            (0)(BOOST_PP_SEQ_HEAD(BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))),      \
+            (0)(NAME),                                                          \
             struct_tag,                                                         \
             1,                                                                  \
-            BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER(                        \
-              BOOST_PP_SEQ_TAIL(BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))),        \
+            BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER(__VA_ARGS__),           \
             BOOST_FUSION_ADAPT_STRUCT_C)
         
 #else // BOOST_PP_VARIADICS

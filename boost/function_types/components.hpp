@@ -15,6 +15,7 @@
 
 #include <boost/detail/workaround.hpp>
 #include <boost/mpl/aux_/lambda_support.hpp>
+#include <boost/type_traits/detail/template_arity_spec.hpp>
 
 #include <boost/type_traits/integral_constant.hpp>
 
@@ -414,6 +415,8 @@ namespace boost
 #include <boost/function_types/detail/pp_loop.hpp>
 
   } } // namespace function_types::detail
+
+  BOOST_TT_AUX_TEMPLATE_ARITY_SPEC(2,function_types::components)
 
 } // namespace ::boost
 

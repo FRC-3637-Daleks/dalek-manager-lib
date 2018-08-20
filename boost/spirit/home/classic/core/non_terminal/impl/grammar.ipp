@@ -23,7 +23,6 @@
 #include <boost/spirit/home/classic/core/non_terminal/impl/static.hpp>
 #include <boost/thread/tss.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/thread/lock_types.hpp>
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -160,7 +159,7 @@ struct grammar_definition
                 result(new definition_t(target_grammar->derived()));
 
 #ifdef BOOST_SPIRIT_THREADSAFE
-            boost::unique_lock<boost::mutex> lock(helpers.mutex());
+            boost::mutex::scoped_lock lock(helpers.mutex());
 #endif
             helpers.push_back(this);
 

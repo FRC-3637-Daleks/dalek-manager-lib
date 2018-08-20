@@ -17,7 +17,6 @@
 #include <algorithm>
 #include <boost/detail/allocator_utilities.hpp>
 #include <boost/integer/common_factor_rt.hpp>
-#include <boost/multi_index/detail/raw_ptr.hpp>
 #include <cstddef>
 #include <functional>
 
@@ -220,18 +219,14 @@ public:
 
   static random_access_index_node* from_impl(impl_pointer x)
   {
-    return
-      static_cast<random_access_index_node*>(
-        static_cast<trampoline*>(
-          raw_ptr<impl_type*>(x)));
+    return static_cast<random_access_index_node*>(
+      static_cast<trampoline*>(&*x));
   }
 
   static const random_access_index_node* from_impl(const_impl_pointer x)
   {
-    return
-      static_cast<const random_access_index_node*>(
-        static_cast<const trampoline*>(
-          raw_ptr<const impl_type*>(x)));
+    return static_cast<const random_access_index_node*>(
+      static_cast<const trampoline*>(&*x));
   }
 
   /* interoperability with rnd_node_iterator */

@@ -113,7 +113,8 @@ void TextLog::AddSimpleSink(TextLog::SimpleSinkFn sink_fn)
 	using namespace boost::log;
 
 	using sink_type = sinks::synchronous_sink< SimpleSinkWrapper >;
-	auto sink = boost::make_shared< sink_type>(sink_fn);
+	auto sink = boost::make_shared< sink_type>(
+		boost::make_shared<SimpleSinkWrapper>(sink_fn));
 
 	sink->set_formatter
 	(

@@ -47,19 +47,13 @@ T beta_imp(T a, T b, const Lanczos&, const Policy& pol)
 
    // Special cases:
    if((c == a) && (b < tools::epsilon<T>()))
-      return 1 / b;
+      return boost::math::tgamma(b, pol);
    else if((c == b) && (a < tools::epsilon<T>()))
-      return 1 / a;
+      return boost::math::tgamma(a, pol);
    if(b == 1)
       return 1/a;
    else if(a == 1)
       return 1/b;
-   else if(c < tools::epsilon<T>())
-   {
-      result = c / a;
-      result /= b;
-      return result;
-   }
 
    /*
    //
@@ -88,11 +82,11 @@ T beta_imp(T a, T b, const Lanczos&, const Policy& pol)
       std::swap(a, b);
 
    // Lanczos calculation:
-   T agh = static_cast<T>(a + Lanczos::g() - 0.5f);
-   T bgh = static_cast<T>(b + Lanczos::g() - 0.5f);
-   T cgh = static_cast<T>(c + Lanczos::g() - 0.5f);
-   result = Lanczos::lanczos_sum_expG_scaled(a) * (Lanczos::lanczos_sum_expG_scaled(b) / Lanczos::lanczos_sum_expG_scaled(c));
-   T ambh = a - 0.5f - b;
+   T agh = a + Lanczos::g() - T(0.5);
+   T bgh = b + Lanczos::g() - T(0.5);
+   T cgh = c + Lanczos::g() - T(0.5);
+   result = Lanczos::lanczos_sum_expG_scaled(a) * Lanczos::lanczos_sum_expG_scaled(b) / Lanczos::lanczos_sum_expG_scaled(c);
+   T ambh = a - T(0.5) - b;
    if((fabs(b * ambh) < (cgh * 100)) && (a > 100))
    {
       // Special case where the base of the power term is close to 1
@@ -205,9 +199,7 @@ T ibeta_power_terms(T a,
                         T y,
                         const Lanczos&,
                         bool normalised,
-                        const Policy& pol,
-                        T prefix = 1,
-                        const char* function = "boost::math::ibeta<%1%>(%1%, %1%, %1%)")
+                        const Policy& pol)
 {
    BOOST_MATH_STD_USING
 
@@ -219,17 +211,14 @@ T ibeta_power_terms(T a,
 
    T result;
 
+   T prefix = 1;
    T c = a + b;
 
    // combine power terms with Lanczos approximation:
-   T agh = static_cast<T>(a + Lanczos::g() - 0.5f);
-   T bgh = static_cast<T>(b + Lanczos::g() - 0.5f);
-   T cgh = static_cast<T>(c + Lanczos::g() - 0.5f);
+   T agh = a + Lanczos::g() - T(0.5);
+   T bgh = b + Lanczos::g() - T(0.5);
+   T cgh = c + Lanczos::g() - T(0.5);
    result = Lanczos::lanczos_sum_expG_scaled(c) / (Lanczos::lanczos_sum_expG_scaled(a) * Lanczos::lanczos_sum_expG_scaled(b));
-   result *= prefix;
-   // combine with the leftover terms from the Lanczos approximation:
-   result *= sqrt(bgh / boost::math::constants::e<T>());
-   result *= sqrt(agh / cgh);
 
    // l1 and l2 are the base of the exponents minus one:
    T l1 = (x * b - y * agh) / agh;
@@ -319,15 +308,7 @@ T ibeta_power_terms(T a,
          // First base near 1 only:
          T l = a * boost::math::log1p(l1, pol)
             + b * log((y * cgh) / bgh);
-         if((l <= tools::log_min_value<T>()) || (l >= tools::log_max_value<T>()))
-         {
-            l += log(result);
-            if(l >= tools::log_max_value<T>())
-               return policies::raise_overflow_error<T>(function, 0, pol);
-            result = exp(l);
-         }
-         else
-            result *= exp(l);
+         result *= exp(l);
          BOOST_MATH_INSTRUMENT_VARIABLE(result);
       }
       else
@@ -335,15 +316,7 @@ T ibeta_power_terms(T a,
          // Second base near 1 only:
          T l = b * boost::math::log1p(l2, pol)
             + a * log((x * cgh) / agh);
-         if((l <= tools::log_min_value<T>()) || (l >= tools::log_max_value<T>()))
-         {
-            l += log(result);
-            if(l >= tools::log_max_value<T>())
-               return policies::raise_overflow_error<T>(function, 0, pol);
-            result = exp(l);
-         }
-         else
-            result *= exp(l);
+         result *= exp(l);
          BOOST_MATH_INSTRUMENT_VARIABLE(result);
       }
    }
@@ -364,41 +337,11 @@ T ibeta_power_terms(T a,
          || (l2 <= tools::log_min_value<T>())
          )
       {
-         // Oops, under/overflow, sidestep if we can:
+         // Oops, overflow, sidestep:
          if(a < b)
-         {
-            T p1 = pow(b2, b / a);
-            T l3 = a * (log(b1) + log(p1));
-            if((l3 < tools::log_max_value<T>())
-               && (l3 > tools::log_min_value<T>()))
-            {
-               result *= pow(p1 * b1, a);
-            }
-            else
-            {
-               l2 += l1 + log(result);
-               if(l2 >= tools::log_max_value<T>())
-                  return policies::raise_overflow_error<T>(function, 0, pol);
-               result = exp(l2);
-            }
-         }
+            result *= pow(pow(b2, b/a) * b1, a);
          else
-         {
-            T p1 = pow(b1, a / b);
-            T l3 = (log(p1) + log(b2)) * b;
-            if((l3 < tools::log_max_value<T>())
-               && (l3 > tools::log_min_value<T>()))
-            {
-               result *= pow(p1 * b2, b);
-            }
-            else
-            {
-               l2 += l1 + log(result);
-               if(l2 >= tools::log_max_value<T>())
-                  return policies::raise_overflow_error<T>(function, 0, pol);
-               result = exp(l2);
-            }
-         }
+            result *= pow(pow(b1, a/b) * b2, b);
          BOOST_MATH_INSTRUMENT_VARIABLE(result);
       }
       else
@@ -408,6 +351,10 @@ T ibeta_power_terms(T a,
          BOOST_MATH_INSTRUMENT_VARIABLE(result);
       }
    }
+   // combine with the leftover terms from the Lanczos approximation:
+   result *= sqrt(bgh / boost::math::constants::e<T>());
+   result *= sqrt(agh / cgh);
+   result *= prefix;
 
    BOOST_MATH_INSTRUMENT_VARIABLE(result);
 
@@ -433,9 +380,7 @@ T ibeta_power_terms(T a,
                         T y,
                         const boost::math::lanczos::undefined_lanczos&,
                         bool normalised,
-                        const Policy& pol, 
-                        T prefix = 1,
-                        const char* function = "boost::math::ibeta<%1%>(%1%, %1%, %1%)")
+                        const Policy& pol)
 {
    BOOST_MATH_STD_USING
 
@@ -466,7 +411,7 @@ T ibeta_power_terms(T a,
 
    T b1 = (x * lc) / la;
    T b2 = (y * lc) / lb;
-   T e1 = -5; // lc - la - lb;
+   T e1 = lc - la - lb;
    T lb1 = a * log(b1);
    T lb2 = b * log(b2);
 
@@ -478,23 +423,21 @@ T ibeta_power_terms(T a,
       || (e1 <= tools::log_min_value<T>())
       )
    {
-      result = exp(lb1 + lb2 - e1 + log(prefix));
+      result = exp(lb1 + lb2 - e1);
    }
    else
    {
       T p1, p2;
-      p1 = (x * b - y * la) / la;
-      if(fabs(p1) < 0.5f)
-         p1 = exp(a * boost::math::log1p(p1, pol));
+      if((fabs(b1 - 1) * a < 10) && (a > 1))
+         p1 = exp(a * boost::math::log1p((x * b - y * la) / la, pol));
       else
          p1 = pow(b1, a);
-      p2 = (y * a - x * lb) / lb;
-      if(fabs(p2) < 0.5f)
-         p2 = exp(b * boost::math::log1p(p2, pol));
+      if((fabs(b2 - 1) * b < 10) && (b > 1))
+         p2 = exp(b * boost::math::log1p((y * a - x * lb) / lb, pol));
       else
          p2 = pow(b2, b);
       T p3 = exp(e1);
-      result = prefix * p1 * (p2 / p3);
+      result = p1 * p2 / p3;
    }
    // and combine with the remaining gamma function components:
    result /= sa * sb / sc;
@@ -537,43 +480,21 @@ T ibeta_series(T a, T b, T x, T s0, const Lanczos&, bool normalised, T* p_deriva
       T c = a + b;
 
       // incomplete beta power term, combined with the Lanczos approximation:
-      T agh = static_cast<T>(a + Lanczos::g() - 0.5f);
-      T bgh = static_cast<T>(b + Lanczos::g() - 0.5f);
-      T cgh = static_cast<T>(c + Lanczos::g() - 0.5f);
+      T agh = a + Lanczos::g() - T(0.5);
+      T bgh = b + Lanczos::g() - T(0.5);
+      T cgh = c + Lanczos::g() - T(0.5);
       result = Lanczos::lanczos_sum_expG_scaled(c) / (Lanczos::lanczos_sum_expG_scaled(a) * Lanczos::lanczos_sum_expG_scaled(b));
-
-      T l1 = log(cgh / bgh) * (b - 0.5f);
-      T l2 = log(x * cgh / agh) * a;
-      //
-      // Check for over/underflow in the power terms:
-      //
-      if((l1 > tools::log_min_value<T>())
-         && (l1 < tools::log_max_value<T>())
-         && (l2 > tools::log_min_value<T>())
-         && (l2 < tools::log_max_value<T>()))
-      {
-         if(a * b < bgh * 10)
-            result *= exp((b - 0.5f) * boost::math::log1p(a / bgh, pol));
-         else
-            result *= pow(cgh / bgh, b - 0.5f);
-         result *= pow(x * cgh / agh, a);
-         result *= sqrt(agh / boost::math::constants::e<T>());
-
-         if(p_derivative)
-         {
-            *p_derivative = result * pow(y, b);
-            BOOST_ASSERT(*p_derivative >= 0);
-         }
-      }
+      if(a * b < bgh * 10)
+         result *= exp((b - 0.5f) * boost::math::log1p(a / bgh, pol));
       else
+         result *= pow(cgh / bgh, b - 0.5f);
+      result *= pow(x * cgh / agh, a);
+      result *= sqrt(agh / boost::math::constants::e<T>());
+
+      if(p_derivative)
       {
-         //
-         // Oh dear, we need logs, and this *will* cancel:
-         //
-         result = log(result) + l1 + l2 + (log(agh) - 1) / 2;
-         if(p_derivative)
-            *p_derivative = exp(result + b * log(y));
-         result = exp(result);
+         *p_derivative = result * pow(y, b);
+         BOOST_ASSERT(*p_derivative >= 0);
       }
    }
    else
@@ -685,7 +606,7 @@ struct ibeta_fraction2_t
       T denom = (a + 2 * m - 1);
       aN /= denom * denom;
 
-      T bN = static_cast<T>(m);
+      T bN = m;
       bN += (m * (b - m) * x) / (a + 2*m - 1);
       bN += ((a + m) * (a * y - b * x + 1 + m *(2 - x))) / (a + 2*m + 1);
 
@@ -1022,12 +943,12 @@ T ibeta_imp(T a, T b, T x, const Policy& pol, bool inv, bool normalised, T* p_de
          if(b == 0)
             return policies::raise_domain_error<T>(function, "The arguments a and b to the incomplete beta function cannot both be zero, with x=%1%.", x, pol);
          if(b > 0)
-            return static_cast<T>(inv ? 0 : 1);
+            return inv ? 0 : 1;
       }
       else if(b == 0)
       {
          if(a > 0)
-            return static_cast<T>(inv ? 1 : 0);
+            return inv ? 1 : 0;
       }
    }
    else
@@ -1279,7 +1200,7 @@ T ibeta_imp(T a, T b, T x, const Policy& pol, bool inv, bool normalised, T* p_de
       
       if(b < 40)
       {
-         if((floor(a) == a) && (floor(b) == b) && (a < (std::numeric_limits<int>::max)() - 100) && (y != 1))
+         if((floor(a) == a) && (floor(b) == b) && (a < (std::numeric_limits<int>::max)() - 100))
          {
             // relate to the binomial distribution and use a finite sum:
             T k = a - 1;
@@ -1421,8 +1342,20 @@ T ibeta_derivative_imp(T a, T b, T x, const Policy& pol)
    // Now the regular cases:
    //
    typedef typename lanczos::lanczos<T, Policy>::type lanczos_type;
+   T f1 = ibeta_power_terms<T>(a, b, x, 1 - x, lanczos_type(), true, pol);
    T y = (1 - x) * x;
-   T f1 = ibeta_power_terms<T>(a, b, x, 1 - x, lanczos_type(), true, pol, 1 / y, function);
+
+   if(f1 == 0)
+      return 0;
+   
+   if((tools::max_value<T>() * y < f1))
+   {
+      // overflow:
+      return policies::raise_overflow_error<T>(function, 0, pol);
+   }
+
+   f1 /= y;
+
    return f1;
 }
 //

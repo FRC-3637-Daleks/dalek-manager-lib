@@ -1352,10 +1352,7 @@ public: // structors
         destroy_content();
     }
 
-    variant() 
-#if !(defined(__SUNPRO_CC) && BOOST_WORKAROUND(__SUNPRO_CC, <= 0x5130))
-              BOOST_NOEXCEPT_IF(boost::has_nothrow_constructor<internal_T0>::value)
-#endif
+    variant() BOOST_NOEXCEPT_IF(boost::has_nothrow_constructor<internal_T0>::value)
     {
 #ifdef _MSC_VER
 #pragma warning( push )

@@ -16,6 +16,7 @@
 #include <boost/config.hpp> /* keep it first to prevent nasty warns in MSVC */
 #include <algorithm>
 #include <boost/multi_index/detail/rnd_index_ptr_array.hpp>
+#include <functional>
 
 namespace boost{
 
@@ -122,12 +123,11 @@ void random_access_index_inplace_merge(
 /* auxiliary stuff */
 
 template<typename Node,typename Compare>
-struct random_access_index_sort_compare
+struct random_access_index_sort_compare:
+  std::binary_function<
+    typename Node::impl_pointer,
+    typename Node::impl_pointer,bool>
 {
-  typedef typename Node::impl_pointer first_argument_type;
-  typedef typename Node::impl_pointer second_argument_type;
-  typedef bool                        result_type;
-
   random_access_index_sort_compare(Compare comp_=Compare()):comp(comp_){}
 
   bool operator()(

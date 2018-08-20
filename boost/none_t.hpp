@@ -16,25 +16,13 @@
 namespace boost {
 
 #ifdef BOOST_OPTIONAL_USE_OLD_DEFINITION_OF_NONE
-
 namespace detail { struct none_helper{}; }
 typedef int detail::none_helper::*none_t ;
-
-#elif defined BOOST_OPTIONAL_USE_SINGLETON_DEFINITION_OF_NONE
-
-class none_t {};
-
 #else
-
-struct none_t
-{
-  struct init_tag{};
-  explicit none_t(init_tag){} // to prevent default constructor
-};
-
-#endif // old implementation workarounds
+class none_t {};
+#endif
 
 } // namespace boost
 
-#endif // header guard
+#endif
 

@@ -22,10 +22,8 @@
 namespace boost {
 
 #ifdef BOOST_OPTIONAL_USE_OLD_DEFINITION_OF_NONE
-
 none_t const none = (static_cast<none_t>(0)) ;
-
-#elif defined BOOST_OPTIONAL_USE_SINGLETON_DEFINITION_OF_NONE
+#else
 
 namespace detail { namespace optional_detail {
 
@@ -47,13 +45,9 @@ namespace {
   const none_t& none = detail::optional_detail::none_instance<none_t>::instance; 
 }
 
-#else
-
-const none_t none ((none_t::init_tag()));
-
-#endif // older definitions
+#endif
 
 } // namespace boost
 
-#endif // header guard
+#endif
 

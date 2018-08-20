@@ -49,16 +49,14 @@
 #   define BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER_OP(r, unused, elem)      \
         BOOST_PP_IF(BOOST_FUSION_PP_IS_SEQ(elem),                               \
             BOOST_PP_CAT( BOOST_FUSION_ADAPT_STRUCT_FILLER_0 elem ,_END),       \
-            BOOST_PP_IF(BOOST_PP_IS_EMPTY(elem),                                \
-              BOOST_PP_EMPTY(),                                                 \
-              BOOST_FUSION_ADAPT_STRUCT_WRAP_ATTR(BOOST_FUSION_ADAPT_AUTO,elem))\
-            )
+            BOOST_FUSION_ADAPT_STRUCT_WRAP_ATTR(BOOST_FUSION_ADAPT_AUTO,        \
+                elem))
 
-#   define BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER(VA_ARGS_SEQ)             \
+#   define BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER(...)                     \
         BOOST_PP_SEQ_PUSH_FRONT(                                                \
             BOOST_PP_SEQ_FOR_EACH(                                              \
                 BOOST_FUSION_ADAPT_STRUCT_ATTRIBUTES_FILLER_OP,                 \
-                unused, VA_ARGS_SEQ),                                           \
+                unused, BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)),                 \
             (0,0))
 
 #endif // BOOST_PP_VARIADICS

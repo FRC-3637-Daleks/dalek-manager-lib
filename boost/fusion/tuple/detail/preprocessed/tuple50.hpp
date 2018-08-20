@@ -17,7 +17,7 @@ namespace boost { namespace fusion
         BOOST_FUSION_GPU_ENABLED tuple()
             : base_type() {}
         BOOST_FUSION_GPU_ENABLED tuple(tuple const& rhs)
-            : base_type(static_cast<base_type const&>(rhs)) {}
+            : base_type(rhs) {}
         template <typename U1, typename U2>
         BOOST_FUSION_GPU_ENABLED
         tuple(std::pair<U1, U2> const& rhs)
@@ -733,7 +733,7 @@ namespace boost { namespace fusion
         BOOST_FUSION_GPU_ENABLED
         tuple& operator=(tuple const& rhs)
         {
-            base_type::operator=(static_cast<base_type const&>(rhs));
+            base_type::operator=(rhs);
             return *this;
         }
         template <typename U1, typename U2>

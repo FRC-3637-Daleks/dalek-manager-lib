@@ -219,10 +219,7 @@
 #endif
 
 #ifdef BOOST_MOVE_IS_POD
-   //in some compilers the intrinsic is limited to class types so add scalar and void
-   #define BOOST_MOVE_IS_POD_IMPL(T) (::boost::move_detail::is_scalar<T>::value ||\
-                                      ::boost::move_detail::is_void<T>::value   ||\
-                                       BOOST_MOVE_IS_POD(T))
+   #define BOOST_MOVE_IS_POD_IMPL(T) BOOST_MOVE_IS_POD(T)
 #else
    #define BOOST_MOVE_IS_POD_IMPL(T) \
       (::boost::move_detail::is_scalar<T>::value || ::boost::move_detail::is_void<T>::value)
@@ -344,28 +341,23 @@ struct is_pointer<T*>
 {  static const bool value = true; };
 
 //////////////////////////
-//       is_const
+//    add_reference
 //////////////////////////
-template<class T>
-struct is_const
-{  static const bool value = false; };
-
-template<class T>
-struct is_const<const T>
-{  static const bool value = true; };
-
-//////////////////////////
-//       unvoid_ref
-//////////////////////////
-template <typename T> struct unvoid_ref : add_lvalue_reference<T>{};
-template <> struct unvoid_ref<void>                { typedef unvoid_ref & type; };
-template <> struct unvoid_ref<const void>          { typedef unvoid_ref & type; };
-template <> struct unvoid_ref<volatile void>       { typedef unvoid_ref & type; };
-template <> struct unvoid_ref<const volatile void> { typedef unvoid_ref & type; };
-
 template <typename T>
-struct add_reference : add_lvalue_reference<T>
-{};
+struct add_reference
+{  typedef T& type;  };
+
+template<class T>
+struct add_reference<T&>
+{  typedef T& type;  };
+
+template<>
+struct add_reference<void>
+{  typedef nat &type;   };
+
+template<>
+struct add_reference<const void>
+{  typedef const nat &type;   };
 
 //////////////////////////
 //    add_const_reference
@@ -377,14 +369,6 @@ struct add_const_reference
 template <class T>
 struct add_const_reference<T&>
 {  typedef T& type;   };
-
-//////////////////////////
-//    add_const_if_c
-//////////////////////////
-template<class T, bool Add>
-struct add_const_if_c
-   : if_c<Add, typename add_const<T>::type, T>
-{};
 
 //////////////////////////
 //    remove_const
@@ -480,7 +464,7 @@ template <class T>
 struct remove_all_extents<T[]>
 {  typedef typename remove_all_extents<T>::type type; };
 
-template <class T, std::size_t N>
+template <class T, size_t N>
 struct remove_all_extents<T[N]>
 {  typedef typename remove_all_extents<T>::type type;};
 
@@ -716,31 +700,16 @@ template <class T>
 struct is_empty
 {  static const bool value = BOOST_MOVE_IS_EMPTY_IMPL(T);  };
 
-
-template<class T>
-struct has_boost_move_no_copy_constructor_or_assign_type
-{
-   template <class U>
-   static yes_type test(typename U::boost_move_no_copy_constructor_or_assign*);
-
-   template <class U>
-   static no_type test(...);
-
-   static const bool value = sizeof(test<T>(0)) == sizeof(yes_type);
-};
-
 //////////////////////////////////////
 //       is_copy_constructible
 //////////////////////////////////////
-#if !defined(BOOST_NO_CXX11_DELETED_FUNCTIONS) && !defined(BOOST_NO_CXX11_DECLTYPE) \
-   && !defined(BOOST_INTEL_CXX_VERSION) && \
-      !(defined(BOOST_MSVC) && _MSC_VER == 1800)
-#define BOOST_MOVE_TT_CXX11_IS_COPY_CONSTRUCTIBLE
-#endif
-
 template<class T>
 struct is_copy_constructible
 {
+   typedef char yes_type;
+   struct no_type { char dummy[2]; };
+   template<class U> static typename add_reference<U>::type source();
+
    // Intel compiler has problems with SFINAE for copy constructors and deleted functions:
    //
    // error: function *function_name* cannot be referenced -- it is a deleted function
@@ -748,8 +717,8 @@ struct is_copy_constructible
    //                                                        ^ 
    // MSVC 12.0 (Visual 2013) has problems when the copy constructor has been deleted. See:
    // https://connect.microsoft.com/VisualStudio/feedback/details/800328/std-is-copy-constructible-is-broken
-   #if defined(BOOST_MOVE_TT_CXX11_IS_COPY_CONSTRUCTIBLE)
-      template<class U> static typename add_reference<U>::type source();
+   #if !defined(BOOST_NO_CXX11_DELETED_FUNCTIONS) && !defined(BOOST_INTEL_CXX_VERSION) &&\
+       !(defined(BOOST_MSVC) && _MSC_VER == 1800)
       static no_type test(...);
       #ifdef BOOST_NO_CXX11_DECLTYPE
          template <class U>
@@ -758,45 +727,13 @@ struct is_copy_constructible
          template <class U>
          static yes_type test(U&, decltype(U(source<U>()))* = 0);
       #endif
-      static const bool value = sizeof(test(source<T>())) == sizeof(yes_type);
    #else
-   static const bool value = !has_boost_move_no_copy_constructor_or_assign_type<T>::value;
+      template <class U>
+      static no_type test(U&, typename U::boost_move_no_copy_constructor_or_assign* = 0);
+      static yes_type test(...);
    #endif
-};
 
-
-//////////////////////////////////////
-//       is_copy_assignable
-//////////////////////////////////////
-#if !defined(BOOST_NO_CXX11_DELETED_FUNCTIONS) && !defined(BOOST_NO_CXX11_DECLTYPE) \
-   && !defined(BOOST_INTEL_CXX_VERSION) && \
-      !(defined(BOOST_MSVC) && _MSC_VER == 1800)
-#define BOOST_MOVE_TT_CXX11_IS_COPY_ASSIGNABLE
-#endif
-
-template <class T>
-struct is_copy_assignable
-{
-// Intel compiler has problems with SFINAE for copy constructors and deleted functions:
-//
-// error: function *function_name* cannot be referenced -- it is a deleted function
-// static boost::type_traits::yes_type test(T1&, decltype(T1(boost::declval<T1&>()))* = 0);
-//                                                        ^ 
-//
-// MSVC 12.0 (Visual 2013) has problems when the copy constructor has been deleted. See:
-// https://connect.microsoft.com/VisualStudio/feedback/details/800328/std-is-copy-constructible-is-broken
-#if defined(BOOST_MOVE_TT_CXX11_IS_COPY_ASSIGNABLE)
-   typedef char yes_type;
-   struct no_type { char dummy[2]; };
-   
-   template <class U>   static typename add_reference<U>::type source();
-   template <class U>   static decltype(source<U&>() = source<const U&>(), yes_type() ) test(int);
-   template <class>     static no_type test(...);
-
-   static const bool value = sizeof(test<T>(0)) == sizeof(yes_type);
-#else
-   static const bool value = !has_boost_move_no_copy_constructor_or_assign_type<T>::value;
-#endif
+   static const bool value = sizeof(test(source<T>())) == sizeof(yes_type);
 };
 
 //////////////////////////////////////
@@ -818,13 +755,7 @@ struct is_trivially_default_constructible
 //////////////////////////////////////
 template<class T>
 struct is_trivially_copy_constructible
-{
-   //In several compilers BOOST_MOVE_IS_TRIVIALLY_COPY_CONSTRUCTIBLE return true even with
-   //deleted copy constructors so make sure the type is copy constructible.
-   static const bool value = ::boost::move_detail::is_pod<T>::value ||
-                             ( ::boost::move_detail::is_copy_constructible<T>::value &&
-                               BOOST_MOVE_IS_TRIVIALLY_COPY_CONSTRUCTIBLE(T) );
-};
+{  static const bool value = BOOST_MOVE_IS_TRIVIALLY_COPY_CONSTRUCTIBLE(T); };
 
 //////////////////////////////////////
 //       is_trivially_move_constructible
@@ -838,13 +769,7 @@ struct is_trivially_move_constructible
 //////////////////////////////////////
 template<class T>
 struct is_trivially_copy_assignable
-{
-   //In several compilers BOOST_MOVE_IS_TRIVIALLY_COPY_CONSTRUCTIBLE return true even with
-   //deleted copy constructors so make sure the type is copy constructible.
-   static const bool value = ::boost::move_detail::is_pod<T>::value ||
-                             ( ::boost::move_detail::is_copy_assignable<T>::value &&
-                               BOOST_MOVE_IS_TRIVIALLY_COPY_ASSIGNABLE(T) );
-};                             
+{  static const bool value = BOOST_MOVE_IS_TRIVIALLY_COPY_ASSIGNABLE(T);  };
 
 //////////////////////////////////////
 //       is_trivially_move_assignable
@@ -1003,7 +928,7 @@ BOOST_MOVE_ALIGNED_STORAGE_WITH_BOOST_ALIGNMENT(0x1000)
 
 #else //BOOST_NO_ALIGNMENT
 
-template<class T, std::size_t Len>
+template<class T, size_t Len>
 union aligned_union
 {	
    T aligner;

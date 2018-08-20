@@ -40,11 +40,13 @@ namespace intrusive {
 template<class ValueTraits, bool IsConst>
 class tree_iterator
 {
-   private:
+   protected:
    typedef iiterator< ValueTraits, IsConst
                     , std::bidirectional_iterator_tag>   types_t;
-   typedef typename types_t::value_traits                value_traits;
+
+   typedef ValueTraits                                   value_traits;
    typedef typename types_t::node_traits                 node_traits;
+
    typedef typename types_t::node                        node;
    typedef typename types_t::node_ptr                    node_ptr;
    typedef typename types_t::const_value_traits_ptr      const_value_traits_ptr;
@@ -106,23 +108,14 @@ class tree_iterator
       return result;
    }
 
-   tree_iterator&  go_left()
-   {
-      members_.nodeptr_ = node_traits::get_left(members_.nodeptr_);
-      return static_cast<tree_iterator&> (*this);
-   }
+   void go_left()
+   { members_.nodeptr_ = node_traits::get_left(members_.nodeptr_); }
 
-   tree_iterator&  go_right()
-   {
-      members_.nodeptr_ = node_traits::get_right(members_.nodeptr_);
-      return static_cast<tree_iterator&> (*this);
-   }
+   void go_right()
+   { members_.nodeptr_ = node_traits::get_right(members_.nodeptr_); }
 
-   tree_iterator&  go_parent()
-   {
-      members_.nodeptr_ = node_traits::get_parent(members_.nodeptr_);
-      return static_cast<tree_iterator&> (*this);
-   }
+   void go_parent()
+   { members_.nodeptr_ = node_traits::get_parent(members_.nodeptr_); }
 
    operator unspecified_bool_type() const
    {  return members_.nodeptr_ ? &tree_iterator::unspecified_bool_type_func : 0;   }

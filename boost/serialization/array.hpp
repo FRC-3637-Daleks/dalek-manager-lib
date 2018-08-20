@@ -33,8 +33,17 @@ namespace boost { namespace serialization {
 
 // traits to specify whether to use  an optimized array serialization
 
+#ifdef __BORLANDC__
+// workaround for Borland compiler
+template <class Archive>
+struct use_array_optimization {
+  template <class T> struct apply : boost::mpl::false_ {};
+};
+
+#else
 template <class Archive>
 struct use_array_optimization : boost::mpl::always<boost::mpl::false_> {};
+#endif
 
 template<class T>
 class array :
@@ -116,7 +125,10 @@ private:
 
 template<class T>
 inline
-const array< T > make_array( T* t, std::size_t s){
+#ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+const
+#endif
+array< T > make_array( T* t, std::size_t s){
     return array< T >(t, s);
 }
 
@@ -142,6 +154,10 @@ void serialize(Archive& ar, std::array<T,N>& a, const unsigned int /* version */
 
 } } // end namespace boost::serialization
 
+#ifdef __BORLANDC__
+// ignore optimizations for Borland
+#define BOOST_SERIALIZATION_USE_ARRAY_OPTIMIZATION(Archive)      
+#else
 #define BOOST_SERIALIZATION_USE_ARRAY_OPTIMIZATION(Archive)           \
 namespace boost { namespace serialization {                           \
 template <> struct use_array_optimization<Archive> {                  \
@@ -150,5 +166,6 @@ template <> struct use_array_optimization<Archive> {                  \
       , typename boost::remove_const<ValueType>::type   \
     >::type {};                                                       \
 }; }}
+#endif // __BORLANDC__
 
 #endif //BOOST_SERIALIZATION_ARRAY_HPP

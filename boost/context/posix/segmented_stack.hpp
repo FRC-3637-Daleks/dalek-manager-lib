@@ -71,9 +71,6 @@ public:
 };
 
 typedef basic_segmented_stack< stack_traits > segmented_stack;
-# if defined(BOOST_USE_SEGMENTED_STACKS)
-typedef segmented_stack default_stack;
-# endif
 
 }}
 

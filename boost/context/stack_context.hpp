@@ -31,11 +31,7 @@ struct stack_context {
     unsigned                valgrind_stack_id;
 #endif
 
-#if defined(BOOST_NO_CXX11_CONSTEXPR)
     stack_context() :
-#else
-    constexpr stack_context() :
-#endif
         size( 0),
         sp( 0),
         segments_ctx()
@@ -52,11 +48,7 @@ struct stack_context {
     unsigned                valgrind_stack_id;
 #endif
 
-#if defined(BOOST_NO_CXX11_CONSTEXPR)
     stack_context() :
-#else
-    constexpr stack_context() :
-#endif
         size( 0),
         sp( 0)
 #if defined(BOOST_USE_VALGRIND)

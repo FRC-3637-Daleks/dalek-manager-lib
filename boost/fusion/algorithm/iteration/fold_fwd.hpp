@@ -38,7 +38,7 @@ namespace boost { namespace fusion
     BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::fold<
         Seq
-      , State
+      , State const
       , F
     >::type
     fold(Seq& seq, State& state, F f);
@@ -47,7 +47,7 @@ namespace boost { namespace fusion
     BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::fold<
         Seq const
-      , State
+      , State const
       , F
     >::type
     fold(Seq const& seq, State& state, F f);

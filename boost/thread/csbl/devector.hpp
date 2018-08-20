@@ -21,8 +21,8 @@ namespace boost
     template <class T>
     class devector
     {
-      typedef csbl::vector<T> vector_type;
-      vector_type data_;
+      typedef vector<T> vector_type;
+      vector<T> data_;
       std::size_t front_index_;
 
       BOOST_COPYABLE_AND_MOVABLE(devector)
@@ -58,9 +58,7 @@ namespace boost
       }
 
       devector& operator=(BOOST_RV_REF(devector) x)
-#if defined BOOST_THREAD_USES_BOOST_VECTOR
-         BOOST_NOEXCEPT_IF(vector_type::allocator_traits_type::propagate_on_container_move_assignment::value)
-#endif
+         BOOST_NOEXCEPT_IF(vector<T>::allocator_traits_type::propagate_on_container_move_assignment::value)
       {
         data_ = boost::move(x.data_);
         front_index_ = x.front_index_;

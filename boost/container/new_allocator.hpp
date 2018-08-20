@@ -29,16 +29,12 @@
 namespace boost {
 namespace container {
 
-/// @cond
-
 template<bool Value>
 struct new_allocator_bool
 {  static const bool value = Value;  };
 
 template<class T>
 class new_allocator;
-
-/// @endcond
 
 //! Specialization of new_allocator for void types
 template<>

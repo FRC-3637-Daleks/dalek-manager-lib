@@ -22,7 +22,6 @@ namespace boost { namespace fusion
     {
         template <typename Sequence>
         struct as_deque
-            : detail::as_deque<result_of::size<Sequence>::value>
         {
             typedef typename
                 detail::as_deque<result_of::size<Sequence>::value>

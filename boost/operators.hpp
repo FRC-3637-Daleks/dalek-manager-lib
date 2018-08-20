@@ -82,10 +82,8 @@
 #ifndef BOOST_OPERATORS_HPP
 #define BOOST_OPERATORS_HPP
 
-#include <cstddef>
-#include <iterator>
-
 #include <boost/config.hpp>
+#include <boost/iterator.hpp>
 #include <boost/detail/workaround.hpp>
 
 #if defined(__sgi) && !defined(__GNUC__)
@@ -893,13 +891,13 @@ template <class T,
           class R = V const &>
 struct input_iterator_helper
   : input_iteratable<T, P
-  , std::iterator<std::input_iterator_tag, V, D, P, R
+  , boost::iterator<std::input_iterator_tag, V, D, P, R
     > > {};
 
 template<class T>
 struct output_iterator_helper
   : output_iteratable<T
-  , std::iterator<std::output_iterator_tag, void, void, void, void
+  , boost::iterator<std::output_iterator_tag, void, void, void, void
   > >
 {
   T& operator*()  { return static_cast<T&>(*this); }
@@ -913,7 +911,7 @@ template <class T,
           class R = V&>
 struct forward_iterator_helper
   : forward_iteratable<T, P
-  , std::iterator<std::forward_iterator_tag, V, D, P, R
+  , boost::iterator<std::forward_iterator_tag, V, D, P, R
     > > {};
 
 template <class T,
@@ -923,7 +921,7 @@ template <class T,
           class R = V&>
 struct bidirectional_iterator_helper
   : bidirectional_iteratable<T, P
-  , std::iterator<std::bidirectional_iterator_tag, V, D, P, R
+  , boost::iterator<std::bidirectional_iterator_tag, V, D, P, R
     > > {};
 
 template <class T,
@@ -933,7 +931,7 @@ template <class T,
           class R = V&>
 struct random_access_iterator_helper
   : random_access_iteratable<T, P, D, R
-  , std::iterator<std::random_access_iterator_tag, V, D, P, R
+  , boost::iterator<std::random_access_iterator_tag, V, D, P, R
     > >
 {
   friend D requires_difference_operator(const T& x, const T& y) {

@@ -87,7 +87,10 @@ struct nvp :
 
 template<class T>
 inline
-const nvp< T > make_nvp(const char * name, T & t){
+#ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+const
+#endif
+nvp< T > make_nvp(const char * name, T & t){
     return nvp< T >(name, t);
 }
 

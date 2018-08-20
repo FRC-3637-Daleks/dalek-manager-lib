@@ -67,7 +67,5 @@
 #include <boost/math/special_functions/next.hpp>
 #include <boost/math/special_functions/owens_t.hpp>
 #include <boost/math/special_functions/hankel.hpp>
-#include <boost/math/special_functions/ulp.hpp>
-#include <boost/math/special_functions/relative_difference.hpp>
 
 #endif // BOOST_MATH_SPECIAL_FUNCTIONS_HPP

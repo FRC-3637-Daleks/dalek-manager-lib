@@ -16,10 +16,7 @@
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
-#include <boost/config.hpp>
-
-#if defined(_LIBCPP_VERSION) && (_LIBCPP_VERSION >= 1101) \
-|| ! defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#ifndef BOOST_NO_CXX11_HDR_TYPE_TRAITS
     #include <type_traits>
     namespace boost{
     namespace serialization {

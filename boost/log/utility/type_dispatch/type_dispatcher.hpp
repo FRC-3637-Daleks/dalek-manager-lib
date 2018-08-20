@@ -15,9 +15,10 @@
 #ifndef BOOST_LOG_TYPE_DISPATCHER_HPP_INCLUDED_
 #define BOOST_LOG_TYPE_DISPATCHER_HPP_INCLUDED_
 
-#include <boost/type_index.hpp>
+#include <typeinfo>
 #include <boost/static_assert.hpp>
 #include <boost/log/detail/config.hpp>
+#include <boost/log/detail/visible_type.hpp>
 #include <boost/utility/explicit_operator_bool.hpp>
 #include <boost/log/detail/header.hpp>
 
@@ -147,7 +148,7 @@ public:
 
 protected:
     //! Pointer to the callback acquisition method
-    typedef callback_base (*get_callback_impl_type)(type_dispatcher*, typeindex::type_index);
+    typedef callback_base (*get_callback_impl_type)(type_dispatcher*, std::type_info const&);
 
 private:
     //! Pointer to the callback acquisition method
@@ -175,7 +176,7 @@ public:
     template< typename T >
     callback< T > get_callback()
     {
-        return callback< T >((this->m_get_callback_impl)(this, typeindex::type_id< T >()));
+        return callback< T >((this->m_get_callback_impl)(this, typeid(boost::log::aux::visible_type< T >)));
     }
 };
 

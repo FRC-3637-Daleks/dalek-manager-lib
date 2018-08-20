@@ -14,7 +14,6 @@
 #ifndef BOOST_ATOMIC_DETAIL_OPS_EXTENDING_CAS_BASED_HPP_INCLUDED_
 #define BOOST_ATOMIC_DETAIL_OPS_EXTENDING_CAS_BASED_HPP_INCLUDED_
 
-#include <cstddef>
 #include <boost/memory_order.hpp>
 #include <boost/atomic/detail/config.hpp>
 #include <boost/atomic/detail/storage_type.hpp>
@@ -27,7 +26,7 @@ namespace boost {
 namespace atomics {
 namespace detail {
 
-template< typename Base, std::size_t Size, bool Signed >
+template< typename Base, unsigned int Size, bool Signed >
 struct extending_cas_based_operations :
     public Base
 {
@@ -36,8 +35,7 @@ struct extending_cas_based_operations :
 
     static BOOST_FORCEINLINE storage_type fetch_add(storage_type volatile& storage, storage_type v, memory_order order) BOOST_NOEXCEPT
     {
-        storage_type old_val;
-        atomics::detail::non_atomic_load(storage, old_val);
+        storage_type old_val = Base::load(storage, memory_order_relaxed);
         emulated_storage_type new_val;
         do
         {
@@ -49,8 +47,7 @@ struct extending_cas_based_operations :
 
     static BOOST_FORCEINLINE storage_type fetch_sub(storage_type volatile& storage, storage_type v, memory_order order) BOOST_NOEXCEPT
     {
-        storage_type old_val;
-        atomics::detail::non_atomic_load(storage, old_val);
+        storage_type old_val = Base::load(storage, memory_order_relaxed);
         emulated_storage_type new_val;
         do
         {

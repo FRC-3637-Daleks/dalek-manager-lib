@@ -14,7 +14,6 @@
 #ifndef BOOST_ATOMIC_DETAIL_OPS_EMULATED_HPP_INCLUDED_
 #define BOOST_ATOMIC_DETAIL_OPS_EMULATED_HPP_INCLUDED_
 
-#include <cstddef>
 #include <boost/memory_order.hpp>
 #include <boost/atomic/detail/config.hpp>
 #include <boost/atomic/detail/storage_type.hpp>
@@ -91,17 +90,7 @@ struct emulated_operations
     static BOOST_FORCEINLINE bool compare_exchange_weak(
         storage_type volatile& storage, storage_type& expected, storage_type desired, memory_order success_order, memory_order failure_order) BOOST_NOEXCEPT
     {
-        // Note: This function is the exact copy of compare_exchange_strong. The reason we're not just forwarding the call
-        // is that MSVC-12 ICEs in this case.
-        storage_type& s = const_cast< storage_type& >(storage);
-        lockpool::scoped_lock lock(&storage);
-        storage_type old_val = s;
-        const bool res = old_val == expected;
-        if (res)
-            s = desired;
-        expected = old_val;
-
-        return res;
+        return compare_exchange_strong(storage, expected, desired, success_order, failure_order);
     }
 
     static BOOST_FORCEINLINE storage_type fetch_and(storage_type volatile& storage, storage_type v, memory_order) BOOST_NOEXCEPT
@@ -147,11 +136,10 @@ struct emulated_operations
     }
 };
 
-template< std::size_t Size, bool Signed >
+template< unsigned int Size, bool Signed >
 struct operations :
     public emulated_operations< typename make_storage_type< Size, Signed >::type >
 {
-    typedef typename make_storage_type< Size, Signed >::aligned aligned_storage_type;
 };
 
 } // namespace detail

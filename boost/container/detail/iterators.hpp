@@ -651,13 +651,11 @@ namespace container_detail {
 template<class T>
 struct has_iterator_category
 {
-   struct two { char _[2]; };
-
    template <typename X>
    static char test(int, typename X::iterator_category*);
 
    template <typename X>
-   static two test(int, ...);
+   static int test(int, ...);
 
    static const bool value = (1 == sizeof(test<T>(0, 0)));
 };
@@ -673,12 +671,6 @@ template<class T>
 struct is_input_iterator<T, false>
 {
    static const bool value = false;
-};
-
-template<class T>
-struct is_not_input_iterator
-{
-   static const bool value = !is_input_iterator<T>::value;
 };
 
 template<class T, bool = has_iterator_category<T>::value >
@@ -804,7 +796,7 @@ class iterator_from_iiterator
    {  return !(l == r); }
 
    reference operator*()  const BOOST_NOEXCEPT_OR_NOTHROW
-   {  return this->m_iit->get_data();  }
+   {  return (*this->m_iit).get_data();  }
 
    pointer   operator->() const BOOST_NOEXCEPT_OR_NOTHROW
    {  return ::boost::intrusive::pointer_traits<pointer>::pointer_to(this->operator*());  }

@@ -51,15 +51,15 @@ struct default_header_holder : public NodeTraits::node
 };
 
 // type function producing the header node holder
-template < typename ValueTraits, typename HeaderHolder >
+template < typename Value_Traits, typename HeaderHolder >
 struct get_header_holder_type
 {
    typedef HeaderHolder type;
 };
-template < typename ValueTraits >
-struct get_header_holder_type< ValueTraits, void >
+template < typename Value_Traits >
+struct get_header_holder_type< Value_Traits, void >
 {
-   typedef default_header_holder< typename ValueTraits::node_traits > type;
+   typedef default_header_holder< typename Value_Traits::node_traits > type;
 };
 
 } //namespace detail

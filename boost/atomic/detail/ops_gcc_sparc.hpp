@@ -62,7 +62,6 @@ struct gcc_sparc_cas32 :
     public gcc_sparc_cas_base
 {
     typedef typename make_storage_type< 4u, Signed >::type storage_type;
-    typedef typename make_storage_type< 4u, Signed >::aligned aligned_storage_type;
 
     static BOOST_FORCEINLINE void store(storage_type volatile& storage, storage_type v, memory_order order) BOOST_NOEXCEPT
     {
@@ -105,6 +104,19 @@ struct gcc_sparc_cas32 :
         return compare_exchange_strong(storage, expected, desired, success_order, failure_order);
     }
 
+    static BOOST_FORCEINLINE bool is_lock_free(storage_type const volatile&) BOOST_NOEXCEPT
+    {
+        return true;
+    }
+};
+
+template< bool Signed >
+struct operations< 4u, Signed > :
+    public cas_based_operations< gcc_sparc_cas32< Signed > >
+{
+    typedef cas_based_operations< gcc_sparc_cas32< Signed > > base_type;
+    typedef typename base_type::storage_type storage_type;
+
     static BOOST_FORCEINLINE storage_type exchange(storage_type volatile& storage, storage_type v, memory_order order) BOOST_NOEXCEPT
     {
         base_type::fence_before(order);
@@ -119,16 +131,10 @@ struct gcc_sparc_cas32 :
         return v;
     }
 
-    static BOOST_FORCEINLINE bool is_lock_free(storage_type const volatile&) BOOST_NOEXCEPT
+    static BOOST_FORCEINLINE bool test_and_set(storage_type volatile& storage, memory_order order) BOOST_NOEXCEPT
     {
-        return true;
+        return !!exchange(storage, (storage_type)1, order);
     }
-};
-
-template< bool Signed >
-struct operations< 4u, Signed > :
-    public cas_based_operations< gcc_sparc_cas32< Signed > >
-{
 };
 
 template< bool Signed >
@@ -148,7 +154,6 @@ struct gcc_sparc_cas64 :
     public gcc_sparc_cas_base
 {
     typedef typename make_storage_type< 8u, Signed >::type storage_type;
-    typedef typename make_storage_type< 8u, Signed >::aligned aligned_storage_type;
 
     static BOOST_FORCEINLINE void store(storage_type volatile& storage, storage_type v, memory_order order) BOOST_NOEXCEPT
     {
@@ -199,7 +204,7 @@ struct gcc_sparc_cas64 :
 
 template< bool Signed >
 struct operations< 8u, Signed > :
-    public cas_based_operations< cas_based_exchange< gcc_sparc_cas64< Signed > > >
+    public cas_based_operations< gcc_sparc_cas64< Signed > >
 {
 };
 

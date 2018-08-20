@@ -607,10 +607,8 @@ namespace boost
       template <class T1, class T2, class Policy>
       struct bessel_traits
       {
-         typedef typename mpl::if_<
-            is_integral<T1>,
-            typename tools::promote_args<T2>::type,
-            typename tools::promote_args<T1, T2>::type
+         typedef typename tools::promote_args<
+            T1, T2
          >::type result_type;
 
          typedef typename policies::precision<result_type, Policy>::type precision_type;
@@ -995,16 +993,6 @@ namespace boost
    typename tools::promote_args<T>::type float_advance(T val, int distance, const Policy& pol);
    template <class T>
    typename tools::promote_args<T>::type float_advance(const T& val, int distance);
-
-   template <class T, class Policy>
-   typename tools::promote_args<T>::type ulp(const T& val, const Policy& pol);
-   template <class T>
-   typename tools::promote_args<T>::type ulp(const T& val);
-
-   template <class T, class U>
-   typename tools::promote_args<T, U>::type relative_difference(const T&, const U&);
-   template <class T, class U>
-   typename tools::promote_args<T, U>::type epsilon_difference(const T&, const U&);
 
    template<class T>
    T unchecked_bernoulli_b2n(const std::size_t n);
@@ -1459,7 +1447,6 @@ template <class OutputIterator, class T>\
    template <class T> T float_next(const T& a){ return boost::math::float_next(a, Policy()); }\
    template <class T> T float_prior(const T& a){ return boost::math::float_prior(a, Policy()); }\
    template <class T> T float_distance(const T& a, const T& b){ return boost::math::float_distance(a, b, Policy()); }\
-   template <class T> T ulp(const T& a){ return boost::math::ulp(a, Policy()); }\
    \
    template <class RT1, class RT2>\
    inline typename boost::math::tools::promote_args<RT1, RT2>::type owens_t(RT1 a, RT2 z){ return boost::math::owens_t(a, z, Policy()); }\
